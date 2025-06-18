@@ -11,6 +11,8 @@ function App() {
   const [fullNameErr, setFullNameErr]= useState("")
   const [passwordErr, setPasswordErr]= useState("")
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const emailHandler=(e)=>{
     setEmail(e.target.value)
     setEmailErr("")
@@ -30,7 +32,35 @@ function App() {
     }if(!fullName){
       setFullNameErr("Enter Your Full Name")
     }if(!password){
-      setPasswordErr("Enter A Password")
+      setPasswordErr("Enter a Password")
+    }
+     if (!emailRegex.test(email)) {
+      setEmailErr('Invalid email format');
+    }
+
+     if (password.length < 8) {
+      setPasswordErr('Password must be at least 8 characters long.');
+      return;
+    }
+
+    if (!/[a-z]/.test(password)) {
+      setPasswordErr('Password must contain at least one lowercase letter.');
+      return;
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      setPasswordErr('Password must contain at least one uppercase letter.');
+      return;
+    }
+
+    if (!/\d/.test(password)) {
+      setPasswordErr('Password must contain at least one number.');
+      return;
+    }
+
+    if (!/[\W_]/.test(password)) {
+      setPasswordErr('Password must contain at least one special character.');
+      return;
     }
   }
 
@@ -46,12 +76,12 @@ function App() {
     <label for="floating_outlined" className="absolute text-sm text-secondary/70 duration-300 transform  top-2 z-10 origin-[0] bg-white  -translate-y-4 px-4 peer-focus:px-4 peer-focus:text-secondary/70  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2  peer-focus:-translate-y-4 rtl:peer-focus:translate-x-2/5 rtl:peer-focus:left-auto start-4">Email Address</label>
 </div>
     <p className='text-red-500 mx-2'>{emailErr}</p>
-    <div className="relative mt-[34px]">
+    <div className="relative mt-[32px]">
     <input type="text" onChange={fullNameHandler} id="floating_outlined2" className="block px-[26px] py-[26px] xl:w-[368px] text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-secondary/30 peer" placeholder="" />
     <label for="floating_outlined2" className="absolute text-sm text-secondary/70 duration-300 transform  -translate-y-4 top-2 z-10 origin-[0] bg-white  px-4 peer-focus:px-4 peer-focus:text-secondary/70  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2  peer-focus:-translate-y-4 rtl:peer-focus:translate-x-2/5 rtl:peer-focus:left-auto start-4">Full Name</label>
 </div>
     <p className='text-red-500 mx-2'>{fullNameErr}</p>
-    <div className="relative mt-[34px]">
+    <div className="relative mt-[32px]">
     <input type="password" onChange={passwordHandler} id="floating_outlined3" className="block px-[26px] py-[26px] xl:w-[368px] text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-secondary/30 peer" placeholder=" " />
     <label for="floating_outlined3" className="absolute text-sm duration-300 transform text-secondary/70 top-2 -translate-y-4 z-10 origin-[0] bg-white  px-4 peer-focus:px-4 peer-focus:text-secondary/70  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2  peer-focus:-translate-y-4 rtl:peer-focus:translate-x-2/5 rtl:peer-focus:left-auto start-4">Password</label>
 </div>
