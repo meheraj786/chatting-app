@@ -4,8 +4,10 @@ import image from "../assets/registerImg.png";
 import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
 import { Link } from 'react-router';
+import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
 
 const Registration = () => {
+  const auth = getAuth();
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +31,6 @@ const Registration = () => {
     setPasswordErr("");
   };
   const submitHandler = () => {
-    console.log(email + fullName + password);
     if (!email) {
       setEmailErr("Enter Your Email");
     }
@@ -42,27 +43,40 @@ const Registration = () => {
     if (!emailRegex.test(email)) {
       setEmailErr("Invalid email format");
     }
-    if (!password) {
-      setPasswordErr("Enter a Password");
-    }
-    if (password.length < 8) {
-      setPasswordErr("Password must be at least 8 characters long.");
-    }
+    // if (!password) {
+    //   setPasswordErr("Enter a Password");
+    // }
+    // if (password.length < 8) {
+    //   setPasswordErr("Password must be at least 8 characters long.");
+    // }
 
-    if (!/[a-z]/.test(password)) {
-      setPasswordErr("Password must contain at least one lowercase letter.");
-    }
+    // if (!/[a-z]/.test(password)) {
+    //   setPasswordErr("Password must contain at least one lowercase letter.");
+    // }
 
-    if (!/[A-Z]/.test(password)) {
-      setPasswordErr("Password must contain at least one uppercase letter.");
-    }
+    // if (!/[A-Z]/.test(password)) {
+    //   setPasswordErr("Password must contain at least one uppercase letter.");
+    // }
 
-    if (!/\d/.test(password)) {
-      setPasswordErr("Password must contain at least one number.");
-    }
+    // if (!/\d/.test(password)) {
+    //   setPasswordErr("Password must contain at least one number.");
+    // }
 
-    if (!/[\W_]/.test(password)) {
-      setPasswordErr("Password must contain at least one special character.");
+    // if (!/[\W_]/.test(password)) {
+    //   setPasswordErr("Password must contain at least one special character.");
+    // }
+    if(email && fullName && password){
+      console.log(email+fullName+password);
+      createUserWithEmailAndPassword (auth, email, password)
+      .then(() => {
+    // const user = userCredential.user;
+    // console.log(user);
+    
+  })
+  .catch((error) => {
+    console.log("auth error: "+error);
+    
+  });
     }
   };
   return (

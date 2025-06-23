@@ -96,8 +96,8 @@ const Login = () => {
                 placeholder=" "
               />
               {
-                passShow ? <LuEye onClick={()=> setPassShow(!passShow)} className="text-2xl absolute top-1/2 -translate-y-1/2 cursor-pointer right-5 xl:right-[5%] text-primary" />
- : <LuEyeClosed onClick={()=> setPassShow(!passShow)} className="text-2xl cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 xl:right-[5%] text-primary" />
+                passShow ? <LuEye onClick={()=> setPassShow(!passShow)} className="text-2xl absolute top-1/2 -translate-y-1/2 cursor-pointer right-5 xl:right-[10%] text-primary" />
+ : <LuEyeClosed onClick={()=> setPassShow(!passShow)} className="text-2xl cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 xl:right-[10%] text-primary" />
               }
 
               <label
