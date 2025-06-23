@@ -3,15 +3,18 @@ import Flex from "../layouts/Flex";
 import image from "../assets/registerImg.png";
 import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
-import { Link } from 'react-router';
-import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
+import { Link, useNavigate } from 'react-router';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification  } from "firebase/auth";
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PulseLoader } from 'react-spinners';
 
 
 
 const Registration = () => {
+  const navigate= useNavigate()
   const auth = getAuth();
+  const [loading, setLoading]= useState(false)
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -70,15 +73,22 @@ const Registration = () => {
     //   setPasswordErr("Password must contain at least one special character.");
     // }
     if(email && fullName && password){
+      setLoading(true)
       console.log(email+fullName+password);
       createUserWithEmailAndPassword (auth, email, password)
-      .then(() => {
-        toast.success("Registration successful!");
+      .then(() => {sendEmailVerification(auth.currentUser)
+        toast.success("Registration successful!, PLease verify your Email");
     // const user = userCredential.user;
     // console.log(user);
-    
-
+    setTimeout(()=>{
+      navigate("/login")
+    },3000)
+    setEmail("")
+    setFullName("")
+    setPassword("")
+    setLoading(false)
   })
+
   .catch((error) => {
 
     if (error.message.includes("auth/email-already-in-use")) {
@@ -94,7 +104,7 @@ const Registration = () => {
       <Flex>
             <ToastContainer
   position="top-center"
-  autoClose={2000}
+  autoClose={3000}
   hideProgressBar={false}
   newestOnTop={false}
   closeOnClick={false}
@@ -129,6 +139,7 @@ const Registration = () => {
                 Email Address
               </label>
             </div>
+            
             <p className="text-red-500 mx-2">{emailErr}</p>
             <div className="relative mt-[32px]">
               <input
@@ -171,7 +182,10 @@ const Registration = () => {
               onClick={submitHandler}
               className="xl:w-[368px] w-full cursor-pointer py-5 bg-primary text-white font-semibold mt-[51px] mb-[35px] rounded-[86px] text-xl"
             >
-              Sign Up
+              {
+                loading ? <PulseLoader color="white"/> : "Sign Up"
+              }
+              
             </button>
             <p className="xl:w-[368px] font-secondary text-center text-[14px] text-primary">
               Already have an account ?{" "}
