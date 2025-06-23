@@ -5,6 +5,10 @@ import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
 import { Link } from 'react-router';
 import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const Registration = () => {
   const auth = getAuth();
@@ -69,11 +73,17 @@ const Registration = () => {
       console.log(email+fullName+password);
       createUserWithEmailAndPassword (auth, email, password)
       .then(() => {
+        toast.success("Registration successful!");
     // const user = userCredential.user;
     // console.log(user);
     
+
   })
   .catch((error) => {
+
+    if (error.message.includes("auth/email-already-in-use")) {
+      setEmailErr("This email already exist")
+    }
     console.log("auth error: "+error);
     
   });
@@ -82,6 +92,20 @@ const Registration = () => {
   return (
         <>
       <Flex>
+            <ToastContainer
+  position="top-center"
+  autoClose={2000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick={false}
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+  theme="dark"
+  transition={Bounce}
+  progressStyle={{ background: "black" }}
+/>
         <Flex className="left flex-col mx-auto xl:mx-0 items-end justify-center  font-primary p-10 xl:p-0 xl:w-[55%] xl:pr-[169px]">
           <div>
             <h1 className="font-bold text-4xl text-secondary">
