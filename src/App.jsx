@@ -70,7 +70,7 @@ function App() {
   return (
     <>
       <Flex>
-        <Flex className="left flex-col  items-end justify-center  font-primary p-10 xl:p-0 xl:w-[55%] xl:pr-[169px]">
+        <Flex className="left flex-col mx-auto xl:mx-0 items-end justify-center  font-primary p-10 xl:p-0 xl:w-[55%] xl:pr-[169px]">
           <div>
             <h1 className="font-bold text-4xl text-secondary">
               Get started with easily register
@@ -83,7 +83,7 @@ function App() {
                 type="text"
                 onChange={emailHandler}
                 id="floating_outlined"
-                className="block px-[26px] py-[26px] xl:w-[368px] text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
+                className="block w-full px-[26px] py-[26px] xl:w-[368px] text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
                 placeholder=" "
               />
               <label
@@ -99,7 +99,7 @@ function App() {
                 type="text"
                 onChange={fullNameHandler}
                 id="floating_outlined2"
-                className="block px-[26px] py-[26px] xl:w-[368px] text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
+                className="block w-full px-[26px] py-[26px] xl:w-[368px] text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
                 placeholder=""
               />
               <label
@@ -110,17 +110,17 @@ function App() {
               </label>
             </div>
             <p className="text-red-500 mx-2">{fullNameErr}</p>
-            <div className="relative xl:w-[368px] mt-[32px]">
+            <div className="relative mt-[32px]">
               <input
                 type={passShow ? "text": "password"}
                 onChange={passwordHandler}
                 id="floating_outlined3"
-                className="block w-full px-[26px] py-[26px]  text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
+                className="block w-full px-[26px] xl:w-[368px] py-[26px]  text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
                 placeholder=" "
               />
               {
-                passShow ? <LuEye onClick={()=> setPassShow(!passShow)} className="text-2xl absolute top-1/2 -translate-y-1/2 cursor-pointer right-5 text-primary" />
- : <LuEyeClosed onClick={()=> setPassShow(!passShow)} className="text-2xl cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 text-primary" />
+                passShow ? <LuEye onClick={()=> setPassShow(!passShow)} className="text-2xl absolute top-1/2 -translate-y-1/2 cursor-pointer right-5 xl:right-[35%] text-primary" />
+ : <LuEyeClosed onClick={()=> setPassShow(!passShow)} className="text-2xl cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 xl:right-[35%] text-primary" />
               }
 
               <label
