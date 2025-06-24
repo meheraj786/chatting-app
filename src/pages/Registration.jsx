@@ -1,27 +1,29 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import Flex from "../layouts/Flex";
 import image from "../assets/registerImg.png";
 import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
-import { Link, useNavigate } from 'react-router';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification  } from "firebase/auth";
-import { ToastContainer, toast, Bounce } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { PulseLoader } from 'react-spinners';
-
-
+import { Link, useNavigate } from "react-router";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PulseLoader } from "react-spinners";
 
 const Registration = () => {
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const auth = getAuth();
-  const [loading, setLoading]= useState(false)
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [emailErr, setEmailErr] = useState("");
   const [fullNameErr, setFullNameErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
-  const [passShow, setPassShow]= useState(false)
+  const [passShow, setPassShow] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -44,78 +46,70 @@ const Registration = () => {
     if (!fullName) {
       setFullNameErr("Enter Your Full Name");
     }
-    if (!password) {
-      setPasswordErr("Enter a Password");
-    }
     if (!emailRegex.test(email)) {
       setEmailErr("Invalid email format");
     }
-    // if (!password) {
-    //   setPasswordErr("Enter a Password");
-    // }
-    // if (password.length < 8) {
-    //   setPasswordErr("Password must be at least 8 characters long.");
-    // }
-
-    // if (!/[a-z]/.test(password)) {
-    //   setPasswordErr("Password must contain at least one lowercase letter.");
-    // }
-
-    // if (!/[A-Z]/.test(password)) {
-    //   setPasswordErr("Password must contain at least one uppercase letter.");
-    // }
-
-    // if (!/\d/.test(password)) {
-    //   setPasswordErr("Password must contain at least one number.");
-    // }
-
-    // if (!/[\W_]/.test(password)) {
-    //   setPasswordErr("Password must contain at least one special character.");
-    // }
-    if(email && fullName && password){
-      setLoading(true)
-      console.log(email+fullName+password);
-      createUserWithEmailAndPassword (auth, email, password)
-      .then(() => {sendEmailVerification(auth.currentUser)
-        toast.success("Registration successful!, PLease verify your Email");
-    // const user = userCredential.user;
-    // console.log(user);
-    setTimeout(()=>{
-      navigate("/login")
-    },3000)
-    setEmail("")
-    setFullName("")
-    setPassword("")
-    setLoading(false)
-  })
-
-  .catch((error) => {
-
-    if (error.message.includes("auth/email-already-in-use")) {
-      setEmailErr("This email already exist")
+    if (!password) {
+      setPasswordErr("Enter a Password");
+    } else if (password.length < 6) {
+      setPasswordErr("Password must be at least 6 characters long.");
+    } else if (!/[a-z]/.test(password)) {
+      setPasswordErr("Password must contain at least one lowercase letter.");
+    } else if (!/[A-Z]/.test(password)) {
+      setPasswordErr("Password must contain at least one uppercase letter.");
+    } else if (!/\d/.test(password)) {
+      setPasswordErr("Password must contain at least one number.");
+    } else if (!/[\W_]/.test(password)) {
+      setPasswordErr("Password must contain at least one special character.");
     }
-    console.log("auth error: "+error);
-    
-  });
+    if (
+      email &&
+      fullName &&
+      password &&
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}$/.test(password)
+    ) {
+      setLoading(true);
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          sendEmailVerification(auth.currentUser);
+          toast.success("Registration successful!, PLease verify your Email");
+          setTimeout(() => {
+            navigate("/login");
+          }, 3000);
+          setEmail("");
+          setFullName("");
+          setPassword("");
+          setLoading(false);
+        })
+
+        .catch((error) => {
+          if (error.message.includes("auth/email-already-in-use")) {
+            setEmailErr("This email already exist");
+          }
+          if (error.message.includes("auth/weak-password")) {
+            setPasswordErr("Password ");
+          }
+          console.log("auth error: " + error);
+          setLoading(false);
+        });
     }
   };
   return (
-        <>
+    <>
       <Flex>
-            <ToastContainer
-  position="top-center"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick={false}
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-  theme="dark"
-  transition={Bounce}
-  progressStyle={{ background: "black" }}
-/>
+        <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          transition={Bounce}
+        />
         <Flex className="left flex-col mx-auto xl:mx-0 items-end justify-center  font-primary p-10 xl:p-0 xl:w-[55%] xl:pr-[169px]">
           <div>
             <h1 className="font-bold text-4xl text-secondary">
@@ -139,7 +133,7 @@ const Registration = () => {
                 Email Address
               </label>
             </div>
-            
+
             <p className="text-red-500 mx-2">{emailErr}</p>
             <div className="relative mt-[32px]">
               <input
@@ -159,16 +153,23 @@ const Registration = () => {
             <p className="text-red-500 mx-2">{fullNameErr}</p>
             <div className="relative mt-[32px]">
               <input
-                type={passShow ? "text": "password"}
+                type={passShow ? "text" : "password"}
                 onChange={passwordHandler}
                 id="floating_outlined3"
                 className="block w-full px-[26px] xl:w-[368px] py-[26px]  text-xl text-secondary font-semibold bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
                 placeholder=" "
               />
-              {
-                passShow ? <LuEye onClick={()=> setPassShow(!passShow)} className="text-2xl absolute top-1/2 -translate-y-1/2 cursor-pointer right-5 xl:right-[35%] text-primary" />
- : <LuEyeClosed onClick={()=> setPassShow(!passShow)} className="text-2xl cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 xl:right-[35%] text-primary" />
-              }
+              {passShow ? (
+                <LuEye
+                  onClick={() => setPassShow(!passShow)}
+                  className="text-2xl absolute top-1/2 -translate-y-1/2 cursor-pointer right-5 xl:right-[35%] text-primary"
+                />
+              ) : (
+                <LuEyeClosed
+                  onClick={() => setPassShow(!passShow)}
+                  className="text-2xl cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 xl:right-[35%] text-primary"
+                />
+              )}
 
               <label
                 for="floating_outlined3"
@@ -182,14 +183,13 @@ const Registration = () => {
               onClick={submitHandler}
               className="xl:w-[368px] w-full cursor-pointer py-5 bg-primary text-white font-semibold mt-[51px] mb-[35px] rounded-[86px] text-xl"
             >
-              {
-                loading ? <PulseLoader color="white"/> : "Sign Up"
-              }
-              
+              {loading ? <PulseLoader color="white" /> : "Sign Up"}
             </button>
             <p className="xl:w-[368px] font-secondary text-center text-[14px] text-primary">
               Already have an account ?{" "}
-              <Link to="/login" className="text-[#EA6C00] cursor-pointer">Sign In</Link>
+              <Link to="/login" className="text-[#EA6C00] cursor-pointer">
+                Sign In
+              </Link>
             </p>
           </div>
         </Flex>
@@ -199,7 +199,7 @@ const Registration = () => {
         </div>
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default Registration
+export default Registration;
