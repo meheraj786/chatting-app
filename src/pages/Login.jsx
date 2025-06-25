@@ -3,10 +3,20 @@ import Flex from "../layouts/Flex";
 import image from "../assets/registerImg.png";
 import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { FcGoogle } from "react-icons/fc";
+import {
+  getAuth,
+  signInWithEmailAndPassword ,
+} from "firebase/auth";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PulseLoader } from "react-spinners";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const auth = getAuth();
+    const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailErr, setEmailErr] = useState("");
@@ -23,43 +33,77 @@ const Login = () => {
     setPassword(e.target.value);
     setPasswordErr("");
   };
-  const submitHandler = () => {
-    console.log(email + password);
-    if (!email) {
-      setEmailErr("Enter Your Email");
-    }
-    if (!password) {
-      setPasswordErr("Enter a Password");
-    }
-    if (!emailRegex.test(email)) {
-      setEmailErr("Invalid email format");
-    }
-    if (!password) {
-      setPasswordErr("Enter a Password");
-    }
-    if (password.length < 8) {
-      setPasswordErr("Password must be at least 8 characters long.");
-    }
+   const submitHandler = () => {
+      if (!email) {
+        setEmailErr("Enter Your Email");
+      }
+      if (!emailRegex.test(email)) {
+        setEmailErr("Invalid email format");
+      }
+      if (!password) {
+        setPasswordErr("Enter a Password");
+      } else if (password.length < 6) {
+        setPasswordErr("Password must be at least 6 characters long.");
+      } else if (!/[a-z]/.test(password)) {
+        setPasswordErr("Password must contain at least one lowercase letter.");
+      } else if (!/[A-Z]/.test(password)) {
+        setPasswordErr("Password must contain at least one uppercase letter.");
+      } else if (!/\d/.test(password)) {
+        setPasswordErr("Password must contain at least one number.");
+      } else if (!/[\W_]/.test(password)) {
+        setPasswordErr("Password must contain at least one special character.");
+      }
+      if (
+        email &&
+        password &&
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}$/.test(password)
+      ) {
+        setLoading(true);
+        signInWithEmailAndPassword(auth, email, password)
+          .then((user) => {console.log(user.user.emailVerified);
+            if (!user.user.emailVerified) {
+              toast.error("Please Verify Your Email");
+              setLoading(false);
+            }else{
+              toast.success("Login Done");
+              setEmail("");
+              setPassword("");
+              setLoading(false);
+              setTimeout(() => {
+                navigate("/home")
+              }, 2000);
 
-    if (!/[a-z]/.test(password)) {
-      setPasswordErr("Password must contain at least one lowercase letter.");
-    }
-
-    if (!/[A-Z]/.test(password)) {
-      setPasswordErr("Password must contain at least one uppercase letter.");
-    }
-
-    if (!/\d/.test(password)) {
-      setPasswordErr("Password must contain at least one number.");
-    }
-
-    if (!/[\W_]/.test(password)) {
-      setPasswordErr("Password must contain at least one special character.");
-    }
-  };
+            }
+          })
+  
+          .catch((error) => {
+            if (error.message.includes("auth/email-already-in-use")) {
+              setEmailErr("This email already exist");
+            }
+            if (error.message.includes("auth/invalid-credential")) {
+              toast.error("Invalid Inputs");
+            }
+            console.log("auth error: " + error);
+            setLoading(false);
+          });
+      }
+    };
   return (
         <>
       <Flex>
+        <ToastContainer
+                  position="top-center"
+                  autoClose={2000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick={false}
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="dark"
+                  transition={Bounce}
+                />
         <Flex className="left flex-col mx-auto xl:mx-0 items-end justify-center  font-primary p-10 xl:p-0 xl:w-[55%] xl:pr-[250px]">
           <div>
             <h1 className="font-bold text-4xl text-secondary">
@@ -73,6 +117,7 @@ const Login = () => {
             <div className="relative mt-[32px]">
               <input
                 type="text"
+                value={email}
                 onChange={emailHandler}
                 id="floating_outlined"
                 className="block w-full px-[26px] py-[26px] xl:w-[368px] text-xl text-secondary font-semibold bg-transparent rounded-lg border-0 border-b-2 border-gray-300 appearance-none   focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
@@ -90,6 +135,7 @@ const Login = () => {
             <div className="relative mt-[32px]">
               <input
                 type={passShow ? "text": "password"}
+                value={password}
                 onChange={passwordHandler}
                 id="floating_outlined3"
                 className="block w-full px-[26px] xl:w-[368px] py-[26px]  text-xl text-secondary font-semibold bg-transparent rounded-lg border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
@@ -112,7 +158,7 @@ const Login = () => {
               onClick={submitHandler}
               className="xl:w-[368px] w-full cursor-pointer py-5 bg-primary text-white font-semibold mt-[51px] mb-[35px] rounded-[9px] text-xl"
             >
-              Login to Continue
+              {loading ? <PulseLoader color="white" /> : "Login to Continue"}
             </button>
             <p className="xl:w-[368px] font-secondary text-left text-[14px] text-primary">
               Don’t have an account ? {" "}

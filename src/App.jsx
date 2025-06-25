@@ -6,6 +6,7 @@ import {
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
+import Home from './pages/Home'
 
 
 function App() {
@@ -21,6 +22,10 @@ function App() {
   {
     path: "/forgotpassword",
     element: <ForgotPassword/>,
+  },
+  {
+    path: "/home",
+    element: <Home/>,
   },
 ]);
   
