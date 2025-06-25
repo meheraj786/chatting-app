@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import Flex from "../layouts/Flex";
 import image from "../assets/registerImg.png";
 import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import {
   getAuth,
-  signInWithEmailAndPassword ,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
 } from "firebase/auth";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,15 +18,28 @@ import { PulseLoader } from "react-spinners";
 const Login = () => {
   const navigate = useNavigate();
   const auth = getAuth();
-    const [loading, setLoading] = useState(false);
+  const provider = new GoogleAuthProvider();
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailErr, setEmailErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
-  const [passShow, setPassShow]= useState(false)
+  const [passShow, setPassShow] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  const handleGoogleLogin = () => {
+    console.log("google button clicked");
+
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log(result);
+        navigate("/home");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const emailHandler = (e) => {
     setEmail(e.target.value);
     setEmailErr("");
@@ -33,87 +48,92 @@ const Login = () => {
     setPassword(e.target.value);
     setPasswordErr("");
   };
-   const submitHandler = () => {
-      if (!email) {
-        setEmailErr("Enter Your Email");
-      }
-      if (!emailRegex.test(email)) {
-        setEmailErr("Invalid email format");
-      }
-      if (!password) {
-        setPasswordErr("Enter a Password");
-      } else if (password.length < 6) {
-        setPasswordErr("Password must be at least 6 characters long.");
-      } else if (!/[a-z]/.test(password)) {
-        setPasswordErr("Password must contain at least one lowercase letter.");
-      } else if (!/[A-Z]/.test(password)) {
-        setPasswordErr("Password must contain at least one uppercase letter.");
-      } else if (!/\d/.test(password)) {
-        setPasswordErr("Password must contain at least one number.");
-      } else if (!/[\W_]/.test(password)) {
-        setPasswordErr("Password must contain at least one special character.");
-      }
-      if (
-        email &&
-        password &&
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}$/.test(password)
-      ) {
-        setLoading(true);
-        signInWithEmailAndPassword(auth, email, password)
-          .then((user) => {console.log(user.user.emailVerified);
-            if (!user.user.emailVerified) {
-              toast.error("Please Verify Your Email");
-              setLoading(false);
-            }else{
-              toast.success("Login Done");
-              setEmail("");
-              setPassword("");
-              setLoading(false);
-              setTimeout(() => {
-                navigate("/home")
-              }, 2000);
-
-            }
-          })
-  
-          .catch((error) => {
-            if (error.message.includes("auth/email-already-in-use")) {
-              setEmailErr("This email already exist");
-            }
-            if (error.message.includes("auth/invalid-credential")) {
-              toast.error("Invalid Inputs");
-            }
-            console.log("auth error: " + error);
+  const submitHandler = () => {
+    if (!email) {
+      setEmailErr("Enter Your Email");
+    }
+    if (!emailRegex.test(email)) {
+      setEmailErr("Invalid email format");
+    }
+    if (!password) {
+      setPasswordErr("Enter a Password");
+    } else if (password.length < 6) {
+      setPasswordErr("Password must be at least 6 characters long.");
+    } else if (!/[a-z]/.test(password)) {
+      setPasswordErr("Password must contain at least one lowercase letter.");
+    } else if (!/[A-Z]/.test(password)) {
+      setPasswordErr("Password must contain at least one uppercase letter.");
+    } else if (!/\d/.test(password)) {
+      setPasswordErr("Password must contain at least one number.");
+    } else if (!/[\W_]/.test(password)) {
+      setPasswordErr("Password must contain at least one special character.");
+    }
+    if (
+      email &&
+      password &&
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}$/.test(password)
+    ) {
+      setLoading(true);
+      signInWithEmailAndPassword(auth, email, password)
+        .then((user) => {
+          console.log(user.user.emailVerified);
+          if (!user.user.emailVerified) {
+            toast.error("Please Verify Your Email");
             setLoading(false);
-          });
-      }
-    };
+          } else {
+            toast.success("Login Done");
+            setEmail("");
+            setPassword("");
+            setLoading(false);
+            setTimeout(() => {
+              navigate("/home");
+            }, 2000);
+          }
+        })
+
+        .catch((error) => {
+          if (error.message.includes("auth/email-already-in-use")) {
+            setEmailErr("This email already exist");
+          }
+          if (error.message.includes("auth/invalid-credential")) {
+            toast.error("Invalid Inputs");
+          }
+          console.log("auth error: " + error);
+          setLoading(false);
+        });
+    }
+  };
   return (
-        <>
+    <>
       <Flex>
         <ToastContainer
-                  position="top-center"
-                  autoClose={2000}
-                  hideProgressBar={false}
-                  newestOnTop={false}
-                  closeOnClick={false}
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="dark"
-                  transition={Bounce}
-                />
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          transition={Bounce}
+        />
         <Flex className="left flex-col mx-auto xl:mx-0 items-end justify-center  font-primary p-10 xl:p-0 xl:w-[55%] xl:pr-[250px]">
           <div>
             <h1 className="font-bold text-4xl text-secondary">
               Login to your account!
             </h1>
-<Flex className="google cursor-pointer gap-2 mt-[30px] items-baseline py-[23px] text-[14px] font-secondary text-secondary font-semibold justify-center w-[221px] rounded-[16px] border border-gray-300">
-  <FcGoogle className="text-xl" />
-  <p>Loging with Google</p>
+            <button onClick={handleGoogleLogin}>
+            <Flex
+              onClick={handleGoogleLogin}
+              className="google cursor-pointer gap-2 mt-[30px] items-baseline py-[23px] text-[14px] font-secondary text-secondary font-semibold justify-center w-[221px] rounded-[16px] border border-gray-300"
+            >
+              <FcGoogle className="text-xl" />
+              <p>Loging with Google</p>
+            </Flex>
 
-</Flex>
+            </button>
             <div className="relative mt-[32px]">
               <input
                 type="text"
@@ -134,17 +154,24 @@ const Login = () => {
 
             <div className="relative mt-[32px]">
               <input
-                type={passShow ? "text": "password"}
+                type={passShow ? "text" : "password"}
                 value={password}
                 onChange={passwordHandler}
                 id="floating_outlined3"
                 className="block w-full px-[26px] xl:w-[368px] py-[26px]  text-xl text-secondary font-semibold bg-transparent rounded-lg border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
                 placeholder=" "
               />
-              {
-                passShow ? <LuEye onClick={()=> setPassShow(!passShow)} className="text-2xl absolute top-1/2 -translate-y-1/2 cursor-pointer right-5 xl:right-[10%] text-primary" />
- : <LuEyeClosed onClick={()=> setPassShow(!passShow)} className="text-2xl cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 xl:right-[10%] text-primary" />
-              }
+              {passShow ? (
+                <LuEye
+                  onClick={() => setPassShow(!passShow)}
+                  className="text-2xl absolute top-1/2 -translate-y-1/2 cursor-pointer right-5 xl:right-[10%] text-primary"
+                />
+              ) : (
+                <LuEyeClosed
+                  onClick={() => setPassShow(!passShow)}
+                  className="text-2xl cursor-pointer absolute top-1/2 -translate-y-1/2 right-5 xl:right-[10%] text-primary"
+                />
+              )}
 
               <label
                 for="floating_outlined3"
@@ -161,12 +188,19 @@ const Login = () => {
               {loading ? <PulseLoader color="white" /> : "Login to Continue"}
             </button>
             <p className="xl:w-[368px] font-secondary text-left text-[14px] text-primary">
-              Don’t have an account ? {" "}
-              <Link to="/registration" className="text-[#EA6C00] cursor-pointer">Sign up</Link>
+              Don’t have an account ?{" "}
+              <Link
+                to="/registration"
+                className="text-[#EA6C00] cursor-pointer"
+              >
+                Sign up
+              </Link>
             </p>
-            <Link to="/forgotpassword" className="xl:w-[368px] font-secondary text-left text-[14px] mt-3 text-red-500">
+            <Link
+              to="/forgotpassword"
+              className="xl:w-[368px] font-secondary text-left text-[14px] mt-3 text-red-500"
+            >
               Forgot Password?
-              
             </Link>
           </div>
         </Flex>
@@ -176,7 +210,7 @@ const Login = () => {
         </div>
       </Flex>
     </>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

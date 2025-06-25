@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import Flex from "../layouts/Flex";
 import { IoArrowBack } from "react-icons/io5";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PulseLoader } from "react-spinners";
 
 const ForgotPassword = () => {
+  const navigate= useNavigate()
   const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState("");
+  const [loading, setLoading]= useState(false)
   const auth = getAuth();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const emailHandler = (e) => {
     setEmail(e.target.value);
@@ -18,20 +21,42 @@ const ForgotPassword = () => {
   };
 
   const handleForgotPass = () => {
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        // Password reset email sent!
-        // ..
-      })
-      .catch((error) => {
-        error.code;
-        error.message;
-        // ..
-      });
+    setLoading(true)
+    if (!emailRegex.test(email)) {
+        setEmailErr("Invalid email format");
+        setLoading(false)
+      }else{
+        sendPasswordResetEmail(auth, email)
+          .then(() => {
+            toast.success("Reset Password Mail Sent")
+            setTimeout(()=>{
+              navigate("/login")
+            }, 2000)
+            setLoading(false)
+          })
+          .catch((error) => {
+            console.log(error.message);
+            setLoading(false)
+          });
+
+      }
   };
 
   return (
     <div className="bg-gray-300 pt-[200px] h-screen">
+      <ToastContainer
+                  position="top-center"
+                  autoClose={2000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick={false}
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="dark"
+                  transition={Bounce}
+                />
       <Flex className="justify-center bg-white rounded-lg flex-col p-8 pt-10 w-full lg:w-1/3 mx-auto">
         <div className="relative ">
           <input
@@ -49,6 +74,9 @@ const ForgotPassword = () => {
             Email Address
           </label>
         </div>
+        <p className="xl:w-[368px] font-secondary text-left text-[14px] text-red-500">
+              {emailErr}
+            </p>
         <Flex className="w-full flex-col lg:flex-row gap-y-5 lg:gap-y-0 justify-center gap-x-5 mt-10">
           <Link
             to="/login"
@@ -61,7 +89,7 @@ const ForgotPassword = () => {
             onClick={handleForgotPass}
             className="  cursor-pointer py-5 bg-primary text-white font-semibold rounded-[9px] text-sm px-4"
           >
-            Send Reset Password Mail
+            {loading ? <PulseLoader color="white" /> : "Send Reset Password Mail"}
           </button>
         </Flex>
       </Flex>
