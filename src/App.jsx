@@ -5,6 +5,7 @@ import {
 } from "react-router";
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 
 
 function App() {
@@ -16,6 +17,10 @@ function App() {
   {
     path: "/login",
     element: <Login/>,
+  },
+  {
+    path: "/forgotpassword",
+    element: <ForgotPassword/>,
   },
 ]);
   

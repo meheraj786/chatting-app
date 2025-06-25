@@ -118,6 +118,10 @@ const Login = () => {
               Don’t have an account ? {" "}
               <Link to="/registration" className="text-[#EA6C00] cursor-pointer">Sign up</Link>
             </p>
+            <Link to="/forgotpassword" className="xl:w-[368px] font-secondary text-left text-[14px] mt-3 text-red-500">
+              Forgot Password?
+              
+            </Link>
           </div>
         </Flex>
 
