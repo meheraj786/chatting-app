@@ -10,9 +10,9 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 
 const Menubar = () => {
   return (
-    <Flex className="flex-col w-[186px] text-white h-[95vh] bg-primary mt-[35px] pt-[35px] pb-[47px] ml-[32px] rounded-[20px]">
+    <Flex className="flex-col fixed w-[186px] text-white h-[95vh] bg-primary mt-[35px] pt-[35px] pb-[47px] ml-[32px] rounded-[20px]">
       <Flex className="flex-col gap-y-[78px]">
-        <div className="avatar group relative w-[100px] h-[100px] rounded-full bg-yellow-200 cursor-pointer">
+        <div className="avatar group relative w-[100px] h-[100px] rounded-full bg-[url(assets/dp.png)] bg-cover bg-center cursor-pointer">
   <div className="absolute inset-0 bg-gray-500/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
     <FaCloudUploadAlt className="text-white text-[25px]" />
   </div>
