@@ -187,7 +187,7 @@ const Login = () => {
             >
               {loading ? <PulseLoader color="white" /> : "Login to Continue"}
             </button>
-            <p className="xl:w-[368px] font-secondary text-left text-[14px] text-primary">
+            <p className="xl:w-[368px] font-secondary mb-2 text-left text-[14px] text-primary">
               Don’t have an account ?{" "}
               <Link
                 to="/registration"
@@ -198,7 +198,7 @@ const Login = () => {
             </p>
             <Link
               to="/forgotpassword"
-              className="xl:w-[368px] font-secondary text-left text-[14px] mt-3 text-red-500"
+              className="xl:w-[368px] font-secondary text-left text-[14px] text-red-500"
             >
               Forgot Password?
             </Link>
