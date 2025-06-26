@@ -8,12 +8,12 @@ import grpImg3 from '../../assets/grpImg3.png'
 import grpImg4 from '../../assets/grpImg4.jpg'
 import grpImg5 from '../../assets/grpImg5.jpg'
 
-const FriendsList = () => {
-  const friends = [
+const MyGroups = () => {
+  const myGrp = [
     {
       img: grpImg1,
-      frndName: "Friends Reunionaaaaaaaaaaaaaaaaa",
-      lastMsg: "Hi Guys, Wassup!aaaaaaaaaaaaaaaaaaaaaaaaa",
+      frndName: "Friends Reunion",
+      lastMsg: "Hi Guys, Wassup!",
       lastTime: "Today, 2:23pm"
     },
     {
@@ -45,7 +45,7 @@ const FriendsList = () => {
   return (
     <div className='w-[30%] shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
       <Flex className="justify-between items-center mb-2">
-        <h3 className='text-[20px] font-semibold text-black'>Friends</h3>
+        <h3 className='text-[20px] font-semibold text-black'>My Groups</h3>
         <BsThreeDotsVertical />
       </Flex>
 
@@ -53,11 +53,11 @@ const FriendsList = () => {
 
       <div className='overflow-y-auto h-[70%]'>
         {
-          friends.map((friend, idx) => (
+          myGrp.map((friend, idx) => (
             <Flex key={idx} className="py-[10px] border-b-2 border-gray-300 items-center justify-between">
-              <Flex className="gap-x-[14px] w-[75%] justify-start items-center">
+              <Flex className="gap-x-[14px] w-[75%] items-center justify-start">
                 <div
-                  className="w-[52px] h-[52px] rounded-full bg-cover bg-center shrink-0"
+                  className="w-[52px] h-[52px] rounded-full bg-cover bg-center "
                   style={{ backgroundImage: `url(${friend.img})` }}
                 ></div>
 
@@ -66,7 +66,8 @@ const FriendsList = () => {
                   <p className='font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full'>{friend.lastMsg}</p>
                 </div>
               </Flex>
-              <span className='text-[10px] text-black/50  text-right'>{friend.lastTime}</span>
+
+              <span className='text-[10px] text-black/50 w-[20%] text-right truncate'>{friend.lastTime}</span>
             </Flex>
           ))
         }
@@ -75,4 +76,4 @@ const FriendsList = () => {
   );
 }
 
-export default FriendsList;
+export default MyGroups;
