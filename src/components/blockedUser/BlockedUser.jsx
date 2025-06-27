@@ -39,7 +39,7 @@ const BlockedUser = () => {
   ];
 
   return (
-    <div className='xl:w-[30%] w-fpng shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
+    <div className='xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
       <Flex className="justify-between items-center mb-2">
         <h3 className='text-[20px] font-semibold text-black'>Blocked Users</h3>
         <BsThreeDotsVertical />

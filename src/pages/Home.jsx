@@ -8,18 +8,17 @@ import FriendReq from "../components/friendReq/FriendReq";
 import MyGroups from "../components/myGroups/MyGroups";
 import BlockedUser from "../components/blockedUser/BlockedUser";
 
-
 const Home = () => {
   return (
     <>
-      <Menubar />
-      <Flex className="xl:ml-[261px] pt-[30px] flex-col xl:flex-row px-3 xl:px-0  xl:h-[95vh] gap-y-8 xl:mr-[23px]">
+      {/* <Menubar /> */}
+      <Flex className=" xl:w-[85%] pt-[30px] flex-col xl:flex-row px-3 xl:px-0 items-start  xl:h-[90vh] gap-y-8 xl:mr-[15px]">
         <GroupList />
-        <FriendsList/>
-        <UserList/>
-<FriendReq/>
-<MyGroups/>
-<BlockedUser/>
+        <FriendsList />
+        <UserList />
+        <FriendReq />
+        <MyGroups />
+        <BlockedUser />
       </Flex>
     </>
   );
