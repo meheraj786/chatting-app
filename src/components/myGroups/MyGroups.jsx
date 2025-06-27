@@ -6,7 +6,6 @@ import grpImg1 from '../../assets/grpImg1.png'
 import grpImg2 from '../../assets/grpImg2.png'
 import grpImg3 from '../../assets/grpImg3.png'
 import grpImg4 from '../../assets/grpImg4.jpg'
-import grpImg5 from '../../assets/grpImg5.jpg'
 
 const MyGroups = () => {
   const myGrp = [
@@ -32,12 +31,6 @@ const MyGroups = () => {
       img: grpImg4,
       frndName: "Office friend",
       lastMsg: "Join the meeting",
-      lastTime: "Today, 2:23pm"
-    },
-    {
-      img: grpImg5,
-      frndName: "Gaming friend",
-      lastMsg: "Let's play",
       lastTime: "Today, 2:23pm"
     },
   ];

@@ -22,7 +22,7 @@ const Menubar = () => {
 </div>
         <Flex className="flex-col gap-y-7 pl-[25px]">
         <NavLink className='xl:py-[22px] py-3 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-primary'><VscHome className='text-[46px]' />
-        <div className='absolute w-[10px] h-full xl:bg-primary bg-primary/80 backdrop-blur-2xl top-0 right-0 rounded-l-2xl'></div>
+        <div className='absolute w-[10px] h-full xl:bg-primary bg-primary/80 b top-0 right-0 rounded-l-2xl'></div>
 </NavLink>
         <NavLink className='xl:py-[22px] py-3 group hover:text-primary z-10 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-[#C3C3C3]'><AiFillMessage  className='text-[46px]' />
         <div className='absolute transition-all duration-200 group-hover:w-[10px] group-hover:rounded-l-2xl w-[100%] z-[-1] h-full xl:bg-primary bg-primary/80 backdrop-blur-2xl top-0 right-0 rounded-0'></div>
@@ -45,17 +45,20 @@ const Menubar = () => {
     <FaCloudUploadAlt className="text-white text-[25px]" />
   </div>
 </div>
-        <Flex className="flex-col gap-y-7 mb-[100px] pl-[25px]">
-        <NavLink className='xl:py-[22px] py-3 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-primary'><VscHome className='text-[46px]' />
-        <div className='absolute w-[10px] h-full xl:bg-primary bg-primary/80 backdrop-blur-2xl top-0 right-0 rounded-l-2xl'></div>
-</NavLink>
-        <NavLink className='xl:py-[22px] py-3 group hover:text-primary z-10 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-[#C3C3C3]'><AiFillMessage  className='text-[46px]' />
-        <div className='absolute transition-all duration-200 group-hover:w-[10px] group-hover:rounded-l-2xl w-[100%] z-[-1] h-full xl:bg-primary bg-primary/80 backdrop-blur-2xl top-0 right-0 rounded-0'></div>
-</NavLink>
-        <NavLink className='xl:py-[22px] py-3 group hover:text-primary z-10 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-[#C3C3C3]'><MdOutlineSettings className='text-[46px]' />
-        <div className='absolute transition-all duration-200 group-hover:w-[10px] group-hover:rounded-l-2xl w-[100%] z-[-1] h-full xl:bg-primary bg-primary/80 backdrop-blur-2xl top-0 right-0 rounded-0'></div>
-</NavLink>
-        </Flex>
+<Flex className="flex-col gap-y-7 mb-[100px] pl-[25px]">
+
+  <NavLink className='xl:py-[22px] py-3 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-primary after:content-[""] after:absolute after:w-[10px] after:h-full after:bg-primary after:top-0 after:right-0 after:rounded-l-2xl'>
+    <VscHome className='text-[46px]' />
+  </NavLink>
+
+  <NavLink className='xl:py-[22px] py-3 group hover:text-primary relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-[#C3C3C3] after:content-[""] after:absolute after:w-[10px] after:h-full after:bg-primary after:top-0 after:right-0 after:rounded-l-2xl after:opacity-0 after:transition-opacity after:duration-200 group-hover:after:opacity-100'>
+    <AiFillMessage className='text-[46px]' />
+  </NavLink>
+  
+  <NavLink className='xl:py-[22px] py-3 group hover:text-primary relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-[#C3C3C3] after:content-[""] after:absolute after:w-[10px] after:h-full after:bg-primary after:top-0 after:right-0 after:rounded-l-2xl after:opacity-0 after:transition-opacity after:duration-200 group-hover:after:opacity-100'>
+    <MdOutlineSettings className='text-[46px]' />
+  </NavLink>
+</Flex>
 
       </Flex>
       <NavLink className="xl:hidden my-10" to="/login">

@@ -3,43 +3,43 @@ import Flex from '../../layouts/Flex'
 import SearchInput from '../../layouts/SearchInput'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import Button from '../../layouts/Button'
-import grpImg1 from '../../assets/grpImg1.png'
-import grpImg2 from '../../assets/grpImg2.png'
-import grpImg3 from '../../assets/grpImg3.png'
-import grpImg4 from '../../assets/grpImg4.jpg'
-import grpImg5 from '../../assets/grpImg5.jpg'
+import userImg1 from '../../assets/user1.png'
+import userImg2 from '../../assets/user2.png'
+import userImg3 from '../../assets/user3.png'
+import userImg4 from '../../assets/user4.png'
+import userImg5 from '../../assets/user5.png'
 
 const BlockedUser = () => {
   const blockedUser = [
     {
-      img: grpImg1,
-      frndName: "Friends Reunion",
+      img: userImg1,
+      frndName: "Raghav",
       lastTime: "Today, 2:23pm"
     },
     {
-      img: grpImg2,
-      frndName: "Friends Forever",
+      img: userImg2,
+      frndName: "Swathi",
       lastTime: "Today, 2:23pm"
     },
     {
-      img: grpImg3,
-      frndName: "Crazy Cousins",
+      img: userImg3,
+      frndName: "Kiran",
       lastTime: "Today, 2:23pm"
     },
     {
-      img: grpImg4,
-      frndName: "Office friend",
+      img: userImg4,
+      frndName: "Tajeshwini C",
       lastTime: "Today, 2:23pm"
     },
     {
-      img: grpImg5,
-      frndName: "Gaming friend",
+      img: userImg5,
+      frndName: "Marvin",
       lastTime: "Today, 2:23pm"
     },
   ];
 
   return (
-    <div className='xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
+    <div className='xl:w-[30%] w-fpng shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
       <Flex className="justify-between items-center mb-2">
         <h3 className='text-[20px] font-semibold text-black'>Blocked Users</h3>
         <BsThreeDotsVertical />

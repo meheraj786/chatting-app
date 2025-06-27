@@ -2,44 +2,40 @@ import React from 'react'
 import Flex from '../../layouts/Flex'
 import SearchInput from '../../layouts/SearchInput'
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import grpImg1 from '../../assets/grpImg1.png'
-import grpImg2 from '../../assets/grpImg2.png'
-import grpImg3 from '../../assets/grpImg3.png'
-import grpImg4 from '../../assets/grpImg4.jpg'
-import grpImg5 from '../../assets/grpImg5.jpg'
+import userImg1 from '../../assets/user1.png'
+import userImg2 from '../../assets/user2.png'
+import userImg3 from '../../assets/user3.png'
+import userImg4 from '../../assets/user4.png'
 
 const FriendsList = () => {
   const friends = [
-    {
-      img: grpImg1,
-      frndName: "Friends Reunionaaaaaaaaaaaaaaaaa",
-      lastMsg: "Hi Guys, Wassup!aaaaaaaaaaaaaaaaaaaaaaaaa",
-      lastTime: "Today, 2:23pm"
-    },
-    {
-      img: grpImg2,
-      frndName: "Friends Forever",
-      lastMsg: "Good to see you",
-      lastTime: "Today, 2:23pm"
-    },
-    {
-      img: grpImg3,
-      frndName: "Crazy Cousins",
-      lastMsg: "What plans today?",
-      lastTime: "Today, 2:23pm"
-    },
-    {
-      img: grpImg4,
-      frndName: "Office friend",
-      lastMsg: "Join the meeting",
-      lastTime: "Today, 2:23pm"
-    },
-    {
-      img: grpImg5,
-      frndName: "Gaming friend",
-      lastMsg: "Let's play",
-      lastTime: "Today, 2:23pm"
-    },
+      { img: userImg1,
+   frndName: "Jessica Williams",
+   lastMsg: "Thanks for your help!",
+   lastTime: "Yesterday, 5:45pm",
+   active: false
+ },
+ {
+   img: userImg2,
+   frndName: "David Kumar",
+   lastMsg: "Let's catch up soon",
+   lastTime: "Yesterday, 3:12pm",
+   active: false
+ },
+ {
+   img: userImg3,
+   frndName: "Lisa Zhang",
+   lastMsg: "Perfect! See you then",
+   lastTime: "Tuesday, 11:30am",
+   active: true
+ },
+ {
+   img: userImg4,
+   frndName: "Ryan O'Connor",
+   lastMsg: "Great work on the project",
+   lastTime: "Monday, 4:15pm",
+   active: false
+ }
   ];
 
   return (
@@ -53,13 +49,20 @@ const FriendsList = () => {
 
       <div className='overflow-y-auto h-[70%]'>
         {
-          friends.map((friend, idx) => (
-            <Flex key={idx} className="py-[10px] border-b-2 border-gray-300 items-center justify-between">
-              <Flex className="gap-x-[14px] w-[75%] justify-start items-center">
+          friends.map((friend, i) => (
+            <Flex key={i} className="py-[10px] border-b-2 border-gray-300 items-center justify-between">
+              <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
                 <div
-                  className="w-[52px] h-[52px] rounded-full bg-cover bg-center"
+                  className="w-[52px] relative h-[52px] rounded-full bg-cover bg-center"
                   style={{ backgroundImage: `url(${friend.img})` }}
-                ></div>
+                  
+                >
+                  {
+                friend.active && (<span className="w-3 h-3 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]">
+                
+                </span>)
+              }
+                </div>
 
                 <div className="w-[60%]">
                   <h3 className='text-[14px] font-semibold text-black truncate w-full'>{friend.frndName}</h3>
@@ -67,6 +70,7 @@ const FriendsList = () => {
                 </div>
               </Flex>
               <span className='text-[10px] text-black/50  text-right'>{friend.lastTime}</span>
+              
             </Flex>
           ))
         }

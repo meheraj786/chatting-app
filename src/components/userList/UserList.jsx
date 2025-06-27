@@ -3,36 +3,36 @@ import Flex from '../../layouts/Flex'
 import SearchInput from '../../layouts/SearchInput'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import Button from '../../layouts/Button'
-import grpImg1 from '../../assets/grpImg1.png'
-import grpImg2 from '../../assets/grpImg2.png'
-import grpImg3 from '../../assets/grpImg3.png'
-import grpImg4 from '../../assets/grpImg4.jpg'
-import grpImg5 from '../../assets/grpImg5.jpg'
+import userImg1 from '../../assets/user1.png'
+import userImg2 from '../../assets/user2.png'
+import userImg3 from '../../assets/user3.png'
+import userImg4 from '../../assets/user4.png'
+import userImg5 from '../../assets/user5.png'
 
 const UserList = () => {
   const friends = [
     {
-      img: grpImg1,
+      img: userImg1,
       frndName: "Friends Reunion",
       lastTime: "Today, 2:23pm"
     },
     {
-      img: grpImg2,
+      img: userImg2,
       frndName: "Friends Forever",
       lastTime: "Today, 2:23pm"
     },
     {
-      img: grpImg3,
+      img: userImg3,
       frndName: "Crazy Cousins",
       lastTime: "Today, 2:23pm"
     },
     {
-      img: grpImg4,
+      img: userImg4,
       frndName: "Office friend",
       lastTime: "Today, 2:23pm"
     },
     {
-      img: grpImg5,
+      img: userImg5,
       frndName: "Gaming friend",
       lastTime: "Today, 2:23pm"
     },
