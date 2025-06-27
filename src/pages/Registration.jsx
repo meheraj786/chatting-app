@@ -42,12 +42,11 @@ const Registration = () => {
   const submitHandler = () => {
     if (!email) {
       setEmailErr("Enter Your Email");
+    }else if (!emailRegex.test(email)) {
+      setEmailErr("Invalid email format");
     }
     if (!fullName) {
       setFullNameErr("Enter Your Full Name");
-    }
-    if (!emailRegex.test(email)) {
-      setEmailErr("Invalid email format");
     }
     if (!password) {
       setPasswordErr("Enter a Password");
@@ -71,23 +70,25 @@ const Registration = () => {
       setLoading(true);
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
-          sendEmailVerification(auth.currentUser);
+      sendEmailVerification(auth.currentUser);
           toast.success("Registration successful!, PLease verify your Email");
           setTimeout(() => {
             navigate("/login");
-          }, 3000);
+          }, 2000);
           setEmail("");
           setFullName("");
           setPassword("");
           setLoading(false);
         })
-
         .catch((error) => {
           if (error.message.includes("auth/email-already-in-use")) {
             setEmailErr("This email already exist");
           }
-          if (error.message.includes("auth/weak-password")) {
-            setPasswordErr("Password ");
+          if (error.message.includes("auth/invalid-email")) {
+            setEmailErr("Please Enter a valid Email");
+          }
+          if (error.message.includes("uth/weak-passworda")) {
+            setPasswordErr("Password is too weak");
           }
           console.log("auth error: " + error);
           setLoading(false);

@@ -1,82 +1,86 @@
-import React from 'react'
-import Flex from '../../layouts/Flex'
-import SearchInput from '../../layouts/SearchInput'
-import { BsThreeDotsVertical } from 'react-icons/bs'
-import userImg1 from '../../assets/user1.png'
-import userImg2 from '../../assets/user2.png'
-import userImg3 from '../../assets/user3.png'
-import userImg4 from '../../assets/user4.png'
+import React from "react";
+import Flex from "../../layouts/Flex";
+import SearchInput from "../../layouts/SearchInput";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import userImg1 from "../../assets/user1.png";
+import userImg2 from "../../assets/user2.png";
+import userImg3 from "../../assets/user3.png";
+import userImg4 from "../../assets/user4.png";
 
 const FriendsList = () => {
   const friends = [
-      { img: userImg1,
-   frndName: "Jessica Williams",
-   lastMsg: "Thanks for your help!",
-   lastTime: "Yesterday, 5:45pm",
-   active: false
- },
- {
-   img: userImg2,
-   frndName: "David Kumar",
-   lastMsg: "Let's catch up soon",
-   lastTime: "Yesterday, 3:12pm",
-   active: false
- },
- {
-   img: userImg3,
-   frndName: "Lisa Zhang",
-   lastMsg: "Perfect! See you then",
-   lastTime: "Tuesday, 11:30am",
-   active: true
- },
- {
-   img: userImg4,
-   frndName: "Ryan O'Connor",
-   lastMsg: "Great work on the project",
-   lastTime: "Monday, 4:15pm",
-   active: false
- }
+    {
+      img: userImg1,
+      frndName: "Jessica Williams",
+      lastMsg: "Thanks for your help!",
+      lastTime: "Yesterday, 5:45pm",
+      active: false,
+    },
+    {
+      img: userImg2,
+      frndName: "David Kumar",
+      lastMsg: "Let's catch up soon",
+      lastTime: "Yesterday, 3:12pm",
+      active: true,
+    },
+    {
+      img: userImg3,
+      frndName: "Lisa Zhang",
+      lastMsg: "Perfect! See you then",
+      lastTime: "Tuesday, 11:30am",
+      active: true,
+    },
+    {
+      img: userImg4,
+      frndName: "Ryan O'Connor",
+      lastMsg: "Great work on the project",
+      lastTime: "Monday, 4:15pm",
+      active: false,
+    },
   ];
 
   return (
-    <div className='xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
+    <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
       <Flex className="justify-between items-center mb-2">
-        <h3 className='text-[20px] font-semibold text-black'>Friends</h3>
+        <h3 className="text-[20px] font-semibold text-black">Friends</h3>
         <BsThreeDotsVertical />
       </Flex>
 
       <SearchInput />
 
-      <div className='overflow-y-auto h-[70%]'>
-        {
-          friends.map((friend, i) => (
-            <Flex key={i} className="py-[10px] border-b-2 border-gray-300 items-center justify-between">
-              <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
-                <div
-                  className="w-[52px] relative h-[52px] rounded-full bg-cover bg-center"
-                  style={{ backgroundImage: `url(${friend.img})` }}
-                  
-                >
-                  {
-                friend.active && (<span className="w-3 h-3 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]">
-                
-                </span>)
-              }
-                </div>
+      <div className="overflow-y-auto h-[70%]">
+        {friends.map((friend, i) => (
+          <Flex
+            key={i}
+            className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
+          >
+            <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
+              <div
+                className="w-[52px] relative h-[52px] rounded-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${friend.img})` }}
+              >
+                {friend.active && (
+                  <span className="w-4 h-4 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]"></span>
+                )}
+              </div>
 
-                <div className="w-[60%]">
-                  <h3 className='text-[14px] font-semibold text-black truncate w-full'>{friend.frndName}</h3>
-                  <p className='font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full'>{friend.lastMsg}</p>
-                </div>
-              </Flex>
-              <span className='text-[10px] text-black/50  text-right'>{friend.lastTime}</span>
-              
+              <div className="w-[60%]">
+                <h3 className="text-[14px] font-semibold text-black truncate w-full">
+                  {friend.frndName}
+                </h3>
+                <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
+                  {friend.lastMsg}
+                </p>
+              </div>
             </Flex>
-          ))
-        }
+            <span className="text-[10px] text-black/50  text-right">
+              {friend.lastTime}
+            </span>
+          </Flex>
+        ))}
       </div>
     </div>
   );
-}
+};
 
 export default FriendsList;
