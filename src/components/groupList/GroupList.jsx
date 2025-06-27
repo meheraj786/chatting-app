@@ -39,14 +39,13 @@ const GroupList = () => {
   ];
 
   return (
-    <div className='w-[36%] shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
+    <div className='xl:w-[36%] shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
       <Flex className="justify-between items-center mb-2">
         <h3 className='text-[20px] font-semibold text-black'>Group List</h3>
         <BsThreeDotsVertical />
       </Flex>
 
       <SearchInput />
-
       <div className='overflow-y-auto h-[70%]'>
         {
           groups.map((group, idx) => (

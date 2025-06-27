@@ -43,7 +43,7 @@ const FriendsList = () => {
   ];
 
   return (
-    <div className='w-[30%] shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
+    <div className='xl:w-[30%] shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
       <Flex className="justify-between items-center mb-2">
         <h3 className='text-[20px] font-semibold text-black'>Friends</h3>
         <BsThreeDotsVertical />
@@ -57,7 +57,7 @@ const FriendsList = () => {
             <Flex key={idx} className="py-[10px] border-b-2 border-gray-300 items-center justify-between">
               <Flex className="gap-x-[14px] w-[75%] justify-start items-center">
                 <div
-                  className="w-[52px] h-[52px] rounded-full bg-cover bg-center shrink-0"
+                  className="w-[52px] h-[52px] rounded-full bg-cover bg-center"
                   style={{ backgroundImage: `url(${friend.img})` }}
                 ></div>
 

@@ -39,7 +39,7 @@ const FriendReq = () => {
   ]
 
   return (
-    <div className='w-[36%] h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px] '>
+    <div className='xl:w-[36%] w-full h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px] '>
       <Flex className="">
         <h3 className='text-[20px] font-semibold text-black'>Friend Request</h3>
         <BsThreeDotsVertical/>
