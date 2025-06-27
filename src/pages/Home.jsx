@@ -13,7 +13,7 @@ const Home = () => {
   return (
     <>
       <Menubar />
-      <Flex className="xl:ml-[261px] pt-[30px] flex-col xl:flex-row  xl:h-[95vh] gap-y-8 xl:mr-[23px]">
+      <Flex className="xl:ml-[261px] pt-[30px] flex-col xl:flex-row px-3 xl:px-0  xl:h-[95vh] gap-y-8 xl:mr-[23px]">
         <GroupList />
         <FriendsList/>
         <UserList/>
