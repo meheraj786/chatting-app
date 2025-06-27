@@ -46,6 +46,21 @@ const Chat = () => {
             sender: "self",
             lastTime: "Yesterday, 3:12pm",
           },
+          {
+            message: "Sure!",
+            sender: "self",
+            lastTime: "Yesterday, 3:12pm",
+          },
+          {
+            message: "Sure!",
+            sender: "self",
+            lastTime: "Yesterday, 3:12pm",
+          },
+          {
+            message: "Sure!",
+            sender: "self",
+            lastTime: "Yesterday, 3:12pm",
+          },
         ]
       },
       {
@@ -116,7 +131,7 @@ const Chat = () => {
     </div>
 
       </div>
-      <div className="convo shadow-shadow rounded-[20px] xl:w-[62%] border overflow-y-auto h-[93vh]">
+      <div className="convo shadow-shadow rounded-[20px] xl:w-[62%] border h-[93vh]">
         {
           friends.slice(0,1).map((friend,i)=>(
         <Flex className="details w-full h-[15%] border">
@@ -153,23 +168,21 @@ const Chat = () => {
 
           ))
         }
-        <Flex className="h-[70%] py-10 px-10 flex-col border justify-end gap-y-[25px]">
+<Flex className="h-[70%] overflow-y-auto relative py-10 px-10 flex-col border justify-end gap-y-[25px]">
   {
     friends.slice(0, 1).map((friend) =>
       friend.message.map((msg, index) => (
         msg.sender === "friend" ? (
-          <Flex key={index} className='self-start flex-col gap-y-3 items-start'>
-            <span className='bg-gray-300  text-black px-[28px] py-[17px] rounded-xl'>
-            {msg.message}
-
+          <Flex key={index} className='self-start flex-col gap-y-3 max-w-full items-start'>
+            <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300  after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
+              {msg.message}
             </span>
             <span className="text-[12px] text-black/25 font-medium">{msg.lastTime}</span>
           </Flex>
         ) : (
-          <Flex key={index} className='self-end  flex-col items-end gap-y-3 '>
-            <span className='text-white bg-black px-[28px] py-[17px] rounded-xl'>
-            {msg.message}
-
+          <Flex key={index} className='self-end flex-col max-w-full items-end gap-y-3 '>
+            <span className='text-white bg-primary px-[28px] py-[17px]  break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary  after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
+              {msg.message}
             </span>
             <span className="text-[12px] text-black/25 font-medium">{msg.lastTime}</span>
           </Flex>
@@ -178,6 +191,7 @@ const Chat = () => {
     )
   }
 </Flex>
+
 
         <Flex className="messageBox border h-[15%]">
 
