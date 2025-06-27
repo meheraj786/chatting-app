@@ -43,12 +43,12 @@ const FriendReq = () => {
       <div className="overflow-y-auto h-[70%]">
         {friendReq.map((group) => (
           <Flex className="py-[13px] border-b-2 border-gray-300 items-center justify-between">
-            <Flex className="gap-x-[14px] w-[70%] justify-start">
+            <Flex className="gap-x-[14px] w-[60%] justify-start">
               <div
                 className="avatar w-[70px] h-[70px] rounded-full bg-cover bg-center"
                 style={{ backgroundImage: `url(${group.img})` }}
               ></div>
-              <div className="w-[60%]">
+              <div className="w-[55%]">
                 <h3 className="text-[20px] truncate font-semibold text-black w-full">
                   {group.userName}
                 </h3>
