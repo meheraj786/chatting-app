@@ -71,7 +71,7 @@ const Chat = () => {
       },
     ];
   return (
-    <Flex className="mt-[32px] items-start xl:w-[80%] border">
+    <Flex className="mt-[32px] font-poppins items-start xl:w-[80%] border">
       <div>
       <SearchInput className="xl:w-[447px]" />
 <div className="xl:w-[447px] w-full shadow-shadow max-h-[85vh] overflow-y-auto rounded-[20px] px-[20px] font-poppins py-[20px]">
@@ -116,7 +116,7 @@ const Chat = () => {
     </div>
 
       </div>
-      <div className="convo shadow-shadow rounded-[20px] xl:w-[62%] border h-[93vh]">
+      <div className="convo shadow-shadow rounded-[20px] xl:w-[62%] border overflow-y-auto h-[93vh]">
         {
           friends.slice(0,1).map((friend,i)=>(
         <Flex className="details w-full h-[15%] border">
@@ -153,12 +153,32 @@ const Chat = () => {
 
           ))
         }
-        <Flex className="h-[70%] border">
-          {
-            
-          }
+        <Flex className="h-[70%] py-10 px-10 flex-col border justify-end gap-y-[25px]">
+  {
+    friends.slice(0, 1).map((friend) =>
+      friend.message.map((msg, index) => (
+        msg.sender === "friend" ? (
+          <Flex key={index} className='self-start flex-col gap-y-3 items-start'>
+            <span className='bg-gray-300  text-black px-[28px] py-[17px] rounded-xl'>
+            {msg.message}
 
-        </Flex>
+            </span>
+            <span className="text-[12px] text-black/25 font-medium">{msg.lastTime}</span>
+          </Flex>
+        ) : (
+          <Flex key={index} className='self-end  flex-col items-end gap-y-3 '>
+            <span className='text-white bg-black px-[28px] py-[17px] rounded-xl'>
+            {msg.message}
+
+            </span>
+            <span className="text-[12px] text-black/25 font-medium">{msg.lastTime}</span>
+          </Flex>
+        )
+      ))
+    )
+  }
+</Flex>
+
         <Flex className="messageBox border h-[15%]">
 
         </Flex>
