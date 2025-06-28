@@ -11,7 +11,7 @@ const Conversation = ({friends}) => {
           <div className="convo mt-10 xl:mt-0 shadow-shadow rounded-[20px] xl:w-[62%]  h-[93vh]">
         {
           
-          friends.slice(0,1).map((friend,i)=>(
+          friends.map((friend,i)=>(
             <>
         <Flex className="details w-full h-[15%]">
 <Flex

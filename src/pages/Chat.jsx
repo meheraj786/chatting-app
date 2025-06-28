@@ -107,6 +107,7 @@ const Chat = () => {
         active: false,
       },
     ];
+    const convoFriend= friends.slice(0,1)
   return (
     <Flex className="mt-[32px] font-poppins items-start xl:w-[80%]">
       <div className='mx-auto xl:mx-0'>
@@ -154,7 +155,7 @@ const Chat = () => {
 
       </div>
 
-<Conversation friends={friends}/>
+<Conversation friends={convoFriend}/>
     </Flex>
   )
 }
