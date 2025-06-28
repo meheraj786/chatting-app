@@ -27,7 +27,7 @@ function App() {
       element: <Menubar />,
       children: [
         {
-          path: "home",
+          index: true, 
           element: <Home />,
         },
         {
