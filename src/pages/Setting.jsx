@@ -11,10 +11,10 @@ import { HiTrash } from 'react-icons/hi';
 
 const Setting = () => {
   return (
-    <div className='xl:w-[82%] font-poppins h-screen rounded-[20px] pt-[30px] border'>
+    <div className='xl:w-[82%] w-full font-poppins h-screen rounded-[20px] pt-[30px]'>
       <SearchInput className="mb-[36px]"/>
       <Flex className="gap-x-[36px]">
-        <div className="profile p-[26px] w-[48%] h-[85vh] rounded-[20px] shadow-shadow">
+        <div className="profile p-[26px] w-full xl:w-[48%] xl:h-[85vh] rounded-[20px] shadow-shadow">
           <h3 className='text-[20px] text-black font-semibold'>Profile Settings</h3>
           <div className="data">
                     <Flex className="details w-full h-[15%]">
@@ -30,7 +30,7 @@ const Setting = () => {
                             
                           </div>
             
-                          <div className="w-[70%]">
+                          <div className="xl:w-[70%]">
                             <h3 className="text-[25px] font-semibold text-black truncate w-full">
                               Meheraj Hosen
                             </h3>
@@ -39,7 +39,7 @@ const Setting = () => {
                           </div>
                         </Flex>
                       </Flex>
-                      <div className="options px-[84px] mt-[43px]">
+                      <div className="options xl:px-[84px] px-10 mt-[43px]">
     <Flex className="justify-start text-[20px] gap-x-[37px]"> <span className='text-[25px]'><RiEdit2Fill />
 </span> Edit Profile Name</Flex>
     <Flex className="justify-start text-[20px] my-[37px] gap-x-[37px]"> <span className='text-[25px]'><TbMessageCircleFilled />
@@ -53,9 +53,9 @@ const Setting = () => {
           </div>
           
         </div>
-        <div className="account p-[26px] w-[48%] h-[85vh] rounded-[20px] shadow-shadow">
+        <div className="account p-[26px] w-full xl:w-[48%] xl:h-[85vh] rounded-[20px] shadow-shadow">
 <h3 className='text-[20px] text-black font-semibold'>Account Settings</h3>
-<div className="options px-[84px] mt-[43px]">
+<div className="options xl:px-[84px] px-10 mt-[43px]">
     <Flex className="justify-start text-[20px] gap-x-[37px]"> <span className='text-[25px]'><FaKey />
 </span> Change Password</Flex>
     <Flex className="justify-start text-[20px] my-[37px] gap-x-[37px]"> <span className='text-[25px]'><HiTrash />
