@@ -213,7 +213,7 @@ const Chat = () => {
 
 <hr className='text-gray-300 w-[90%] mx-auto' />
         <Flex className="messageBox gap-x-[20px] px-10 h-[10%] w-full ">
-          <div className="messageInput relative w-[85% xl:w-[90%]">
+          <div className="messageInput relative w-[85%] xl:w-[90%]">
             <input type="text" className=' bg-[#F1F1F1] p-[15px] rounded-[10px] w-full' />
             <MdEmojiEmotions className='absolute top-1/2 text-black/50 right-[48px] text-[20px] -translate-y-1/2' />
 
