@@ -70,7 +70,7 @@ const Menubar = () => {
                   className={({isActive})=> isActive ? "xl:py-[22px] py-3 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-primary" : "xl:py-[22px] py-3 group hover:text-primary z-10 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-none hover:bg-white text-[#C3C3C3]"}
                 >
                   <AiFillMessage className="text-[46px]" />
-                   <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80 b top-0 right-0 rounded-l-2xl"></div>
+                  <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80 b top-0 right-0 rounded-l-2xl"></div>
                 </NavLink>
 
                 <NavLink

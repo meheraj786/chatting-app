@@ -48,8 +48,8 @@ const GroupList = () => {
       <SearchInput />
       <div className='overflow-y-auto h-[70%]'>
         {
-          groups.map((group, idx) => (
-            <Flex key={idx} className="py-[13px] border-b-2 border-gray-300 items-center justify-between">
+          groups.map((group, i) => (
+            <Flex key={i} className="py-[13px] border-b-2 border-gray-300 items-center justify-between">
               <Flex className="gap-x-[14px] w-[70%] items-center justify-start">
                 <div
                   className="w-[70px] h-[70px] rounded-full bg-cover bg-center shrink-0"

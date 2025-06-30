@@ -44,18 +44,18 @@ const Conversation = ({friends}) => {
             </span>
           </Flex>
         </Flex>
-<div className="h-[75%] overflow-y-auto relative py-10 px-10">
+<div  className="h-[75%] overflow-y-auto relative py-10 px-10">
   {
       friend.message.map((msg, index) => (
         msg.sender === "friend" ? (
-          <Flex key={index} className='self-start flex-col gap-y-3 mb-5 max-w-full items-start'>
+          <Flex key={index} className=' flex-col gap-y-3 mb-5 max-w-full items-start'>
             <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300  after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
               {msg.message}
             </span>
             <span className="text-[12px] text-black/25 font-medium">{msg.lastTime}</span>
           </Flex>
         ) : (
-          <Flex key={index} className='self-end flex-col mb-5 max-w-full items-end gap-y-3 '>
+          <Flex key={index} className=' flex-col mb-5 max-w-full items-end gap-y-3 '>
             <span className='text-white bg-primary px-[28px] py-[17px]  break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary  after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
               {msg.message}
             </span>
