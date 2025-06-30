@@ -44,6 +44,7 @@ const Login = () => {
   const emailHandler = (e) => {
     setEmail(e.target.value);
     setEmailErr("");
+    
   };
   const passwordHandler = (e) => {
     setPassword(e.target.value);
