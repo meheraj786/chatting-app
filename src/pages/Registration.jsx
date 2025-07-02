@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Flex from "../layouts/Flex";
 import image from "../assets/registerImg.png";
 import { LuEyeClosed } from "react-icons/lu";
@@ -12,6 +12,7 @@ import {
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PulseLoader } from "react-spinners";
+import { useSelector } from "react-redux";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -24,6 +25,12 @@ const Registration = () => {
   const [fullNameErr, setFullNameErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
   const [passShow, setPassShow] = useState(false);
+  const user = localStorage.getItem("userInfo")
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  },[]);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

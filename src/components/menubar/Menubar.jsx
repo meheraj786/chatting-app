@@ -10,7 +10,7 @@ import { IoMenu } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import welcomeImg from "../../assets/welcomeImg.png";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HashLoader } from "react-spinners";
 import { ImExit } from "react-icons/im";
 import { signOut } from "firebase/auth";
@@ -37,14 +37,16 @@ const Menubar = () => {
       setLoading(false);
     }
   });
-  const singOuthandler = () => {
-    const auth = getAuth();
+  const signoutHandler = () => {
+    setLoading(true);
     signOut(auth)
       .then(() => {
         localStorage.removeItem("userInfo");
+          navigate("/registration")
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
 
@@ -102,12 +104,12 @@ const Menubar = () => {
                 </NavLink>
               </Flex>
             </Flex>
-            <NavLink className="hidden xl:block" to="/login">
+            <div className="hidden cursor-pointer xl:block" >
               <ImExit
-                onClick={singOuthandler}
+                onClick={signoutHandler}
                 className="text-[46px] hover:text-[#C3C3C3]"
               />
-            </NavLink>
+            </div>
             {show && (
               <>
                 <Flex className="flex-col  xl:hidden gap-y-[78px]">
@@ -154,9 +156,9 @@ const Menubar = () => {
                     </NavLink>
                   </Flex>
                 </Flex>
-                <NavLink className="xl:hidden my-10" to="/login">
-                  <GrLogout className="text-[46px] hover:text-[#C3C3C3]" />
-                </NavLink>
+                <div className="xl:hidden cursor-pointer my-10">
+                  <ImExit onClick={signoutHandler} className="text-[46px] hover:text-[#C3C3C3]" />
+                </div>
               </>
             )}
             {show ? (
