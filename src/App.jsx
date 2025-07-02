@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Chat from "./pages/Chat";
 import Setting from "./pages/Setting";
 import Menubar from "./components/menubar/Menubar";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
 function App() {
   const router = createBrowserRouter([
@@ -44,7 +46,9 @@ function App() {
 
   return (
     <>
+    <Provider store={store}>
       <RouterProvider router={router} />
+    </Provider>
     </>
   );
 }
