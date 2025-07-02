@@ -87,7 +87,7 @@ const Registration = () => {
           if (error.message.includes("auth/invalid-email")) {
             setEmailErr("Please Enter a valid Email");
           }
-          if (error.message.includes("uth/weak-passworda")) {
+          if (error.message.includes("uth/weak-password")) {
             setPasswordErr("Password is too weak");
           }
           console.log("auth error: " + error);
