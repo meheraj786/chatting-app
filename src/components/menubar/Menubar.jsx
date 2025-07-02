@@ -8,12 +8,16 @@ import { GrLogout } from "react-icons/gr";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
+import { MdMarkEmailUnread } from "react-icons/md";
+import welcomeImg from '../../assets/welcomeImg.png'
 
 const Menubar = () => {
   const [show, setShow] = useState(false);
+  const [verify, setVerify]= useState(false)
   return (
     <>
-    <Flex className="xl:justify-start justify-center items-start gap-x-7">
+    {
+      verify ?  <Flex className="xl:justify-start justify-center items-start gap-x-7">
       <Flex className="flex-col fixed xl:static left-[10px] justify-end xl:justify-between  xl:w-[186px] z-[9999] bottom-10 xl:top-0 text-white xl:h-[95vh] xl:bg-primary bg-primary/80 backdrop-blur-lg mt-[35px] py-[30px]  xl:pt-[35px] xl:pb-[47px] ml-[32px] rounded-[20px]">
         <Flex className="flex-col hidden xl:flex gap-y-[78px]">
           <div className="avatar group relative w-[100px] h-[100px] rounded-full bg-[url(assets/dp.png)] bg-cover bg-center cursor-pointer">
@@ -101,7 +105,12 @@ const Menubar = () => {
       </Flex>
 
       <Outlet />
+    </Flex> : <Flex className="justify-center flex-col h-screen">
+      <img className="w-auto" src={welcomeImg} alt="" />
+      <p className="text-2xl font-bold mt-5">Please Verify Your Email...</p>
+
     </Flex>
+    }
     </>
   );
 };
