@@ -12,12 +12,14 @@ import { MdMarkEmailUnread } from "react-icons/md";
 import welcomeImg from '../../assets/welcomeImg.png'
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useSelector } from "react-redux";
+import { BarLoader, HashLoader } from "react-spinners";
 
 const Menubar = () => {
   const auth = getAuth();
   const navigate= useNavigate()
   const [show, setShow] = useState(false);
-  const [verify, setVerify]= useState(false)
+  const [verify, setVerify]= useState(false);
+  const [loading, setLoading]=useState(true)
   const user= useSelector((state)=>state.userInfo.value)
 
   useEffect(() => {
@@ -26,10 +28,22 @@ const Menubar = () => {
     }
   }, [])
   
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    if (user.emailVerified) {
+      setVerify(true)
+    }
+    setLoading(false)
+  }
+});
 
+  if (loading) {
+    return (
+      <Flex className="justify-center h-screen">
+        <HashLoader size={100} />
+      </Flex>
+  )
 
-  if (!user) {
-    return null
   }
   return (
     <>
