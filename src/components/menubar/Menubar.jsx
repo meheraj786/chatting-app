@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Flex from "../../layouts/Flex";
-import { Link, NavLink, Outlet } from "react-router";
+import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import { VscHome } from "react-icons/vsc";
 import { AiFillMessage } from "react-icons/ai";
 import { MdOutlineSettings } from "react-icons/md";
@@ -10,10 +10,27 @@ import { IoMenu } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { MdMarkEmailUnread } from "react-icons/md";
 import welcomeImg from '../../assets/welcomeImg.png'
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useSelector } from "react-redux";
 
 const Menubar = () => {
+  const auth = getAuth();
+  const navigate= useNavigate()
   const [show, setShow] = useState(false);
   const [verify, setVerify]= useState(false)
+  const user= useSelector((state)=>state.userInfo.value)
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/registration")
+    }
+  }, [])
+  
+
+
+  if (!user) {
+    return null
+  }
   return (
     <>
     {
@@ -108,7 +125,6 @@ const Menubar = () => {
     </Flex> : <Flex className="justify-center flex-col h-screen">
       <img className="w-auto" src={welcomeImg} alt="" />
       <p className="text-2xl font-bold mt-5">Please Verify Your Email...</p>
-
     </Flex>
     }
     </>

@@ -14,8 +14,11 @@ import {
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PulseLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
+import { userInfo } from "../features/user/userSlice";
 
 const Login = () => {
+  const dispatch= useDispatch()
   const navigate = useNavigate();
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
@@ -79,18 +82,15 @@ const Login = () => {
       signInWithEmailAndPassword(auth, email, password)
         .then((user) => {
           console.log(user.user.emailVerified);
-          if (!user.user.emailVerified) {
-            toast.error("Please Verify Your Email");
-            setLoading(false);
-          } else {
             toast.success("Login Done");
             setEmail("");
             setPassword("");
             setLoading(false);
+            dispatch(userInfo(user.user))
+            localStorage.setItem("userInfo", JSON.stringify(user.user))
             setTimeout(() => {
-              navigate("/home");
+              navigate("/");
             }, 2000);
-          }
         })
 
         .catch((error) => {
