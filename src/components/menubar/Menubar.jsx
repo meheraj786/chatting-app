@@ -10,7 +10,7 @@ import { IoMenu } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import welcomeImg from "../../assets/welcomeImg.png";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { HashLoader } from "react-spinners";
 import { ImExit } from "react-icons/im";
 import { signOut } from "firebase/auth";
@@ -70,28 +70,6 @@ const Menubar = () => {
                 </div>
               </div>
               <Flex className="flex-col w-full gap-y-7 ">
-                {/* <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "xl:py-[22px] py-3 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-primary"
-                      : "xl:py-[22px] py-3 group hover:text-primary z-10 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-primary hover:bg-white text-[#C3C3C3]"
-                  }
-                >
-                  <VscHome className="text-[46px]" />
-                  <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80 b top-0 right-0 rounded-l-2xl"></div>
-                </NavLink> */}
-                                {/* <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "xl:py-[22px] py-3 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-primary"
-                      : "xl:py-[22px] py-3 group hover:text-primary z-10 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-primary hover:bg-white text-[#C3C3C3]"
-                  }
-                >
-                  <VscHome className="text-[46px]" />
-                  <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80 b top-0 right-0 rounded-l-2xl"></div>
-                </NavLink> */}
                 <NavLink to="/" className={({isActive})=>isActive ? "relative navItem bg-primary text-primary  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-[10px] before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
                 :
                 "relative navItem bg-primary text-white  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-full before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "}>

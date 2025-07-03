@@ -12,7 +12,6 @@ import {
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PulseLoader } from "react-spinners";
-import { useSelector } from "react-redux";
 
 const Registration = () => {
   const navigate = useNavigate();

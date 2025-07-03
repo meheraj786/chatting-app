@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Flex from "../layouts/Flex";
-import image from "../assets/registerImg.png";
+import image from "../assets/loginImg.png";
 import { LuEyeClosed } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
 import { Link, useNavigate } from "react-router";
@@ -14,7 +14,7 @@ import {
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PulseLoader } from "react-spinners";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { userInfo } from "../features/user/userSlice";
 
 const Login = () => {
