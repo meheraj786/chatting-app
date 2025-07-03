@@ -61,15 +61,16 @@ const Menubar = () => {
     <>
       {verify ? (
         <Flex className="xl:justify-start justify-center items-start gap-x-7">
-          <Flex className="flex-col fixed xl:static left-[10px] justify-end xl:justify-between  xl:w-[186px] z-[9999] bottom-10 xl:top-0 text-white xl:h-[95vh] xl:bg-primary bg-primary/80 backdrop-blur-lg mt-[35px] py-[30px]  xl:pt-[35px] xl:pb-[47px] ml-[32px] rounded-[20px]">
-            <Flex className="flex-col hidden xl:flex gap-y-[78px]">
+
+          <Flex className="flex-col fixed xl:static left-[10px] justify-end xl:justify-between  xl:w-[186px] z-[9999] bottom-10 xl:top-0 text-white xl:h-[95vh] xl:bg-primary bg-primary/80 backdrop-blur-lg mt-[35px] py-[30px]  xl:pt-[35px] w-full  xl:pb-[47px] ml-[32px] rounded-[20px]">
+            <Flex className="flex-col w-full hidden xl:flex gap-y-[78px]">
               <div className="avatar group relative w-[100px] h-[100px] rounded-full bg-[url(assets/dp.png)] bg-cover bg-center cursor-pointer">
                 <div className="absolute top-1/2 left-1/2 bg-gray-500/40 rounded-full  flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <FaCloudUploadAlt className="text-white absolute text-[25px]" />
                 </div>
               </div>
-              <Flex className="flex-col gap-y-7 pl-[25px]">
-                <NavLink
+              <Flex className="flex-col w-full gap-y-7 ">
+                {/* <NavLink
                   to="/"
                   className={({ isActive }) =>
                     isActive
@@ -79,28 +80,42 @@ const Menubar = () => {
                 >
                   <VscHome className="text-[46px]" />
                   <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80 b top-0 right-0 rounded-l-2xl"></div>
-                </NavLink>
-                <NavLink
-                  to="/chat"
+                </NavLink> */}
+                                {/* <NavLink
+                  to="/"
                   className={({ isActive }) =>
                     isActive
                       ? "xl:py-[22px] py-3 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-white text-primary"
                       : "xl:py-[22px] py-3 group hover:text-primary z-10 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-primary hover:bg-white text-[#C3C3C3]"
                   }
                 >
-                  <AiFillMessage className="text-[46px]" />
+                  <VscHome className="text-[46px]" />
                   <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80 b top-0 right-0 rounded-l-2xl"></div>
+                </NavLink> */}
+                <NavLink to="/" className={({isActive})=>isActive ? "relative navItem bg-primary text-primary  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-[10px] before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
+                :
+                "relative navItem bg-primary text-white  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-full before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "}>
+      
+                                  <VscHome className="text-[46px] font-bold mx-auto" />
+
+
+                </NavLink>
+                  {/* <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80  top-0 right-0 rounded-l-2xl"></div> */}
+                <NavLink
+                  to="/chat"
+                  className={({isActive})=>isActive ? "relative navItem bg-primary text-primary  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-[10px] before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
+                :
+                "relative navItem bg-primary text-[#C3C3C3] mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-full before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "}
+                >
+                  <AiFillMessage className="text-[46px] font-bold mx-auto" />
                 </NavLink>
                 <NavLink
                   to="/setting"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "xl:py-[22px] py-3 relative rounded-l-2xl px-10 xl:pl-[45px]  xl:pr-[59px] bg-white text-primary"
-                      : "xl:py-[22px] py-3 group hover:text-primary z-10 relative rounded-l-2xl px-10 xl:pl-[45px] xl:pr-[59px] bg-primary hover:bg-white text-[#C3C3C3]"
-                  }
+                  className={({isActive})=>isActive ? "relative navItem bg-primary text-primary  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-[10px] before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
+                :
+                "relative navItem bg-primary text-[#C3C3C3] mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-full before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "}
                 >
-                  <MdOutlineSettings className="text-[46px]" />
-                  <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80 b top-0 right-0 rounded-l-2xl"></div>
+                  <MdOutlineSettings className="text-[46px] font-bold mx-auto" />
                 </NavLink>
               </Flex>
             </Flex>

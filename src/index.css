@@ -18,3 +18,10 @@
 .invisible-scrollbar::-webkit-scrollbar {
   display: none;
 }
+.navItem::before {
+  transition: width 0.3s ease;
+}
+
+.navItem:hover::before{
+  width: 10px;
+}
