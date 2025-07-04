@@ -7,6 +7,7 @@ import { BiSolidImageAdd } from 'react-icons/bi';
 import { IoMdHelpCircleOutline } from 'react-icons/io';
 import { FaKey } from 'react-icons/fa';
 import { HiTrash } from 'react-icons/hi';
+import dp from '../assets/dp.png'
 
 
 const Setting = () => {
@@ -24,9 +25,9 @@ const Setting = () => {
                       >
                         <Flex className="gap-x-[14px] w-full justify-start  items-center">
                           <div
-                            className="avatar w-[100px] relative h-[100px] bg-[url(assets/dp.png)] rounded-full bg-cover bg-center"
                             
                           >
+                            <img src={dp} className="avatar w-[100px] relative h-[100px]  rounded-full" alt="" />
                             
                           </div>
             

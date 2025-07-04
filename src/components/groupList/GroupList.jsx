@@ -45,16 +45,17 @@ const GroupList = () => {
         <BsThreeDotsVertical />
       </Flex>
 
-      <SearchInput />
-      <div className='overflow-y-auto h-[70%]'>
+      {/* <SearchInput /> */}
+      <div className='overflow-y-auto h-[90%]'>
         {
           groups.map((group, i) => (
             <Flex key={i} className="py-[13px] border-b-2 border-gray-300 items-center justify-between">
               <Flex className="gap-x-[14px] w-[70%] items-center justify-start">
                 <div
-                  className="w-[70px] h-[70px] rounded-full bg-cover bg-center shrink-0"
-                  style={{ backgroundImage: `url(${group.img})` }}
-                ></div>
+
+                >
+                                    <img src={group.img}  className='avatar w-[70px] h-[70px]  rounded-full' alt="" />
+                </div>
 
                 <div className="w-[60%]">
                   <h3 className='text-[20px] font-semibold text-black truncate w-full'>{group.grpName}</h3>

@@ -128,9 +128,9 @@ const Chat = () => {
           >
             <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
               <div
-                className="w-[52px] relative h-[52px] rounded-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${friend.img})` }}
+                className=" relative "
               >
+                                                  <img src={friend.img}  className='avatar w-[52px] relative z-0 h-[52px] rounded-full' alt="" />
                 {friend.active && (
                   <span className="w-4 h-4 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]"></span>
                 )}

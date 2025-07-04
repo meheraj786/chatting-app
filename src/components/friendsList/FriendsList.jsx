@@ -46,22 +46,22 @@ const FriendsList = () => {
         <BsThreeDotsVertical />
       </Flex>
 
-      <SearchInput />
+      {/* <SearchInput /> */}
 
-      <div className="overflow-y-auto h-[70%]">
+      <div className="overflow-y-auto h-[90%]">
         {friends.map((friend, i) => (
           <Flex
             key={i}
             className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
           >
             <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
-              <div
-                className="w-[52px] relative h-[52px] rounded-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${friend.img})` }}
+              <div className="relative"
+
               >
                 {friend.active && (
                   <span className="w-4 h-4 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]"></span>
                 )}
+                                  <img src={friend.img}  className='avatar w-[52px] relative z-0 h-[52px] rounded-full' alt="" />
               </div>
 
               <div className="w-[60%]">

@@ -47,15 +47,16 @@ const UserList = () => {
 
       <SearchInput />
 
-      <div className='overflow-y-auto h-[70%]'>
+      <div className='overflow-y-auto h-[75%]'>
         {
           friends.map((friend, idx) => (
             <Flex key={idx} className="py-[10px] border-b-2 border-gray-300 items-center justify-between">
               <Flex className="gap-x-[14px] w-[75%] items-center justify-start">
                 <div
-                  className="w-[52px] h-[52px] rounded-full bg-cover bg-center"
-                  style={{ backgroundImage: `url(${friend.img})` }}
-                ></div>
+
+                >
+                                    <img src={friend.img}  className='avatar w-[52px] h-[52px] rounded-full' alt="" />
+                </div>
 
                 <div className="w-[60%]">
                   <h3 className='text-[14px] font-semibold text-black truncate w-full'>{friend.frndName}</h3>

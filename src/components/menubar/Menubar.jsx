@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { HashLoader } from "react-spinners";
 import { ImExit } from "react-icons/im";
 import { signOut } from "firebase/auth";
+import dp from '../../assets/dp.png'
 
 const Menubar = () => {
   const auth = getAuth();
@@ -64,10 +65,11 @@ const Menubar = () => {
 
           <Flex className="flex-col fixed xl:static left-[10px] justify-end xl:justify-between xl:w-[186px] z-[9999] bottom-10 xl:top-0 text-white xl:h-[95vh] xl:bg-primary bg-primary/80 backdrop-blur-lg mt-[35px] py-[30px]  xl:pt-[35px] min-w-[100px] xl:pb-[47px] ml-[32px] rounded-[20px]">
             <Flex className="flex-col w-full hidden xl:flex gap-y-[78px]">
-              <div className="avatar group relative w-[100px] h-[100px] rounded-full bg-[url(assets/dp.png)] bg-cover bg-center cursor-pointer">
-                <div className="absolute top-1/2 left-1/2 bg-gray-500/40 rounded-full  flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <FaCloudUploadAlt className="text-white absolute text-[25px]" />
+              <div className="relative group" >
+                <div className="absolute top-1/2 left-1/2 bg-gray-500/40 rounded-full z-[555] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <FaCloudUploadAlt className="text-white absolute z-[555] text-[25px]" />
                 </div>
+                <img src={dp} className="avatar relative w-[100px] z-[0] h-[100px] rounded-full cursor-pointer" alt="" />
               </div>
               <Flex className="flex-col w-full gap-y-7 ">
                 <NavLink to="/" className={({isActive})=>isActive ? "relative navItem bg-primary text-primary  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-[10px] before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
