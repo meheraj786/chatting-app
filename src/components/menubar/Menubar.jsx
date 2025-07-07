@@ -4,6 +4,7 @@ import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import { VscHome } from "react-icons/vsc";
 import { AiFillMessage } from "react-icons/ai";
 import { MdOutlineSettings } from "react-icons/md";
+import { useDispatch } from "react-redux";
 import { GrLogout } from "react-icons/gr";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { IoArrowBack, IoMenu } from "react-icons/io5";
@@ -20,6 +21,7 @@ import { Button } from "flowbite-react";
 const Menubar = () => {
   const auth = getAuth();
   const navigate = useNavigate();
+  const dispatch= useDispatch()
   const [show, setShow] = useState(false);
   const [verify, setVerify] = useState(false);
   const [loading, setLoading] = useState(true);
