@@ -17,6 +17,7 @@ import { ImExit } from "react-icons/im";
 import { signOut } from "firebase/auth";
 import dp from "../../assets/dp.png";
 import { Button } from "flowbite-react";
+import { userInfo } from "../features/user/userSlice";
 
 const Menubar = () => {
   const auth = getAuth();
@@ -47,6 +48,7 @@ const Menubar = () => {
       .then(() => {
         localStorage.removeItem("userInfo");
         navigate("/login");
+        dispatch(userInfo(null))
       })
       .catch((error) => {
         console.log(error);
