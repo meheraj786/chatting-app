@@ -60,6 +60,7 @@ onValue(userRef, (snapshot) => {
 
 const handleRequest= (item)=>{
   const uniqueId= data.uid+item.userid
+  
         set(ref(db, 'friendRequest/' + uniqueId), {
           senderid: data.uid,
           sendername: data.displayName,
