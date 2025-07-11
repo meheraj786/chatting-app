@@ -12,8 +12,11 @@ import {
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PulseLoader } from "react-spinners";
+import { getDatabase, ref, set } from "firebase/database";
+
 
 const Registration = () => {
+  const db = getDatabase();
   const navigate = useNavigate();
   const auth = getAuth();
   const [loading, setLoading] = useState(false);
@@ -30,7 +33,7 @@ const Registration = () => {
       navigate("/");
     }
   },[]);
-
+  
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const emailHandler = (e) => {
@@ -75,7 +78,7 @@ const Registration = () => {
     ) {
       setLoading(true);
       createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
+        .then((user) => {
       sendEmailVerification(auth.currentUser);
           toast.success("Registration successful!, PLease verify your Email");
           setTimeout(() => {
@@ -85,6 +88,11 @@ const Registration = () => {
           setFullName("");
           setPassword("");
           setLoading(false);
+
+          set(ref(db, 'users/' + user.user.uid), {
+    username: fullName,
+    email: email,
+  });
         })
         .catch((error) => {
           if (error.message.includes("auth/email-already-in-use")) {

@@ -16,13 +16,12 @@ import { HashLoader } from "react-spinners";
 import { ImExit } from "react-icons/im";
 import { signOut } from "firebase/auth";
 import dp from "../../assets/dp.png";
-import { Button } from "flowbite-react";
-import { userInfo } from "../features/user/userSlice";
+import { userInfo } from "../../features/user/userSlice";
 
 const Menubar = () => {
   const auth = getAuth();
   const navigate = useNavigate();
-  const dispatch= useDispatch()
+  const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [verify, setVerify] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -34,7 +33,7 @@ const Menubar = () => {
     }
   }, []);
   onAuthStateChanged(auth, (user) => {
-    console.log(data)
+    console.log(data);
     if (data) {
       if (user.emailVerified) {
         setVerify(true);
@@ -47,8 +46,8 @@ const Menubar = () => {
     signOut(auth)
       .then(() => {
         localStorage.removeItem("userInfo");
+        dispatch(userInfo(null));
         navigate("/login");
-        dispatch(userInfo(null))
       })
       .catch((error) => {
         console.log(error);
@@ -89,7 +88,7 @@ const Menubar = () => {
                 >
                   <VscHome className="text-[46px] font-bold mx-auto" />
                 </NavLink>
-                {/* <div className="absolute w-[10px] h-full xl:bg-primary bg-primary/80  top-0 right-0 rounded-l-2xl"></div> */}
+
                 <NavLink
                   to="/chat"
                   className={({ isActive }) =>
@@ -190,9 +189,12 @@ const Menubar = () => {
       ) : (
         <Flex className="justify-center items-center flex-col h-screen">
           <img className="w-auto" src={welcomeImg} alt="" />
-          <p className="text-2xl xl:w-[400px] text-center font-semibold mt-5">Please Verify Your Email at this email <span className="font-bold">{data.email}</span> </p>
-                    <button
-                    onClick={signoutHandler}
+          <p className="text-2xl xl:w-[400px] text-center font-semibold mt-5">
+            Please Verify Your Email at this email{" "}
+            <span className="font-bold">{data.email}</span>{" "}
+          </p>
+          <button
+            onClick={signoutHandler}
             className="flex items-center mt-10 gap-x-2  cursor-pointer py-5 bg-primary text-white font-semibold rounded-[9px] text-sm px-4"
           >
             <IoArrowBack className="text-[20px]" />
