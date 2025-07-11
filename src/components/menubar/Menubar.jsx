@@ -32,8 +32,10 @@ const Menubar = () => {
       navigate("/registration");
     }
   }, []);
+  
+
+  
   onAuthStateChanged(auth, (user) => {
-    console.log(data);
     if (data) {
       if (user.emailVerified) {
         setVerify(true);
@@ -67,6 +69,7 @@ const Menubar = () => {
         <Flex className="xl:justify-start justify-center items-start gap-x-7">
           <Flex className="flex-col fixed xl:static left-[10px] justify-end xl:justify-between xl:w-[186px] z-[9999] bottom-10 xl:top-0 text-white xl:h-[95vh] xl:bg-primary bg-primary/80 backdrop-blur-lg mt-[35px] py-[30px]  xl:pt-[35px] min-w-[100px] xl:pb-[47px] ml-[32px] rounded-[20px]">
             <Flex className="flex-col w-full hidden xl:flex gap-y-[78px]">
+              <div>
               <div className="relative group">
                 <div className="absolute top-1/2 left-1/2 bg-gray-500/40 rounded-full z-[555] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <FaCloudUploadAlt className="text-white absolute z-[555] text-[25px]" />
@@ -76,6 +79,9 @@ const Menubar = () => {
                   className="avatar relative w-[100px] z-[0] h-[100px] rounded-full cursor-pointer"
                   alt=""
                 />
+              </div>
+                <p className="text-white font-primary font-bold mt-5">{data.displayName}</p>
+
               </div>
               <Flex className="flex-col w-full gap-y-7 ">
                 <NavLink

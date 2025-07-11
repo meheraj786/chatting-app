@@ -8,6 +8,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -79,20 +80,27 @@ const Registration = () => {
       setLoading(true);
       createUserWithEmailAndPassword(auth, email, password)
         .then((user) => {
-      sendEmailVerification(auth.currentUser);
-          toast.success("Registration successful!, PLease verify your Email");
-          setTimeout(() => {
-            navigate("/login");
-          }, 2000);
-          setEmail("");
-          setFullName("");
-          setPassword("");
-          setLoading(false);
+          updateProfile(auth.currentUser, {
+  displayName: fullName,
+}).then(()=>{
 
-          set(ref(db, 'users/' + user.user.uid), {
-    username: fullName,
-    email: email,
+  sendEmailVerification(auth.currentUser);
+      toast.success("Registration successful!, PLease verify your Email");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+      setEmail("");
+      setFullName("");
+      setPassword("");
+      setLoading(false);
+  console.log(user.user.uid);
+  
+      set(ref(db, 'users/' + user.user.uid), {
+  username: user.user.displayName,
+  email: user.user.email,
   });
+})
+
         })
         .catch((error) => {
           if (error.message.includes("auth/email-already-in-use")) {
