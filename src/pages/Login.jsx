@@ -16,8 +16,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { PulseLoader } from "react-spinners";
 import { useDispatch } from "react-redux";
 import { userInfo } from "../features/user/userSlice";
+import { getDatabase, ref, set } from "firebase/database";
 
 const Login = () => {
+  const db = getDatabase();
   const dispatch= useDispatch()
   const navigate = useNavigate();
   const auth = getAuth();
@@ -44,6 +46,10 @@ const Login = () => {
         dispatch(userInfo(result.user))
         localStorage.setItem("userInfo", JSON.stringify(result.user))
         navigate("/");
+              set(ref(db, 'users/' + result.user.uid), {
+          username: result.user.displayName,
+          email: result.user.email,
+          });
       })
       .catch((error) => {
         console.log(error);

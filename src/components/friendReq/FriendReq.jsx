@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, set } from "firebase/database";
 import { useSelector } from "react-redux";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Button from "../../layouts/Button";
@@ -9,32 +9,34 @@ import userImg2 from "../../assets/user2.png";
 import userImg3 from "../../assets/user3.png";
 import userImg4 from "../../assets/user4.png";
 import Flex from "../../layouts/Flex";
+import { toast } from "react-toastify";
 
 const FriendReq = () => {
-  const friendReq = [
-    {
-      img: userImg1,
-      userName: "Maria Santos",
-      lastTime: "2 hours ago",
-    },
-    {
-      img: userImg2,
-      userName: "James Wilson",
-      lastTime: "5 hours ago",
-    },
-    {
-      img: userImg3,
-      userName: "Priya Sharma",
-      lastTime: "1 day ago",
-    },
-    {
-      img: userImg4,
-      userName: "Robert Kim",
-      lastTime: "2 days ago",
-    },
-  ];
+  // const friendReq = [
+  //   {
+  //     img: userImg1,
+  //     userName: "Maria Santos",
+  //     lastTime: "2 hours ago",
+  //   },
+  //   {
+  //     img: userImg2,
+  //     userName: "James Wilson",
+  //     lastTime: "5 hours ago",
+  //   },
+  //   {
+  //     img: userImg3,
+  //     userName: "Priya Sharma",
+  //     lastTime: "1 day ago",
+  //   },
+  //   {
+  //     img: userImg4,
+  //     userName: "Robert Kim",
+  //     lastTime: "2 days ago",
+  //   },
+  // ];
   const [requestList, setRequestList] = useState([]);
   const db = getDatabase();
+  const [friendList, setFriendList] = useState([]);
   const data = useSelector((state) => state.userInfo.value);
    useEffect(() => {
     const requestRef = ref(db, "friendRequest/");
@@ -44,11 +46,34 @@ const FriendReq = () => {
         const request = item.val();
         if (request.reciverid === data.uid) {
           arr.push({ ...request, id: item.key });
+          
         }
       });
       setRequestList(arr);
     });
   }, []);
+    useEffect(() => {
+      const requestRef = ref(db, "friendList/");
+      onValue(requestRef, (snapshot) => {
+        let arr = [];
+        snapshot.forEach((friend) => {
+          if (friend.val().reciverid == data.uid) {
+            arr.push(friend.val());
+          }
+          setFriendList(arr);
+        });
+      });
+    }, []);
+  const acceptFriendReq= (user)=>{
+    console.log(user.id);
+    set(ref(db, 'friendList/' + user.id), {
+                senderid: user.senderid,
+                sendername: user.sendername,
+                reciverid: user.reciverid,
+                recivername: user.recivername,
+              });
+              toast.success("Friend Request Accepted");
+  }
 
   return (
     <div className="xl:w-[36%] w-full h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px] ">
@@ -82,7 +107,7 @@ const FriendReq = () => {
           </p>
         </div>
       </Flex>
-      <Button className="px-[15px]">Accept</Button>
+      <Button onClick={()=> acceptFriendReq(user)} className="px-[15px]">Accept</Button>
     </Flex>
   ))
 ) : (

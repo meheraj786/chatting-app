@@ -62,18 +62,18 @@ onValue(userRef, (snapshot) => {
 }, [])
 
 const handleRequest= (item)=>{
-  const uniqueId= data.uid+item.userid
-        set(ref(db, 'friendRequest/' + uniqueId), {
-          senderid: data.uid,
-          sendername: data.displayName,
-          reciverid:item.userid,
-          recivername: item.username,
-        });
-        toast.success("Friend Request Sent");
-        if (sentReqList.includes(item.userid)) {
-  toast.warning("Friend request already sent!");
-  return;
-}
+  if (sentReqList.includes(item.userid)) {
+    toast.warning("Friend Request Already Sent");
+  }else{
+    const uniqueId= data.uid+item.userid
+          set(ref(db, 'friendRequest/' + uniqueId), {
+            senderid: data.uid,
+            sendername: data.displayName,
+            reciverid:item.userid,
+            recivername: item.username,
+          });
+          toast.success("Friend Request Sent");
+  }
   }
 useEffect(()=>{
   const reqRef = ref(db, 'friendRequest/');
@@ -92,7 +92,6 @@ setSentReqList(sentReqArr)
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
-      <Flex className="justify-between items-center mb-2">
         <ToastContainer
           position="top-right"
           autoClose={2000}
@@ -106,6 +105,7 @@ setSentReqList(sentReqArr)
           theme="dark"
           transition={Bounce}
         />
+      <Flex className="justify-between items-center mb-2">
         <h3 className="text-[20px] font-semibold text-black">Users</h3>
         <BsThreeDotsVertical />
       </Flex>
@@ -137,7 +137,7 @@ setSentReqList(sentReqArr)
               </div>
             </Flex>
           {
-            sentReqList.includes(friend.userid) ? (<Button  className="text-[14px]">-</Button>):(<Button onClick={()=>handleRequest(friend)} className="text-[14px]">+</Button>)
+            sentReqList.includes(friend.userid) ? (<Button onClick={()=>handleRequest(friend)} className="text-[14px] !text-black bg-white border">-</Button>):(<Button onClick={()=>handleRequest(friend)} className="text-[14px]">+</Button>)
           }
             
           </Flex>
