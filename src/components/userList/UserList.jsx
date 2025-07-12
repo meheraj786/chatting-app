@@ -22,10 +22,7 @@ const UserList = () => {
       let arr = [];
       snapshot.forEach((friend) => {
         const val = friend.val();
-        if (
-          val.reciverid === data.uid ||
-          val.senderid === data.uid
-        ) {
+        if (val.reciverid === data.uid || val.senderid === data.uid) {
           arr.push(val);
         }
       });
@@ -46,6 +43,7 @@ const UserList = () => {
       setSentReqList(sentReqArr);
     });
   }, []);
+
   useEffect(() => {
     const userRef = ref(db, "users/");
     onValue(userRef, (snapshot) => {
@@ -79,7 +77,6 @@ const UserList = () => {
           }
         }
       });
-
       setUserList(arr);
     });
   }, [friendList, sentReqList]);
