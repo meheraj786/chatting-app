@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Button from "../../layouts/Button";
 import userImg1 from "../../assets/user1.png";
+import userImg from "../../assets/user.png";
 import userImg2 from "../../assets/user2.png";
 import userImg3 from "../../assets/user3.png";
 import userImg4 from "../../assets/user4.png";
@@ -67,8 +68,8 @@ const FriendReq = () => {
       <Flex className="gap-x-[14px] w-[60%] justify-start">
         <div>
           <img
-            src={userImg1}
-            className="avatar w-[70px] h-[70px] rounded-full"
+            src={userImg}
+            className="avatar border w-[70px] h-[70px] rounded-full"
             alt=""
           />
         </div>
