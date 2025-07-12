@@ -38,32 +38,52 @@ const FriendReq = () => {
   const db = getDatabase();
   const [friendList, setFriendList] = useState([]);
   const data = useSelector((state) => state.userInfo.value);
-   useEffect(() => {
-    const requestRef = ref(db, "friendRequest/");
-    onValue(requestRef, (snapshot) => {
-      let arr = [];
-      snapshot.forEach((item) => {
-        const request = item.val();
-        if (request.reciverid === data.uid) {
+  
+useEffect(() => {
+  const requestRef = ref(db, "friendRequest/");
+  onValue(requestRef, (snapshot) => {
+    let arr = [];
+
+    snapshot.forEach((item) => {
+      const request = item.val();
+
+      if (request.reciverid === data.uid) {
+        let isAlreadyFriend = false;
+
+        friendList.forEach((friend) => {
+          if (
+            friend.senderid === request.senderid ||
+            friend.reciverid === request.senderid
+          ) {
+            isAlreadyFriend = true;
+          }
+        });
+
+        if (!isAlreadyFriend) {
           arr.push({ ...request, id: item.key });
-          
         }
-      });
-      setRequestList(arr);
+      }
     });
-  }, []);
+    setRequestList(arr);
+  });
+
+}, [friendList, db]);
+
+
     useEffect(() => {
       const requestRef = ref(db, "friendList/");
       onValue(requestRef, (snapshot) => {
         let arr = [];
         snapshot.forEach((friend) => {
-          if (friend.val().reciverid == data.uid) {
+          if (friend.val().reciverid === data.uid) {
             arr.push(friend.val());
           }
           setFriendList(arr);
         });
       });
     }, []);
+    
+    
   const acceptFriendReq= (user)=>{
     console.log(user.id);
     set(ref(db, 'friendList/' + user.id), {

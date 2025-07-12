@@ -15,6 +15,7 @@ import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const UserList = () => {
   const [userList, setUserList]= useState([])
+  const [friendList, setFriendList] = useState([]);
   const [sentReqList, setSentReqList]= useState([])
   const db = getDatabase();
   const data= useSelector((state)=>state.userInfo.value)
@@ -46,20 +47,50 @@ const UserList = () => {
   //     lastTime: "Today, 2:23pm",
   //   },
   // ];
-    useEffect(() => {
-    const userRef = ref(db, 'users/');
-onValue(userRef, (snapshot) => {
-  let arr = [];
-  snapshot.forEach((item) => {
-    const users= item.val()
-    if (data.uid !== item.key) {
-      arr.push({...users, userid: item.key});
-    }
-  });
-  setUserList(arr);
-});
+useEffect(() => {
+  const userRef = ref(db, "users/");
+  onValue(userRef, (snapshot) => {
+    let arr = [];
 
-}, [])
+    snapshot.forEach((item) => {
+      const user = item.val();
+      const userId = item.key;
+
+      // নিজের uid বাদ
+      if (userId !== data.uid) {
+        let isFriend = false;
+
+        friendList.forEach((friend) => {
+          if (
+            (friend.senderid === userId && friend.reciverid === data.uid) ||
+            (friend.reciverid === userId && friend.senderid === data.uid)
+          ) {
+            isFriend = true;
+          }
+        });
+
+        if (!isFriend) {
+          arr.push({ ...user, id: userId });
+        }
+      }
+    });
+
+    setUserList(arr);
+  });
+}, [friendList]);
+
+    useEffect(() => {
+      const requestRef = ref(db, "friendList/");
+      onValue(requestRef, (snapshot) => {
+        let arr = [];
+        snapshot.forEach((friend) => {
+          if (friend.val().reciverid === data.uid) {
+            arr.push(friend.val());
+          }
+          setFriendList(arr);
+        });
+      });
+    }, []);
 
 const handleRequest= (item)=>{
   if (sentReqList.includes(item.userid)) {
