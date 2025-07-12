@@ -4,138 +4,117 @@ import SearchInput from "../../layouts/SearchInput";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Button from "../../layouts/Button";
 import user from "../../assets/user.png";
-import userImg1 from "../../assets/user1.png";
-import userImg2 from "../../assets/user2.png";
-import userImg3 from "../../assets/user3.png";
-import userImg4 from "../../assets/user4.png";
-import userImg5 from "../../assets/user5.png";
 import { getDatabase, ref, onValue, set } from "firebase/database";
 import { useSelector } from "react-redux";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const UserList = () => {
-  const [userList, setUserList]= useState([])
+  const [userList, setUserList] = useState([]);
   const [friendList, setFriendList] = useState([]);
-  const [sentReqList, setSentReqList]= useState([])
+  const [sentReqList, setSentReqList] = useState([]);
+
   const db = getDatabase();
-  const data= useSelector((state)=>state.userInfo.value)
-  
-  // const friends = [
-  //   {
-  //     img: userImg1,
-  //     frndName: "Friends Reunion",
-  //     lastTime: "Today, 2:23pm",
-  //   },
-  //   {
-  //     img: userImg2,
-  //     frndName: "Friends Forever",
-  //     lastTime: "Today, 2:23pm",
-  //   },
-  //   {
-  //     img: userImg3,
-  //     frndName: "Crazy Cousins",
-  //     lastTime: "Today, 2:23pm",
-  //   },
-  //   {
-  //     img: userImg4,
-  //     frndName: "Office friend",
-  //     lastTime: "Today, 2:23pm",
-  //   },
-  //   {
-  //     img: userImg5,
-  //     frndName: "Gaming friend",
-  //     lastTime: "Today, 2:23pm",
-  //   },
-  // ];
-useEffect(() => {
-  const userRef = ref(db, "users/");
-  onValue(userRef, (snapshot) => {
-    let arr = [];
+  const data = useSelector((state) => state.userInfo.value);
 
-    snapshot.forEach((item) => {
-      const user = item.val();
-      const userId = item.key;
-
-      // নিজের uid বাদ
-      if (userId !== data.uid) {
-        let isFriend = false;
-
-        friendList.forEach((friend) => {
-          if (
-            (friend.senderid === userId && friend.reciverid === data.uid) ||
-            (friend.reciverid === userId && friend.senderid === data.uid)
-          ) {
-            isFriend = true;
-          }
-        });
-
-        if (!isFriend) {
-          arr.push({ ...user, id: userId });
+  useEffect(() => {
+    const requestRef = ref(db, "friendList/");
+    onValue(requestRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((friend) => {
+        const val = friend.val();
+        if (
+          val.reciverid === data.uid ||
+          val.senderid === data.uid
+        ) {
+          arr.push(val);
         }
-      }
-    });
-
-    setUserList(arr);
-  });
-}, [friendList]);
-
-    useEffect(() => {
-      const requestRef = ref(db, "friendList/");
-      onValue(requestRef, (snapshot) => {
-        let arr = [];
-        snapshot.forEach((friend) => {
-          if (friend.val().reciverid === data.uid) {
-            arr.push(friend.val());
-          }
-          setFriendList(arr);
-        });
       });
-    }, []);
+      setFriendList(arr);
+    });
+  }, []);
 
-const handleRequest= (item)=>{
-  if (sentReqList.includes(item.userid)) {
-    toast.warning("Friend Request Already Sent");
-  }else{
-    const uniqueId= data.uid+item.userid
-          set(ref(db, 'friendRequest/' + uniqueId), {
-            senderid: data.uid,
-            sendername: data.displayName,
-            reciverid:item.userid,
-            recivername: item.username,
+  useEffect(() => {
+    const reqRef = ref(db, "friendRequest/");
+    onValue(reqRef, (snapshot) => {
+      let sentReqArr = [];
+      snapshot.forEach((item) => {
+        const request = item.val();
+        if (request.senderid === data.uid) {
+          sentReqArr.push(request.reciverid);
+        }
+      });
+      setSentReqList(sentReqArr);
+    });
+  }, []);
+  useEffect(() => {
+    const userRef = ref(db, "users/");
+    onValue(userRef, (snapshot) => {
+      let arr = [];
+
+      snapshot.forEach((item) => {
+        const user = item.val();
+        const userId = item.key;
+
+        if (userId !== data.uid) {
+          let isFriend = false;
+          let isSentRequest = false;
+
+          friendList.forEach((friend) => {
+            if (
+              (friend.senderid === userId && friend.reciverid === data.uid) ||
+              (friend.reciverid === userId && friend.senderid === data.uid)
+            ) {
+              isFriend = true;
+            }
           });
-          toast.success("Friend Request Sent");
-  }
-  }
-useEffect(()=>{
-  const reqRef = ref(db, 'friendRequest/');
-onValue(reqRef, (snapshot)=>{
-  let sentReqArr= []
-snapshot.forEach((item)=>{
-const request = item.val();
-if (request.senderid == data.uid) {
-  sentReqArr.push(request.reciverid);
-}
-})
-setSentReqList(sentReqArr)
-})
 
-}, [])
+          sentReqList.forEach((id) => {
+            if (id === userId) {
+              isSentRequest = true;
+            }
+          });
+
+          if (!isFriend && !isSentRequest) {
+            arr.push({ ...user, id: userId });
+          }
+        }
+      });
+
+      setUserList(arr);
+    });
+  }, [friendList, sentReqList]);
+
+  const handleRequest = (item) => {
+    if (sentReqList.includes(item.id)) {
+      toast.warning("Friend Request Already Sent");
+    } else {
+      const uniqueId = data.uid + item.id;
+      set(ref(db, "friendRequest/" + uniqueId), {
+        senderid: data.uid,
+        sendername: data.displayName,
+        reciverid: item.id,
+        recivername: item.username,
+      });
+      toast.success("Friend Request Sent");
+    }
+  };
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-          transition={Bounce}
-        />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
+
       <Flex className="justify-between items-center mb-2">
         <h3 className="text-[20px] font-semibold text-black">Users</h3>
         <BsThreeDotsVertical />
@@ -167,10 +146,13 @@ setSentReqList(sentReqArr)
                 </p>
               </div>
             </Flex>
-          {
-            sentReqList.includes(friend.userid) ? (<Button onClick={()=>handleRequest(friend)} className="text-[14px] !text-black bg-white border">-</Button>):(<Button onClick={()=>handleRequest(friend)} className="text-[14px]">+</Button>)
-          }
-            
+
+            <Button
+              onClick={() => handleRequest(friend)}
+              className="text-[14px]"
+            >
+              +
+            </Button>
           </Flex>
         ))}
       </div>
