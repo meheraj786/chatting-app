@@ -10,25 +10,25 @@ import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const UserList = () => {
   const [userList, setUserList] = useState([]);
-  const [friendList, setFriendList] = useState([]);
+  // const [friendList, setFriendList] = useState([]);
   const [sentReqList, setSentReqList] = useState([]);
 
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
 
-  useEffect(() => {
-    const requestRef = ref(db, "friendList/");
-    onValue(requestRef, (snapshot) => {
-      let arr = [];
-      snapshot.forEach((friend) => {
-        const val = friend.val();
-        if (val.reciverid === data.uid || val.senderid === data.uid) {
-          arr.push(val);
-        }
-      });
-      setFriendList(arr);
-    });
-  }, []);
+  // useEffect(() => {
+  //   const requestRef = ref(db, "friendList/");
+  //   onValue(requestRef, (snapshot) => {
+  //     let arr = [];
+  //     snapshot.forEach((friend) => {
+  //       const val = friend.val();
+  //       if (val.reciverid === data.uid || val.senderid === data.uid) {
+  //         arr.push(val);
+  //       }
+  //     });
+  //     setFriendList(arr);
+  //   });
+  // }, []);
 
   useEffect(() => {
     const reqRef = ref(db, "friendRequest/");
@@ -54,32 +54,27 @@ const UserList = () => {
         const userId = item.key;
 
         if (userId !== data.uid) {
-          let isFriend = false;
-          let isSentRequest = false;
+          arr.push({ ...user, id: userId });
+          // friendList.forEach((friend) => {
+          //   if (
+          //     (friend.senderid === userId && friend.reciverid === data.uid) ||
+          //     (friend.reciverid === userId && friend.senderid === data.uid)
+          //   ) {
+          //     isFriend = true;
+          //   }
+          // });
 
-          friendList.forEach((friend) => {
-            if (
-              (friend.senderid === userId && friend.reciverid === data.uid) ||
-              (friend.reciverid === userId && friend.senderid === data.uid)
-            ) {
-              isFriend = true;
-            }
-          });
+          // sentReqList.forEach((id) => {
+          //   if (id === userId) {
 
-          sentReqList.forEach((id) => {
-            if (id === userId) {
-              isSentRequest = true;
-            }
-          });
-
-          if (!isFriend && !isSentRequest) {
-            arr.push({ ...user, id: userId });
-          }
+          //   }
+          // });
+          
         }
       });
       setUserList(arr);
     });
-  }, [friendList, sentReqList]);
+  }, []);
 
   const handleRequest = (item) => {
     if (sentReqList.includes(item.id)) {
@@ -143,13 +138,21 @@ const UserList = () => {
                 </p>
               </div>
             </Flex>
-
-            <Button
-              onClick={() => handleRequest(friend)}
-              className="text-[14px]"
-            >
-              +
-            </Button>
+            {sentReqList.includes(friend.id) ? (
+              <Button
+                onClick={() => handleRequest(friend)}
+                className="text-[14px] bg-white !text-black"
+              >
+                -
+              </Button>
+            ) : (
+              <Button
+                onClick={() => handleRequest(friend)}
+                className="text-[14px]"
+              >
+                +
+              </Button>
+            )}
           </Flex>
         ))}
       </div>

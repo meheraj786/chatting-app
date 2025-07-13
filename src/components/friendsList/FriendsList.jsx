@@ -11,37 +11,37 @@ import { useSelector } from "react-redux";
 import userImg from "../../assets/user.png";
 
 const FriendsList = () => {
-  const data = useSelector((state) => state.userInfo.value);
-  const db = getDatabase();
+  // const data = useSelector((state) => state.userInfo.value);
+  // const db = getDatabase();
   const [friendList, setFriendList] = useState([]);
 
-  useEffect(() => {
-    const requestRef = ref(db, "friendList/");
-    onValue(requestRef, (snapshot) => {
-      let arr = [];
+  // useEffect(() => {
+  //   const requestRef = ref(db, "friendList/");
+  //   onValue(requestRef, (snapshot) => {
+  //     let arr = [];
       
-      snapshot.forEach((friend) => {
-        const friendData = friend.val();
+  //     snapshot.forEach((friend) => {
+  //       const friendData = friend.val();
         
       
-        if (friendData.reciverid === data.uid) {
+  //       if (friendData.reciverid === data.uid) {
           
-          arr.push({
-            ...friendData,
-            displayName: friendData.sendername,
-          });
-        } else if (friendData.senderid === data.uid) {
+  //         arr.push({
+  //           ...friendData,
+  //           displayName: friendData.sendername,
+  //         });
+  //       } else if (friendData.senderid === data.uid) {
         
-          arr.push({
-            ...friendData,
-            displayName: friendData.recivername,
-          });
-        }
-      });
+  //         arr.push({
+  //           ...friendData,
+  //           displayName: friendData.recivername,
+  //         });
+  //       }
+  //     });
       
-      setFriendList(arr);
-    });
-  }, []);
+  //     setFriendList(arr);
+  //   });
+  // }, []);
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
