@@ -19,7 +19,6 @@ const UserList = () => {
   const [userList, setUserList] = useState([]);
   const [requestList, setRequestList] = useState([]);
   const [friendList, setFriendList] = useState([]);
-  // const [sentReqList, setSentReqList] = useState([]);
 
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
@@ -95,7 +94,6 @@ const UserList = () => {
       });
     });
   };
-  console.log(friendList);
   
 
   return (

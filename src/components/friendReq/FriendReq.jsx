@@ -19,88 +19,9 @@ import Flex from "../../layouts/Flex";
 import { toast } from "react-toastify";
 
 const FriendReq = () => {
-  // const friendReq = [
-  //   {
-  //     img: userImg1,
-  //     userName: "Maria Santos",
-  //     lastTime: "2 hours ago",
-  //   },
-  //   {
-  //     img: userImg2,
-  //     userName: "James Wilson",
-  //     lastTime: "5 hours ago",
-  //   },
-  //   {
-  //     img: userImg3,
-  //     userName: "Priya Sharma",
-  //     lastTime: "1 day ago",
-  //   },
-  //   {
-  //     img: userImg4,
-  //     userName: "Robert Kim",
-  //     lastTime: "2 days ago",
-  //   },
-  // ];
-  // const [requestList, setRequestList] = useState([]);
-  // const db = getDatabase();
-  // // const [friendList, setFriendList] = useState([]);
-  // const data = useSelector((state) => state.userInfo.value);
 
-  // useEffect(() => {
-  //   const requestRef = ref(db, "friendRequest/");
-  //   onValue(requestRef, (snapshot) => {
-  //     let arr = [];
-
-  //     snapshot.forEach((item) => {
-  //       const request = item.val();
-
-  //       if (request.reciverid === data.uid) {
-  //         arr.push({ ...request, id: item.key });
-  //         // let isAlreadyFriend = false;
-
-  //         // friendList.forEach((friend) => {
-  //         //   if (
-  //         //     friend.senderid === request.senderid ||
-  //         //     friend.reciverid === request.senderid
-  //         //   ) {
-  //         //     isAlreadyFriend = true;
-  //         //   }
-  //         // });
-
-  //         // if (!isAlreadyFriend) {
-  //         //   arr.push({ ...request, id: item.key });
-  //         // }
-  //       }
-  //     });
-  //     setRequestList(arr);
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   const requestRef = ref(db, "friendList/");
-  //   onValue(requestRef, (snapshot) => {
-  //     let arr = [];
-  //     snapshot.forEach((friend) => {
-  //       if (friend.val().reciverid === data.uid) {
-  //         arr.push(friend.val());
-  //       }
-  //       setFriendList(arr);
-  //     });
-  //   });
-  // }, []);
-
-  // const acceptFriendReq= (user)=>{
-  //   set(ref(db, 'friendList/' + user.id), {
-  //               senderid: user.senderid,
-  //               sendername: user.sendername,
-  //               reciverid: user.reciverid,
-  //               recivername: user.recivername,
-  //             });
-  //             toast.success("Friend Request Accepted");
-  // }
   const [requestList, setRequestList] = useState([]);
   const db = getDatabase();
-  // const [friendList, setFriendList] = useState([]);
   const data = useSelector((state) => state.userInfo.value);
 
   useEffect(() => {

@@ -11,37 +11,26 @@ import { useSelector } from "react-redux";
 import userImg from "../../assets/user.png";
 
 const FriendsList = () => {
-  // const data = useSelector((state) => state.userInfo.value);
-  // const db = getDatabase();
-  const [friendList, setFriendList] = useState([]);
+    const [friendList, setFriendList] = useState([]);
+  
+    const db = getDatabase();
+    const data = useSelector((state) => state.userInfo.value);
 
-  // useEffect(() => {
-  //   const requestRef = ref(db, "friendList/");
-  //   onValue(requestRef, (snapshot) => {
-  //     let arr = [];
-      
-  //     snapshot.forEach((friend) => {
-  //       const friendData = friend.val();
+
+  useEffect(() => {
+    const requestRef = ref(db, "friendlist/");
+    onValue(requestRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        const request = item.val();
+        if (request.senderid==data.uid || request.reciverid==data.uid) {
+          arr.push(request)
+        }
         
-      
-  //       if (friendData.reciverid === data.uid) {
-          
-  //         arr.push({
-  //           ...friendData,
-  //           displayName: friendData.sendername,
-  //         });
-  //       } else if (friendData.senderid === data.uid) {
-        
-  //         arr.push({
-  //           ...friendData,
-  //           displayName: friendData.recivername,
-  //         });
-  //       }
-  //     });
-      
-  //     setFriendList(arr);
-  //   });
-  // }, []);
+      });
+      setFriendList(arr);
+    });
+  }, []);
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
@@ -77,7 +66,9 @@ const FriendsList = () => {
 
                 <div className="w-[60%]">
                   <h3 className="text-[14px] font-semibold text-black truncate w-full">
-                    {friend.displayName}
+                    {
+                      friend.senderid==data.uid ? friend.recivername : friend.sendername
+                    }
                   </h3>
                   <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
                     {friend.lastMsg}
