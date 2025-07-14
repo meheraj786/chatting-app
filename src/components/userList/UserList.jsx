@@ -11,6 +11,7 @@ import {
   set,
   push,
   remove,
+  get,
 } from "firebase/database";
 import { useSelector } from "react-redux";
 import { Bounce, toast, ToastContainer } from "react-toastify";
@@ -74,25 +75,32 @@ const UserList = () => {
 
   const cancelRequest = (friend) => {
     const requestRef = ref(db, "friendRequest/");
-    onValue(requestRef, (snapshot) => {
-      snapshot.forEach((item) => {
-        const request = item.val();
-        const key = item.key;
+    
+    get(requestRef)
+      .then((snapshot) => {
+        
+        snapshot.forEach((item) => {
+          const request = item.val();
+          const key = item.key;
 
-        if (
-          (request.senderid === data.uid && request.reciverid === friend.id) ||
-          (request.reciverid === data.uid && request.senderid === friend.id)
-        ) {
-          remove(ref(db, "friendRequest/" + key))
-            .then(() => {
-              toast.success("Friend request canceled");
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
+          if (
+            (request.senderid === data.uid && request.reciverid === friend.id) ||
+            (request.reciverid === data.uid && request.senderid === friend.id)
+          ) {
+            
+          toast.success("Friend request canceled");
+          return remove(ref(db, "friendRequest/" + key));
+          }
+        });
+
+        // if (requestToDelete) {
+          
+        // }
+      })
+      .catch((error) => {
+        console.error("Error canceling request:", error);
+        toast.error("Failed to cancel request");
       });
-    });
   };
   
 
