@@ -57,7 +57,7 @@ const UserList = ({ requestList }) => {
         const userId = item.key;
         if (
           userId !== data.uid &&
-          requestList.some((req) => req.senderid !== userId)
+          !requestList.some((req) => req.senderid == userId)
         ) {
           arr.push({ ...user, id: userId });
         }

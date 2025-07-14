@@ -80,7 +80,7 @@ const Menubar = () => {
                   alt=""
                 />
               </div>
-                <p className="text-white font-primary font-bold mt-5">{data.displayName}</p>
+                <p className="text-white text-center font-primary font-bold mt-3">{data.displayName}</p>
 
               </div>
               <Flex className="flex-col w-full gap-y-7 ">
