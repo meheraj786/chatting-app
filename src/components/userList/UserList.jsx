@@ -4,49 +4,26 @@ import SearchInput from "../../layouts/SearchInput";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Button from "../../layouts/Button";
 import user from "../../assets/user.png";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+} from "firebase/database";
 import { useSelector } from "react-redux";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 
-const UserList = ({ requestList }) => {
+const UserList = () => {
   const [userList, setUserList] = useState([]);
-  // const [friendList, setFriendList] = useState([]);
-  const [sentReqList, setSentReqList] = useState([]);
+  const [requestList, setRequestList] = useState([]);
+  const [friendList, setFriendList] = useState([]);
+  // const [sentReqList, setSentReqList] = useState([]);
 
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
 
-  // useEffect(() => {
-  //   const requestRef = ref(db, "friendList/");
-  //   onValue(requestRef, (snapshot) => {
-  //     let arr = [];
-  //     snapshot.forEach((friend) => {
-  //       const val = friend.val();
-  //       if (val.reciverid === data.uid || val.senderid === data.uid) {
-  //         arr.push(val);
-  //       }
-  //     });
-  //     setFriendList(arr);
-  //   });
-  // }, []);
-
-  useEffect(() => {
-    const reqRef = ref(db, "friendRequest/");
-    onValue(reqRef, (snapshot) => {
-      let sentReqArr = [];
-      snapshot.forEach((item) => {
-        const request = item.val();
-        if (request.senderid === data.uid) {
-          sentReqArr.push(request.reciverid);
-        }
-      });
-      setSentReqList(sentReqArr);
-    });
-  }, []);
-
-  requestList.forEach((req) => {
-    console.log(req);
-  });
   useEffect(() => {
     const userRef = ref(db, "users/");
     onValue(userRef, (snapshot) => {
@@ -55,45 +32,71 @@ const UserList = ({ requestList }) => {
       snapshot.forEach((item) => {
         const user = item.val();
         const userId = item.key;
-        if (
-          userId !== data.uid &&
-          !requestList.some((req) => req.senderid == userId)
-        ) {
+        if (userId !== data.uid) {
           arr.push({ ...user, id: userId });
         }
-        // friendList.forEach((friend) => {
-        //   if (
-        //     (friend.senderid === userId && friend.reciverid === data.uid) ||
-        //     (friend.reciverid === userId && friend.senderid === data.uid)
-        //   ) {
-        //     isFriend = true;
-        //   }
-        // });
-
-        // sentReqList.forEach((id) => {
-        //   if (id === userId) {
-
-        //   }
-        // });
       });
       setUserList(arr);
     });
-  }, [requestList]);
+  }, []);
+
+  useEffect(() => {
+    const requestRef = ref(db, "friendRequest/");
+    onValue(requestRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        const request = item.val();
+        arr.push(request.reciverid + request.senderid);
+      });
+      setRequestList(arr);
+    });
+  }, []);
+    useEffect(() => {
+    const requestRef = ref(db, "friendlist/");
+    onValue(requestRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        const request = item.val();
+        arr.push(request.reciverid + request.senderid);
+      });
+      setFriendList(arr);
+    });
+  }, [db]);
 
   const handleRequest = (item) => {
-    if (sentReqList.includes(item.id)) {
-      toast.warning("Friend Request Already Sent");
-    } else {
-      const uniqueId = data.uid + item.id;
-      set(ref(db, "friendRequest/" + uniqueId), {
-        senderid: data.uid,
-        sendername: data.displayName,
-        reciverid: item.id,
-        recivername: item.username,
-      });
-      toast.success("Friend Request Sent");
-    }
+    set(push(ref(db, "friendRequest/")), {
+      senderid: data.uid,
+      sendername: data.displayName,
+      reciverid: item.id,
+      recivername: item.username,
+    });
+    toast.success("Friend Request Sent");
   };
+
+  const cancelRequest = (friend) => {
+    const requestRef = ref(db, "friendRequest/");
+    onValue(requestRef, (snapshot) => {
+      snapshot.forEach((item) => {
+        const request = item.val();
+        const key = item.key;
+
+        if (
+          (request.senderid === data.uid && request.reciverid === friend.id) ||
+          (request.reciverid === data.uid && request.senderid === friend.id)
+        ) {
+          remove(ref(db, "friendRequest/" + key))
+            .then(() => {
+              toast.success("Friend request canceled");
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      });
+    });
+  };
+  console.log(friendList);
+  
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
@@ -142,21 +145,29 @@ const UserList = ({ requestList }) => {
                 </p>
               </div>
             </Flex>
-            {sentReqList.includes(friend.id) ? (
-              <Button
-                onClick={() => handleRequest(friend)}
-                className="text-[14px] bg-white !text-black"
-              >
-                -
-              </Button>
-            ) : (
-              <Button
-                onClick={() => handleRequest(friend)}
-                className="text-[14px]"
-              >
-                +
-              </Button>
-            )}
+{friendList.includes(data.uid + friend.id) ||
+  friendList.includes(friend.id + data.uid) ? (
+  <Button className="text-[14px] bg-gray-200 cursor-default">
+    Friend
+  </Button>
+) : requestList.includes(data.uid + friend.id) ||
+  requestList.includes(friend.id + data.uid) ? (
+  <Button
+    onClick={() => cancelRequest(friend)}
+    className="text-[14px] !text-black bg-white"
+  >
+    -
+  </Button>
+) : (
+  <Button
+    onClick={() => handleRequest(friend)}
+    className="text-[14px] !text-black bg-white"
+  >
+    +
+  </Button>
+)}
+
+
           </Flex>
         ))}
       </div>

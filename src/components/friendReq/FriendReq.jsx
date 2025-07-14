@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  remove,
+  push,
+} from "firebase/database";
 import { useSelector } from "react-redux";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Button from "../../layouts/Button";
@@ -11,7 +18,7 @@ import userImg4 from "../../assets/user4.png";
 import Flex from "../../layouts/Flex";
 import { toast } from "react-toastify";
 
-const FriendReq = ({requestList}) => {
+const FriendReq = () => {
   // const friendReq = [
   //   {
   //     img: userImg1,
@@ -68,7 +75,6 @@ const FriendReq = ({requestList}) => {
   //     setRequestList(arr);
   //   });
   // }, []);
-  
 
   // useEffect(() => {
   //   const requestRef = ref(db, "friendList/");
@@ -92,6 +98,53 @@ const FriendReq = ({requestList}) => {
   //             });
   //             toast.success("Friend Request Accepted");
   // }
+  const [requestList, setRequestList] = useState([]);
+  const db = getDatabase();
+  // const [friendList, setFriendList] = useState([]);
+  const data = useSelector((state) => state.userInfo.value);
+
+  useEffect(() => {
+    const requestRef = ref(db, "friendRequest/");
+    onValue(requestRef, (snapshot) => {
+      let arr = [];
+
+      snapshot.forEach((item) => {
+        const request = item.val();
+        if (request.reciverid == data.uid) {
+          arr.push({ ...request, id: item.key });
+        }
+      });
+      setRequestList(arr);
+    });
+  }, []);
+  const cancelRequest = (friend) => {
+    console.log(friend.key);
+    const requestRef = ref(db, "friendRequest/");
+    onValue(requestRef, (snapshot) => {
+      snapshot.forEach((item) => {
+        const key = item.key;
+        if (key === friend.id) {
+          remove(ref(db, "friendRequest/" + key))
+            .then(() => {
+              toast.success("Friend request canceled");
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      });
+    });
+  };
+  const acceptFriendReq = (user) => {
+    set(push(ref(db, "friendlist/")), {
+      senderid: user.senderid,
+      sendername: user.sendername,
+      reciverid: data.uid,
+      recivername: data.displayName,
+    });
+    toast.success("Friend Request Sent");
+    cancelRequest(user);
+  };
 
   return (
     <div className="xl:w-[36%] w-full h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px] ">
@@ -130,6 +183,9 @@ const FriendReq = ({requestList}) => {
                 className="px-[15px]"
               >
                 Accept
+              </Button>
+              <Button onClick={() => cancelRequest(user)} className="px-[15px]">
+                Reject
               </Button>
             </Flex>
           ))

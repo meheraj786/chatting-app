@@ -76,7 +76,7 @@ const Menubar = () => {
                 </div>
                 <img
                   src={dp}
-                  className="avatar relative w-[100px] z-[0] h-[100px] rounded-full cursor-pointer"
+                  className="avatar relative w-[100px] mx-auto z-[0] h-[100px] rounded-full cursor-pointer"
                   alt=""
                 />
               </div>
