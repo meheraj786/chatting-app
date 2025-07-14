@@ -8,7 +8,7 @@ import { getDatabase, ref, onValue, set } from "firebase/database";
 import { useSelector } from "react-redux";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 
-const UserList = () => {
+const UserList = ({ requestList }) => {
   const [userList, setUserList] = useState([]);
   // const [friendList, setFriendList] = useState([]);
   const [sentReqList, setSentReqList] = useState([]);
@@ -44,6 +44,9 @@ const UserList = () => {
     });
   }, []);
 
+  requestList.forEach((req) => {
+    console.log(req);
+  });
   useEffect(() => {
     const userRef = ref(db, "users/");
     onValue(userRef, (snapshot) => {
@@ -52,29 +55,30 @@ const UserList = () => {
       snapshot.forEach((item) => {
         const user = item.val();
         const userId = item.key;
-
-        if (userId !== data.uid) {
+        if (
+          userId !== data.uid &&
+          requestList.some((req) => req.senderid !== userId)
+        ) {
           arr.push({ ...user, id: userId });
-          // friendList.forEach((friend) => {
-          //   if (
-          //     (friend.senderid === userId && friend.reciverid === data.uid) ||
-          //     (friend.reciverid === userId && friend.senderid === data.uid)
-          //   ) {
-          //     isFriend = true;
-          //   }
-          // });
-
-          // sentReqList.forEach((id) => {
-          //   if (id === userId) {
-
-          //   }
-          // });
-          
         }
+        // friendList.forEach((friend) => {
+        //   if (
+        //     (friend.senderid === userId && friend.reciverid === data.uid) ||
+        //     (friend.reciverid === userId && friend.senderid === data.uid)
+        //   ) {
+        //     isFriend = true;
+        //   }
+        // });
+
+        // sentReqList.forEach((id) => {
+        //   if (id === userId) {
+
+        //   }
+        // });
       });
       setUserList(arr);
     });
-  }, []);
+  }, [requestList]);
 
   const handleRequest = (item) => {
     if (sentReqList.includes(item.id)) {

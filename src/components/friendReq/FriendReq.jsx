@@ -11,7 +11,7 @@ import userImg4 from "../../assets/user4.png";
 import Flex from "../../layouts/Flex";
 import { toast } from "react-toastify";
 
-const FriendReq = () => {
+const FriendReq = ({requestList}) => {
   // const friendReq = [
   //   {
   //     img: userImg1,
@@ -34,40 +34,40 @@ const FriendReq = () => {
   //     lastTime: "2 days ago",
   //   },
   // ];
-  const [requestList, setRequestList] = useState([]);
-  const db = getDatabase();
-  // const [friendList, setFriendList] = useState([]);
-  const data = useSelector((state) => state.userInfo.value);
+  // const [requestList, setRequestList] = useState([]);
+  // const db = getDatabase();
+  // // const [friendList, setFriendList] = useState([]);
+  // const data = useSelector((state) => state.userInfo.value);
 
-  useEffect(() => {
-    const requestRef = ref(db, "friendRequest/");
-    onValue(requestRef, (snapshot) => {
-      let arr = [];
+  // useEffect(() => {
+  //   const requestRef = ref(db, "friendRequest/");
+  //   onValue(requestRef, (snapshot) => {
+  //     let arr = [];
 
-      snapshot.forEach((item) => {
-        const request = item.val();
+  //     snapshot.forEach((item) => {
+  //       const request = item.val();
 
-        if (request.reciverid === data.uid) {
-          arr.push({ ...request, id: item.key });
-          // let isAlreadyFriend = false;
+  //       if (request.reciverid === data.uid) {
+  //         arr.push({ ...request, id: item.key });
+  //         // let isAlreadyFriend = false;
 
-          // friendList.forEach((friend) => {
-          //   if (
-          //     friend.senderid === request.senderid ||
-          //     friend.reciverid === request.senderid
-          //   ) {
-          //     isAlreadyFriend = true;
-          //   }
-          // });
+  //         // friendList.forEach((friend) => {
+  //         //   if (
+  //         //     friend.senderid === request.senderid ||
+  //         //     friend.reciverid === request.senderid
+  //         //   ) {
+  //         //     isAlreadyFriend = true;
+  //         //   }
+  //         // });
 
-          // if (!isAlreadyFriend) {
-          //   arr.push({ ...request, id: item.key });
-          // }
-        }
-      });
-      setRequestList(arr);
-    });
-  }, []);
+  //         // if (!isAlreadyFriend) {
+  //         //   arr.push({ ...request, id: item.key });
+  //         // }
+  //       }
+  //     });
+  //     setRequestList(arr);
+  //   });
+  // }, []);
   
 
   // useEffect(() => {
