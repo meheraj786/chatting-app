@@ -15,9 +15,11 @@ import {
 } from "firebase/database";
 import { useSelector } from "react-redux";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import UserSkeleton from "../skeleton/UserSkeleton";
 
 const UserList = () => {
   const [userList, setUserList] = useState([]);
+  const [userLoading, setUserLoading]= useState(true)
   const [requestList, setRequestList] = useState([]);
   const [friendList, setFriendList] = useState([]);
 
@@ -37,6 +39,7 @@ const UserList = () => {
         }
       });
       setUserList(arr);
+      setUserLoading(false)
     });
   }, []);
 
@@ -128,7 +131,14 @@ const UserList = () => {
       <SearchInput />
 
       <div className="overflow-y-auto h-[70%]">
-        {userList.map((friend, idx) => (
+        {
+          userLoading ? (
+            <>
+            <UserSkeleton/>
+            <UserSkeleton/>
+            <UserSkeleton/>
+            </>
+          ): (userList.map((friend, idx) => (
           <Flex
             key={idx}
             className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
@@ -167,7 +177,7 @@ const UserList = () => {
 ) : (
   <Button
     onClick={() => handleRequest(friend)}
-    className="text-[14px] !text-black bg-white"
+    className="text-[14px] bg-black"
   >
     +
   </Button>
@@ -175,7 +185,8 @@ const UserList = () => {
 
 
           </Flex>
-        ))}
+        )))
+        }
       </div>
     </div>
   );

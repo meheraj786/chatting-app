@@ -9,9 +9,11 @@ import userImg4 from "../../assets/user4.png";
 import { getDatabase, onValue, ref } from "firebase/database";
 import { useSelector } from "react-redux";
 import userImg from "../../assets/user.png";
+import UserSkeleton from "../skeleton/UserSkeleton";
 
 const FriendsList = () => {
     const [friendList, setFriendList] = useState([]);
+    const [friendListLoading, setFriendListLoading] = useState(true)
   
     const db = getDatabase();
     const data = useSelector((state) => state.userInfo.value);
@@ -29,6 +31,7 @@ const FriendsList = () => {
         
       });
       setFriendList(arr);
+      setFriendListLoading(false)
     });
   }, []);
 
@@ -42,7 +45,10 @@ const FriendsList = () => {
       {/* <SearchInput /> */}
 
       <div className="overflow-y-auto h-[90%]">
-        {friendList.length === 0 ? (
+        {
+          friendListLoading ? (
+            <UserSkeleton/>
+          ) : (friendList.length === 0 ? (
           <div className="text-center text-gray-500 py-4">
             No friends yet
           </div>
@@ -80,7 +86,8 @@ const FriendsList = () => {
               </span>
             </Flex>
           ))
-        )}
+        ))
+        }
       </div>
     </div>
   );
