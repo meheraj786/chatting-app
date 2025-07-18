@@ -41,7 +41,7 @@ const FriendReq = () => {
       setRequestListLoading(false)
     });
   }, []);
-  const cancelRequest = (friend) => {
+  const cancelRequest = (friend, dontShow) => {
     console.log(friend.key);
     const requestRef = ref(db, "friendRequest/");
     onValue(requestRef, (snapshot) => {
@@ -50,7 +50,9 @@ const FriendReq = () => {
         if (key === friend.id) {
           remove(ref(db, "friendRequest/" + key))
             .then(() => {
-              toast.success("Friend request canceled");
+              if (!dontShow) {
+                toast.success("Friend request canceled");
+              }
             })
             .catch((error) => {
               console.error(error);
@@ -67,7 +69,8 @@ const FriendReq = () => {
       recivername: data.displayName,
     });
     toast.success("Friend Request Sent");
-    cancelRequest(user);
+    const dontShow=true
+    cancelRequest(user, dontShow);
   };
 
   return (

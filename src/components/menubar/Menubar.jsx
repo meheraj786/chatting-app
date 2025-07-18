@@ -35,14 +35,16 @@ const Menubar = () => {
   
 
   
-  onAuthStateChanged(auth, (user) => {
-    if (data) {
-      if (user.emailVerified) {
-        setVerify(true);
+onAuthStateChanged(auth, (user) => {
+      if (data) {
+        if (user && user.emailVerified) {
+          setVerify(true);
+        } else {
+          setVerify(false);
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    }
-  });
+    })
   const signoutHandler = () => {
     setLoading(true);
     signOut(auth)

@@ -19,7 +19,7 @@ import UserSkeleton from "../skeleton/UserSkeleton";
 
 const UserList = () => {
   const [userList, setUserList] = useState([]);
-  const [userLoading, setUserLoading]= useState(true)
+  const [userLoading, setUserLoading] = useState(true);
   const [requestList, setRequestList] = useState([]);
   const [friendList, setFriendList] = useState([]);
 
@@ -39,7 +39,7 @@ const UserList = () => {
         }
       });
       setUserList(arr);
-      setUserLoading(false)
+      setUserLoading(false);
     });
   }, []);
 
@@ -54,7 +54,7 @@ const UserList = () => {
       setRequestList(arr);
     });
   }, []);
-    useEffect(() => {
+  useEffect(() => {
     const requestRef = ref(db, "friendlist/");
     onValue(requestRef, (snapshot) => {
       let arr = [];
@@ -78,34 +78,28 @@ const UserList = () => {
 
   const cancelRequest = (friend) => {
     const requestRef = ref(db, "friendRequest/");
-    
+
     get(requestRef)
       .then((snapshot) => {
-        
         snapshot.forEach((item) => {
           const request = item.val();
           const key = item.key;
 
           if (
-            (request.senderid === data.uid && request.reciverid === friend.id) ||
+            (request.senderid === data.uid &&
+              request.reciverid === friend.id) ||
             (request.reciverid === data.uid && request.senderid === friend.id)
           ) {
-            
-          toast.success("Friend request canceled");
-          return remove(ref(db, "friendRequest/" + key));
+            toast.success("Friend request canceled");
+            return remove(ref(db, "friendRequest/" + key));
           }
         });
-
-        // if (requestToDelete) {
-          
-        // }
       })
       .catch((error) => {
         console.error("Error canceling request:", error);
         toast.error("Failed to cancel request");
       });
   };
-  
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
@@ -131,62 +125,60 @@ const UserList = () => {
       <SearchInput />
 
       <div className="overflow-y-auto h-[70%]">
-        {
-          userLoading ? (
-            <>
-            <UserSkeleton/>
-            <UserSkeleton/>
-            <UserSkeleton/>
-            </>
-          ): (userList.map((friend, idx) => (
-          <Flex
-            key={idx}
-            className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
-          >
-            <Flex className="gap-x-[14px] w-[75%] items-center justify-start">
-              <div>
-                <img
-                  src={user}
-                  className="avatar border w-[52px] h-[52px] rounded-full"
-                  alt=""
-                />
-              </div>
+        {userLoading ? (
+          <>
+            <UserSkeleton />
+            <UserSkeleton />
+            <UserSkeleton />
+          </>
+        ) : (
+          userList.map((friend, idx) => (
+            <Flex
+              key={idx}
+              className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
+            >
+              <Flex className="gap-x-[14px] w-[75%] items-center justify-start">
+                <div>
+                  <img
+                    src={user}
+                    className="avatar border w-[52px] h-[52px] rounded-full"
+                    alt=""
+                  />
+                </div>
 
-              <div className="w-[60%]">
-                <h3 className="text-[14px] font-semibold text-black truncate w-full">
-                  {friend.username}
-                </h3>
-                <p className="text-[10px] text-black/50 truncate w-full">
-                  {friend.email}
-                </p>
-              </div>
+                <div className="w-[60%]">
+                  <h3 className="text-[14px] font-semibold text-black truncate w-full">
+                    {friend.username}
+                  </h3>
+                  <p className="text-[10px] text-black/50 truncate w-full">
+                    {friend.email}
+                  </p>
+                </div>
+              </Flex>
+              {friendList.includes(data.uid + friend.id) ||
+              friendList.includes(friend.id + data.uid) ? (
+                <Button className="text-[14px] bg-gray-200 cursor-default">
+                  Friend
+                </Button>
+              ) : requestList.includes(data.uid + friend.id) ||
+                requestList.includes(friend.id + data.uid) ? (
+                <Button
+                  onClick={() => cancelRequest(friend)}
+                  className="text-[14px] !text-black bg-white"
+                >
+                  -
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => handleRequest(friend)}
+                  className="text-[14px] bg-black"
+                >
+                  +
+                </Button>
+              )}
             </Flex>
-{friendList.includes(data.uid + friend.id) ||
-  friendList.includes(friend.id + data.uid) ? (
-  <Button className="text-[14px] bg-gray-200 cursor-default">
-    Friend
-  </Button>
-) : requestList.includes(data.uid + friend.id) ||
-  requestList.includes(friend.id + data.uid) ? (
-  <Button
-    onClick={() => cancelRequest(friend)}
-    className="text-[14px] !text-black bg-white"
-  >
-    -
-  </Button>
-) : (
-  <Button
-    onClick={() => handleRequest(friend)}
-    className="text-[14px] bg-black"
-  >
-    +
-  </Button>
-)}
-
-
-          </Flex>
-        )))
-        }
+          ))
+        )}
       </div>
     </div>
   );

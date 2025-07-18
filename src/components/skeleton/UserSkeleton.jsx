@@ -4,7 +4,6 @@ const UserSkeleton = () => {
   return (
     <div className="py-[10px] border-b-2 border-gray-300 flex items-center justify-between animate-pulse">
       <div className="flex gap-x-[14px] w-[75%] items-center">
-        {/* Avatar */}
         <div>
           <div className="w-[52px] h-[52px] bg-gray-300 rounded-full" />
         </div>
