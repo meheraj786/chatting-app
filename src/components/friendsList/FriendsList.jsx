@@ -6,18 +6,47 @@ import userImg1 from "../../assets/user1.png";
 import userImg2 from "../../assets/user2.png";
 import userImg3 from "../../assets/user3.png";
 import userImg4 from "../../assets/user4.png";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, push, ref, remove, set } from "firebase/database";
 import { useSelector } from "react-redux";
 import userImg from "../../assets/user.png";
 import UserSkeleton from "../skeleton/UserSkeleton";
+import Button from "../../layouts/Button";
+import { toast } from "react-toastify";
 
 const FriendsList = () => {
-    const [friendList, setFriendList] = useState([]);
-    const [friendListLoading, setFriendListLoading] = useState(true)
-  
-    const db = getDatabase();
-    const data = useSelector((state) => state.userInfo.value);
+  const [friendList, setFriendList] = useState([]);
+  const [friendListLoading, setFriendListLoading] = useState(true);
 
+  const db = getDatabase();
+  const data = useSelector((state) => state.userInfo.value);
+
+  const blockHandler = (friend) => {
+    console.log(friend);
+    let blockerId = "";
+    let blockedId = "";
+    let blockerName = "";
+    let blockedName = "";
+    if (friend.senderid == data.uid) {
+      blockerId = friend.senderid;
+      blockerName = friend.sendername;
+      blockedId = friend.reciverid;
+      blockedName = friend.recivername;
+    } else {
+      blockerId = friend.reciverid;
+      blockerName = friend.reciverName;
+      blockedId = friend.senderid;
+      blockedName = friend.senderName;
+    }
+    console.log(blockerId, blockedId);
+    set(push(ref(db, "blocklist/")), {
+      blockerId: blockerId,
+      blockedId: blockedId,
+      blockerName: blockerName,
+      blockedName: blockedName,
+    });
+    toast.success("Blocked Successful");
+    remove(ref(db, "friendlist/" + friend.id));
+  };
 
   useEffect(() => {
     const requestRef = ref(db, "friendlist/");
@@ -25,13 +54,12 @@ const FriendsList = () => {
       let arr = [];
       snapshot.forEach((item) => {
         const request = item.val();
-        if (request.senderid==data.uid || request.reciverid==data.uid) {
-          arr.push(request)
+        if (request.senderid == data.uid || request.reciverid == data.uid) {
+          arr.push({...request, id:item.key});
         }
-        
       });
       setFriendList(arr);
-      setFriendListLoading(false)
+      setFriendListLoading(false);
     });
   }, []);
 
@@ -45,13 +73,10 @@ const FriendsList = () => {
       {/* <SearchInput /> */}
 
       <div className="overflow-y-auto h-[90%]">
-        {
-          friendListLoading ? (
-            <UserSkeleton/>
-          ) : (friendList.length === 0 ? (
-          <div className="text-center text-gray-500 py-4">
-            No friends yet
-          </div>
+        {friendListLoading ? (
+          <UserSkeleton />
+        ) : friendList.length === 0 ? (
+          <div className="text-center text-gray-500 py-4">No friends yet</div>
         ) : (
           friendList.map((friend, i) => (
             <Flex
@@ -72,22 +97,19 @@ const FriendsList = () => {
 
                 <div className="w-[60%]">
                   <h3 className="text-[14px] font-semibold text-black truncate w-full">
-                    {
-                      friend.senderid==data.uid ? friend.recivername : friend.sendername
-                    }
+                    {friend.senderid == data.uid
+                      ? friend.recivername
+                      : friend.sendername}
                   </h3>
                   <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
                     {friend.lastMsg}
                   </p>
                 </div>
               </Flex>
-              <span className="text-[10px] text-black/50 text-right">
-                Recently
-              </span>
+              <Button onClick={() => blockHandler(friend)}>Block</Button>
             </Flex>
           ))
-        ))
-        }
+        )}
       </div>
     </div>
   );

@@ -43,6 +43,22 @@ const UserList = () => {
     });
   }, []);
 
+const unFriendHandler = (friendId) => {
+  const friendListRef = ref(db, "friendlist/");
+  onValue(friendListRef, (snapshot) => {
+    snapshot.forEach((item) => {
+      const friend = item.val();
+      if (
+        (friend.senderid === data.uid && friend.reciverid === friendId) ||
+        (friend.senderid === friendId && friend.reciverid === data.uid)
+      ) {
+        remove(ref(db, "friendlist/" + item.key));
+        toast.success("Unfriended successfully");
+      }
+    });
+  });
+};
+
   useEffect(() => {
     const requestRef = ref(db, "friendRequest/");
     onValue(requestRef, (snapshot) => {
@@ -54,6 +70,7 @@ const UserList = () => {
       setRequestList(arr);
     });
   }, []);
+
   useEffect(() => {
     const requestRef = ref(db, "friendlist/");
     onValue(requestRef, (snapshot) => {
@@ -137,7 +154,7 @@ const UserList = () => {
               key={idx}
               className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
             >
-              <Flex className="gap-x-[14px] w-[75%] items-center justify-start">
+              <Flex className="gap-x-[14px] w-[65%] items-center justify-start">
                 <div>
                   <img
                     src={user}
@@ -157,8 +174,11 @@ const UserList = () => {
               </Flex>
               {friendList.includes(data.uid + friend.id) ||
               friendList.includes(friend.id + data.uid) ? (
-                <Button className="text-[14px] bg-gray-200 cursor-default">
-                  Friend
+                <Button
+                  onClick={() => unFriendHandler(friend.id)}
+                  className="text-[14px] bg-gray-200 cursor-default"
+                >
+                  Unfriend
                 </Button>
               ) : requestList.includes(data.uid + friend.id) ||
                 requestList.includes(friend.id + data.uid) ? (
