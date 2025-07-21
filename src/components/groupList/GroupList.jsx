@@ -11,7 +11,7 @@ import grpImg4 from '../../assets/grpImg4.jpg'
 import grpImg5 from '../../assets/grpImg5.jpg'
 import { useSelector } from 'react-redux'
 import { getDatabase, onValue, push, ref, set } from 'firebase/database'
-import { toast } from 'react-toastify'
+import { Bounce, toast, ToastContainer } from 'react-toastify'
 import UserSkeleton from '../skeleton/UserSkeleton'
 
 const GroupList = () => {
@@ -65,7 +65,9 @@ const GroupList = () => {
         snapshot.forEach((group) => {
           const groupItem= group.val()
           const groupId=group.key
-          arr.push({...groupItem, id:groupId});
+          if (groupItem.creatorId!=data.uid) {
+            arr.push({...groupItem, id:groupId});
+          }
         });
         setGroups(arr);
         setGroupListLoading(false);
@@ -75,6 +77,19 @@ const GroupList = () => {
 
   return (
     <div className='xl:w-[36%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]'>
+            <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
       {
         createGroup && <div className='absolute  top-1/2 left-1/2 -translate-1/2 flex justify-center items-center w-full z-[9999] h-full bg-gray-200/10 backdrop-blur-[3px]'>
           <div className=' w-1/2 flex flex-col justify-center items-center h-1/2 relative bg-white shadow-2xl'> 
@@ -117,7 +132,6 @@ const GroupList = () => {
             <Flex key={i} className="py-[13px] border-b-2 border-gray-300 items-center justify-between">
               <Flex className="gap-x-[14px] w-[70%] items-center justify-start">
                 <div
-
                 >
                                     <img src={grpImg}  className='avatar border w-[70px] h-[70px]  rounded-full' alt="" />
                 </div>
