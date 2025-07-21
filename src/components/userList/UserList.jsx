@@ -21,6 +21,7 @@ const UserList = () => {
   const [userList, setUserList] = useState([]);
   const [userLoading, setUserLoading] = useState(true);
   const [requestList, setRequestList] = useState([]);
+  const [blockList, setBlockList]= useState([])
   const [friendList, setFriendList] = useState([]);
 
   const db = getDatabase();
@@ -40,6 +41,17 @@ const UserList = () => {
       });
       setUserList(arr);
       setUserLoading(false);
+    });
+  }, []);
+    useEffect(() => {
+    const blockRef = ref(db, "blocklist/");
+    onValue(blockRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        const block = item.val();
+        arr.push(block.blockerId + block.blockedId);
+      });
+      setBlockList(arr);
     });
   }, []);
 
@@ -172,7 +184,10 @@ const unFriendHandler = (friendId) => {
                   </p>
                 </div>
               </Flex>
-              {friendList.includes(data.uid + friend.id) ||
+              { blockList.includes(data.uid + friend.id) ||
+                blockList.includes(friend.id + data.uid) ? (
+                <span className="text-[12px] text-gray-400">Block</span>
+              ) : friendList.includes(data.uid + friend.id) ||
               friendList.includes(friend.id + data.uid) ? (
                 <Button
                   onClick={() => unFriendHandler(friend.id)}
@@ -180,7 +195,7 @@ const unFriendHandler = (friendId) => {
                 >
                   Unfriend
                 </Button>
-              ) : requestList.includes(data.uid + friend.id) ||
+              ) :requestList.includes(data.uid + friend.id) ||
                 requestList.includes(friend.id + data.uid) ? (
                 <Button
                   onClick={() => cancelRequest(friend)}

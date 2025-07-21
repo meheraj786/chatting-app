@@ -8,7 +8,7 @@ import Button from "../../layouts/Button";
 // import userImg3 from "../../assets/user3.png";
 // import userImg4 from "../../assets/user4.png";
 // import userImg5 from "../../assets/user5.png";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, ref, remove } from "firebase/database";
 import { useSelector } from "react-redux";
 
 const BlockedUser = () => {
@@ -36,6 +36,10 @@ const BlockedUser = () => {
       setBlockListLoading(false);
     });
   }, []);
+
+  const unBlockHandler=(id)=>{
+    remove(ref(db, "blocklist/" + id));
+  }
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
@@ -71,7 +75,7 @@ const BlockedUser = () => {
               </div>
             </Flex>
             {user.blockerId == data.uid && (
-              <Button className="text-[12px]">Unblock</Button>
+              <Button onClick={()=>unBlockHandler(user.id)} className="text-[12px]">Unblock</Button>
             )}
           </Flex>
         ))}
