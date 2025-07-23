@@ -55,25 +55,47 @@ const UserList = () => {
     });
   }, []);
 
-const unFriendHandler = (friendId) => {
+// const unFriendHandler = (friendId) => {
+//   const friendListRef = ref(db, "friendlist/");
+//   onValue(friendListRef, (snapshot) => {
+//     snapshot.forEach((item) => {
+//       const friend = item.val();
+//       if (
+//         (friend.senderid === data.uid && friend.reciverid === friendId) ||
+//         (friend.senderid === friendId && friend.reciverid === data.uid)
+//       ) {
+//         remove(ref(db, "friendlist/" + item.key));
+//         toast.success("Unfriended successfully");
+//         console.log("Im unfriend");
+        
+//       }
+//     });
+//   });
+// };
+
+const unFriendHandler = async (friendId) => {
   const friendListRef = ref(db, "friendlist/");
-  onValue(friendListRef, (snapshot) => {
-    snapshot.forEach((item) => {
-      const friend = item.val();
-      if (
-        (friend.senderid === data.uid && friend.reciverid === friendId) ||
-        (friend.senderid === friendId && friend.reciverid === data.uid)
-      ) {
-        remove(ref(db, "friendlist/" + item.key));
-        toast.success("Unfriended successfully");
-      }
-    });
+  const snapshot = await get(friendListRef);
+
+  snapshot.forEach((item) => {
+    const friend = item.val();
+    if (
+      (friend.senderid === data.uid && friend.reciverid === friendId) ||
+      (friend.senderid === friendId && friend.reciverid === data.uid)
+    ) {
+      remove(ref(db, "friendlist/" + item.key));
+      toast.success("Unfriended successfully");
+      console.log("I'm unfriend");
+    }
   });
 };
+
+
 
   useEffect(() => {
     const requestRef = ref(db, "friendRequest/");
     onValue(requestRef, (snapshot) => {
+      
       let arr = [];
       snapshot.forEach((item) => {
         const request = item.val();
@@ -103,6 +125,7 @@ const unFriendHandler = (friendId) => {
       recivername: item.username,
     });
     toast.success("Friend Request Sent");
+    console.log("Im send Request");
   };
 
   const cancelRequest = (friend) => {
@@ -113,13 +136,13 @@ const unFriendHandler = (friendId) => {
         snapshot.forEach((item) => {
           const request = item.val();
           const key = item.key;
-
           if (
             (request.senderid === data.uid &&
               request.reciverid === friend.id) ||
             (request.reciverid === data.uid && request.senderid === friend.id)
           ) {
             toast.success("Friend request canceled");
+            console.log("Im cancel req");
             return remove(ref(db, "friendRequest/" + key));
           }
         });

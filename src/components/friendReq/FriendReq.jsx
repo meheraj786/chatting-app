@@ -20,9 +20,8 @@ import { toast } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
 
 const FriendReq = () => {
-
   const [requestList, setRequestList] = useState([]);
-  const [requestListLoading, setRequestListLoading] = useState(true)
+  const [requestListLoading, setRequestListLoading] = useState(true);
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
 
@@ -30,7 +29,6 @@ const FriendReq = () => {
     const requestRef = ref(db, "friendRequest/");
     onValue(requestRef, (snapshot) => {
       let arr = [];
-
       snapshot.forEach((item) => {
         const request = item.val();
         if (request.reciverid == data.uid) {
@@ -38,39 +36,35 @@ const FriendReq = () => {
         }
       });
       setRequestList(arr);
-      setRequestListLoading(false)
+      setRequestListLoading(false);
     });
   }, []);
+
   const cancelRequest = (friend, dontShow) => {
-    console.log(friend.key);
-    const requestRef = ref(db, "friendRequest/");
-    onValue(requestRef, (snapshot) => {
-      snapshot.forEach((item) => {
-        const key = item.key;
-        if (key === friend.id) {
-          remove(ref(db, "friendRequest/" + key))
-            .then(() => {
-              if (!dontShow) {
-                toast.success("Friend request canceled");
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+    remove(ref(db, "friendRequest/" + friend.id))
+      .then(() => {
+        if (!dontShow) {
+          toast.success("Friend request canceled");
+          console.log("Im cancel req");
         }
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    });
   };
+
   const acceptFriendReq = (user) => {
     set(push(ref(db, "friendlist/")), {
       senderid: user.senderid,
       sendername: user.sendername,
       reciverid: data.uid,
       recivername: data.displayName,
+    }).then(() => {
+      toast.success("Friend Request Accepted");
+      const dontShow = true;
+      cancelRequest(user, dontShow);
+      console.log("Im Im accept");
     });
-    toast.success("Friend Request Sent");
-    const dontShow=true
-    cancelRequest(user, dontShow);
   };
 
   return (
@@ -79,16 +73,13 @@ const FriendReq = () => {
         <h3 className="text-[20px] font-semibold text-black">Friend Request</h3>
         <BsThreeDotsVertical />
       </Flex>
-      {/* <SearchInput /> */}
 
       <div className="overflow-y-auto h-[90%]">
-        {
-          requestListLoading ? (
-            <>
-            <UserSkeleton/>
-            </>
-          ) : (
-            requestList.length > 0 ? (
+        {requestListLoading ? (
+          <>
+            <UserSkeleton />
+          </>
+        ) : requestList.length > 0 ? (
           requestList.map((user) => (
             <Flex
               key={user.id}
@@ -117,48 +108,10 @@ const FriendReq = () => {
               >
                 Accept
               </Button>
-              <Button onClick={() => cancelRequest(user)} className="px-[15px]">
-                Reject
-              </Button>
-            </Flex>
-          ))
-        ) : (
-          <p className="text-gray-500 text-center mt-10">
-            No Friend Request found
-          </p>
-        )
-          )
-        }
-        {/* {requestList.length > 0 ? (
-          requestList.map((user) => (
-            <Flex
-              key={user.id}
-              className="py-[13px] border-b-2 border-gray-300 items-center justify-between"
-            >
-              <Flex className="gap-x-[14px] w-[60%] justify-start">
-                <div>
-                  <img
-                    src={userImg}
-                    className="avatar border w-[70px] h-[70px] rounded-full"
-                    alt=""
-                  />
-                </div>
-                <div className="w-[55%]">
-                  <h3 className="text-[20px] truncate font-semibold text-black w-full">
-                    {user.sendername}
-                  </h3>
-                  <p className="font-medium text-[14px] text-[#4D4D4D]/75 truncate w-full">
-                    {user.senderemail}
-                  </p>
-                </div>
-              </Flex>
               <Button
-                onClick={() => acceptFriendReq(user)}
+                onClick={() => cancelRequest(user)}
                 className="px-[15px]"
               >
-                Accept
-              </Button>
-              <Button onClick={() => cancelRequest(user)} className="px-[15px]">
                 Reject
               </Button>
             </Flex>
@@ -167,7 +120,7 @@ const FriendReq = () => {
           <p className="text-gray-500 text-center mt-10">
             No Friend Request found
           </p>
-        )} */}
+        )}
       </div>
     </div>
   );

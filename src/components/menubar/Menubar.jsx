@@ -32,19 +32,17 @@ const Menubar = () => {
       navigate("/registration");
     }
   }, []);
-  
 
-  
-onAuthStateChanged(auth, (user) => {
-      if (data) {
-        if (user && user.emailVerified) {
-          setVerify(true);
-        } else {
-          setVerify(false);
-        }
-        setLoading(false);
+  onAuthStateChanged(auth, (user) => {
+    if (data) {
+      if (user && user.emailVerified) {
+        setVerify(true);
+      } else {
+        setVerify(false);
       }
-    })
+      setLoading(false);
+    }
+  });
   const signoutHandler = () => {
     setLoading(true);
     signOut(auth)
@@ -72,18 +70,19 @@ onAuthStateChanged(auth, (user) => {
           <Flex className="flex-col fixed xl:static left-[10px] justify-end xl:justify-between xl:w-[186px] z-[9999] bottom-10 xl:top-0 text-white xl:h-[95vh] xl:bg-primary bg-primary/80 backdrop-blur-lg mt-[35px] py-[30px]  xl:pt-[35px] min-w-[100px] xl:pb-[47px] ml-[32px] rounded-[20px]">
             <Flex className="flex-col w-full hidden xl:flex gap-y-[78px]">
               <div>
-              <div className="relative group">
-                <div className="absolute top-1/2 left-1/2 bg-gray-500/40 rounded-full z-[555] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <FaCloudUploadAlt className="text-white absolute z-[555] text-[25px]" />
+                <div className="relative group">
+                  <div className="absolute top-1/2 left-1/2 bg-gray-500/40 rounded-full z-[555] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <FaCloudUploadAlt className="text-white absolute z-[555] text-[25px]" />
+                  </div>
+                  <img
+                    src={dp}
+                    className="avatar relative w-[100px] mx-auto z-[0] h-[100px] rounded-full cursor-pointer"
+                    alt=""
+                  />
                 </div>
-                <img
-                  src={dp}
-                  className="avatar relative w-[100px] mx-auto z-[0] h-[100px] rounded-full cursor-pointer"
-                  alt=""
-                />
-              </div>
-                <p className="text-white text-center font-primary font-bold mt-3">{data.displayName}</p>
-
+                <p className="text-white text-center font-primary font-bold mt-3">
+                  {data.displayName}
+                </p>
               </div>
               <Flex className="flex-col w-full gap-y-7 ">
                 <NavLink
@@ -191,7 +190,6 @@ onAuthStateChanged(auth, (user) => {
               />
             )}
           </Flex>
-
           <Outlet />
         </Flex>
       ) : (

@@ -37,7 +37,7 @@ const MyGroups = () => {
 
     const deleteHandler=(id)=>{
       remove(ref(db, "grouplist/" + id));
-      toast.success("Group Created");
+      toast.success("Group Deleted");
 
     }
 
@@ -101,7 +101,7 @@ const MyGroups = () => {
                 <div
 
                 >
-                  <img src={groupImg}  className='avatar w-[52px] h-[52px] rounded-full' alt="" />
+                  <img src={groupImg}  className='avatar border w-[52px] h-[52px] rounded-full' alt="" />
                 </div>
 
                 <div className="w-[60%]">

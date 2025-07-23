@@ -12,7 +12,7 @@ import userImg from "../../assets/user.png";
 import { getDatabase, onValue, ref, remove } from "firebase/database";
 import { useSelector } from "react-redux";
 import UserSkeleton from "../skeleton/UserSkeleton";
-import { Bounce, ToastContainer } from "react-toastify";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const BlockedUser = () => {
   const db = getDatabase();
@@ -40,7 +40,10 @@ const BlockedUser = () => {
   }, []);
 
   const unBlockHandler = (id) => {
+    console.log("Block");
+    
     remove(ref(db, "blocklist/" + id));
+    toast.success("User Unblocked")
   };
 
   return (

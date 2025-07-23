@@ -33,9 +33,9 @@ const FriendsList = () => {
       blockedName = friend.recivername;
     } else {
       blockerId = friend.reciverid;
-      blockerName = friend.reciverName;
+      blockerName = friend.recivername;
       blockedId = friend.senderid;
-      blockedName = friend.senderName;
+      blockedName = friend.sendername;
     }
     console.log(blockerId, blockedId);
     set(push(ref(db, "blocklist/")), {
