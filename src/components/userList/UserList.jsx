@@ -77,8 +77,6 @@ const unFriendHandler = async (friendId) => {
   });
 };
 
-
-
   useEffect(() => {
     const requestRef = ref(db, "friendRequest/");
     onValue(requestRef, (snapshot) => {
