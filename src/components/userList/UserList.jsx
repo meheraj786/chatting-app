@@ -4,6 +4,7 @@ import SearchInput from "../../layouts/SearchInput";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Button from "../../layouts/Button";
 import user from "../../assets/user.png";
+import { MdClose, MdPersonRemove, MdWarning } from 'react-icons/md';
 import {
   getDatabase,
   ref,
@@ -23,6 +24,9 @@ const UserList = () => {
   const [requestList, setRequestList] = useState([]);
   const [blockList, setBlockList]= useState([])
   const [friendList, setFriendList] = useState([]);
+  const [unfriendConfirm, setUnfriendConfirm]= useState(false)
+  const [selectedFriend, setSelectedFriend] = useState(null);
+
 
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
@@ -55,23 +59,7 @@ const UserList = () => {
     });
   }, []);
 
-// const unFriendHandler = (friendId) => {
-//   const friendListRef = ref(db, "friendlist/");
-//   onValue(friendListRef, (snapshot) => {
-//     snapshot.forEach((item) => {
-//       const friend = item.val();
-//       if (
-//         (friend.senderid === data.uid && friend.reciverid === friendId) ||
-//         (friend.senderid === friendId && friend.reciverid === data.uid)
-//       ) {
-//         remove(ref(db, "friendlist/" + item.key));
-//         toast.success("Unfriended successfully");
-//         console.log("Im unfriend");
-        
-//       }
-//     });
-//   });
-// };
+
 
 const unFriendHandler = async (friendId) => {
   const friendListRef = ref(db, "friendlist/");
@@ -85,7 +73,6 @@ const unFriendHandler = async (friendId) => {
     ) {
       remove(ref(db, "friendlist/" + item.key));
       toast.success("Unfriended successfully");
-      console.log("I'm unfriend");
     }
   });
 };
@@ -95,7 +82,7 @@ const unFriendHandler = async (friendId) => {
   useEffect(() => {
     const requestRef = ref(db, "friendRequest/");
     onValue(requestRef, (snapshot) => {
-      
+
       let arr = [];
       snapshot.forEach((item) => {
         const request = item.val();
@@ -125,7 +112,6 @@ const unFriendHandler = async (friendId) => {
       recivername: item.username,
     });
     toast.success("Friend Request Sent");
-    console.log("Im send Request");
   };
 
   const cancelRequest = (friend) => {
@@ -142,7 +128,6 @@ const unFriendHandler = async (friendId) => {
             (request.reciverid === data.uid && request.senderid === friend.id)
           ) {
             toast.success("Friend request canceled");
-            console.log("Im cancel req");
             return remove(ref(db, "friendRequest/" + key));
           }
         });
@@ -169,6 +154,7 @@ const unFriendHandler = async (friendId) => {
         transition={Bounce}
       />
 
+
       <Flex className="justify-between items-center mb-2">
         <h3 className="text-[20px] font-semibold text-black">Users</h3>
         <BsThreeDotsVertical />
@@ -189,6 +175,60 @@ const unFriendHandler = async (friendId) => {
               key={idx}
               className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
             >
+{
+  unfriendConfirm && (
+    <div className='fixed inset-0 flex justify-center items-center w-full z-[9999] h-full bg-black/20 backdrop-blur-sm'>
+      <div className='w-1/2 max-w-1/2 flex flex-col justify-center items-center min-h-[500px] relative bg-white shadow-2xl gap-y-5 rounded-xl border border-gray-100'> 
+        
+        {/* Close Button */}
+        <span 
+          className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors p-1"
+          onClick={() => setUnfriendConfirm(false)}
+        >
+          <MdClose size={24} />
+        </span>
+
+        {/* Warning Icon */}
+        <div className="mb-4">
+          <div className="p-3 bg-red-100 rounded-full">
+            <MdWarning className="w-8 h-8 text-red-600" />
+          </div>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          Remove Friend?
+        </h3>
+
+        {/* Description */}
+        <p className="text-gray-600 text-center mb-6 px-6">
+          Are you sure you want to remove <span className="font-bold">{selectedFriend?.username}</span> from your friends list?
+        </p>
+
+        {/* Buttons */}
+        <div className="flex space-x-3">
+          <button 
+            onClick={() => setUnfriendConfirm(false)}
+            className="px-6 py-2 cursor-pointer bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={() => {
+              unFriendHandler(selectedFriend?.id); // selectedFriend use করুন
+              setUnfriendConfirm(false);
+            }} 
+            className="flex bg-red-600 px-6 py-2 hover:bg-red-700 hover:text-white rounded-lg text-white font-semibold cursor-pointer transition-colors items-center space-x-2"
+          >
+            <MdPersonRemove />
+            <span>UnFriend</span>
+          </button>
+        </div>
+        
+      </div>
+    </div>
+  ) 
+}
               <Flex className="gap-x-[14px] w-[65%] items-center justify-start">
                 <div>
                   <img
@@ -212,12 +252,15 @@ const unFriendHandler = async (friendId) => {
                 <span className="text-[12px] text-gray-400">Block</span>
               ) : friendList.includes(data.uid + friend.id) ||
               friendList.includes(friend.id + data.uid) ? (
-                <Button
-                  onClick={() => unFriendHandler(friend.id)}
-                  className="text-[14px] bg-gray-200 cursor-default"
-                >
-                  Unfriend
-                </Button>
+<Button
+  onClick={() => {
+    setSelectedFriend(friend); // friend info store করুন
+    setUnfriendConfirm(true);
+  }}
+  className="text-[14px] bg-gray-200 cursor-default"
+>
+  Unfriend
+</Button>
               ) :requestList.includes(data.uid + friend.id) ||
                 requestList.includes(friend.id + data.uid) ? (
                 <Button

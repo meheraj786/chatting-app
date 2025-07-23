@@ -45,7 +45,6 @@ const FriendReq = () => {
       .then(() => {
         if (!dontShow) {
           toast.success("Friend request canceled");
-          console.log("Im cancel req");
         }
       })
       .catch((error) => {
@@ -63,7 +62,6 @@ const FriendReq = () => {
       toast.success("Friend Request Accepted");
       const dontShow = true;
       cancelRequest(user, dontShow);
-      console.log("Im Im accept");
     });
   };
 

@@ -21,7 +21,6 @@ const FriendsList = () => {
   const data = useSelector((state) => state.userInfo.value);
 
   const blockHandler = (friend) => {
-    console.log(friend);
     let blockerId = "";
     let blockedId = "";
     let blockerName = "";
@@ -37,7 +36,6 @@ const FriendsList = () => {
       blockedId = friend.senderid;
       blockedName = friend.sendername;
     }
-    console.log(blockerId, blockedId);
     set(push(ref(db, "blocklist/")), {
       blockerId: blockerId,
       blockedId: blockedId,
