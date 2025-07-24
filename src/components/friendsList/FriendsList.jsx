@@ -16,7 +16,7 @@ import { Bounce, toast, ToastContainer } from "react-toastify";
 const FriendsList = () => {
   const [friendList, setFriendList] = useState([]);
   const [friendListLoading, setFriendListLoading] = useState(true);
-  const [blockPopup, setBlockPopup]= useState(true)
+  const [blockPopup, setBlockPopup]= useState(false)
 
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
@@ -118,8 +118,84 @@ const FriendsList = () => {
                   </p>
                 </div>
               </Flex>
+{blockPopup && (
+  <div className="fixed inset-0 z-[99999] w-full h-full flex justify-center items-center bg-black/50 backdrop-blur-sm">
+    <div className="w-[90%] max-w-md relative flex flex-col justify-center items-center p-8 rounded-2xl shadow-2xl bg-white border border-orange-100">
+      
+      <button 
+        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer text-2xl font-bold hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center"
+        onClick={() => setBlockPopup(false)}
+      >
+        ×
+      </button>
 
-              <Button onClick={() => blockHandler(friend)}>Block</Button>
+      <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+        <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+          <span className="text-white text-2xl">🚫</span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3 mb-4">
+        <img
+          src={userImg}
+          className="w-12 h-12 rounded-full border-2 border-orange-200"
+        />
+        <div>
+          <h4 className="font-semibold text-gray-800">
+            {friend.senderid == data.uid
+                      ? friend.recivername
+                      : friend.sendername}
+          </h4>
+          <p className="text-sm text-gray-500">Will be blocked</p>
+        </div>
+      </div>
+
+      <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
+        Block User
+      </h2>
+
+      <p className="text-gray-600 text-center mb-8 leading-relaxed">
+        Are you sure you want to block this user?
+        <br />
+        <span className="text-orange-600 font-semibold">They won't be able to message you.</span>
+      </p>
+
+      <div className="flex gap-4 w-full">
+        <button
+          onClick={() => setBlockPopup(false)}
+          className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:shadow-md"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            blockHandler(friend);
+            setBlockPopup(false);
+          }}
+          className="flex-1 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
+        >
+          Block
+        </button>
+      </div>
+
+      <div className="mt-6 p-3 bg-orange-50 border border-orange-200 rounded-lg w-full">
+        <p className="text-orange-700 text-sm text-center flex items-center justify-center gap-2">
+          <span className="text-orange-500">ℹ️</span>
+          You can unblock this user anytime from Blocked Users List
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
+              <button
+          onClick={() => {
+            setBlockPopup(true);
+          }}
+          className="px-3 py-2 bg-red-600 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
+        >
+          Block
+        </button>
             </Flex>
           ))
         )}
