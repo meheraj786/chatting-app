@@ -108,6 +108,10 @@ const BlockedUser = () => {
             </Flex>
           ))
         )}
+        {!blockListLoading && blockList.length==0 && (
+          <p className="mt-5 text-gray-500 text-center italic">No Block User Found</p>
+        )
+      }
       </div>
     </div>
   );

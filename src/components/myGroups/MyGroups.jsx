@@ -33,7 +33,7 @@ const MyGroups = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [groupMemberList, setGroupMemberList] = useState([]);
   const [memberGroup, setMemberGroup] = useState([]);
-  const [grpDeletePopup, setGrpDeletePopup] = useState(true);
+  const [grpDeletePopup, setGrpDeletePopup] = useState(false);
   const data = useSelector((state) => state.userInfo.value);
 
   const toggleRequests = (group) => {
@@ -208,17 +208,20 @@ const MyGroups = () => {
                 </Flex>
 
                 <div className="flex gap-2">
-                  <Button
-                    onClick={() => toggleRequests(group)}
-                    className="text-[12px] relative px-3 py-1"
-                  >
-                    Info{" "}
-                    {getRequestsForGroup(group.id).length > 0 && (
-                      <span className="p-1 absolute -right-3 -top-2  text-[12px] rounded-full bg-red-500">
-                        {getRequestsForGroup(group.id).length}
-                      </span>
-                    )}
-                  </Button>
+                  <button
+  onClick={() => toggleRequests(group)}
+  className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium  bg-black text-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none hover:text-black cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+>
+  <span className="">
+    Info
+  </span>
+  
+  {getRequestsForGroup(group.id).length > 0 && (
+    <span className="absolute -right-2 -top-2 min-w-[18px] h-[18px] flex items-center justify-center text-[9px] font-bold text-white bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-full border-2 border-white shadow-lg transform scale-100 hover:scale-110 transition-transform duration-200">
+      {getRequestsForGroup(group.id).length}
+    </span>
+  )}
+</button>
                   {grpDeletePopup && (
                     <div className="fixed inset-0 z-[99999] w-full h-full flex justify-center items-center bg-black/50 backdrop-blur-sm">
                       <div className="w-[90%] max-w-md relative flex flex-col justify-center items-center p-8 rounded-2xl shadow-2xl bg-white border border-red-100">
@@ -278,7 +281,7 @@ const MyGroups = () => {
                   )}
                   <button
                     onClick={() => setGrpDeletePopup(true)}
-                    className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
                   >
                     <FaTrashCan className="text-sm" />
                   </button>
@@ -286,6 +289,7 @@ const MyGroups = () => {
               </Flex>
             </div>
           ))
+          
         )}
 
         {memberGroup.map((req) => (
@@ -318,6 +322,11 @@ const MyGroups = () => {
             </Flex>
           </Flex>
         ))}
+              {
+        !groupListLoading && groups.length==0 && memberGroup.length==0 && (
+          <p className="mt-5 text-gray-500 text-center italic">No Groups Found</p>
+        )
+      }
       </div>
 
       {showGroupInfo && selectedGroup && (
@@ -489,6 +498,8 @@ const MyGroups = () => {
           </div>
         </div>
       )}
+
+
     </div>
   );
 };

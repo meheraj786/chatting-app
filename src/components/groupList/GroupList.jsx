@@ -147,7 +147,7 @@ const GroupList = () => {
                 placeholder=" "
               />
               <label
-                htmlFor="floating_outlined" // for এর বদলে htmlFor
+                htmlFor="floating_outlined"
                 className="absolute text-sm text-secondary/70 duration-300 transform top-2 z-10 origin-[0] bg-white -translate-y-4 px-4 peer-focus:px-4 peer-focus:text-secondary/70 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-2/5 rtl:peer-focus:left-auto start-4"
               >
                 Group Name
@@ -213,6 +213,10 @@ const GroupList = () => {
               </Flex>
             ))
         )}
+                      {!groupListLoading && groups.length==0 && (
+          <p className="mt-5 text-gray-500 text-center italic">No Groups Found</p>
+        )
+      }
       </div>
     </div>
   );

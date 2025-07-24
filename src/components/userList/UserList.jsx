@@ -178,7 +178,7 @@ const unFriendHandler = async (friendId) => {
     <div className='fixed inset-0 flex justify-center items-center w-full z-[9999] h-full bg-black/20 backdrop-blur-sm'>
       <div className='w-1/2 max-w-1/2 flex flex-col justify-center items-center min-h-[500px] relative bg-white shadow-2xl gap-y-5 rounded-xl border border-gray-100'> 
         
-        {/* Close Button */}
+    
         <span 
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors p-1"
           onClick={() => setUnfriendConfirm(false)}
@@ -186,24 +186,24 @@ const unFriendHandler = async (friendId) => {
           <MdClose size={24} />
         </span>
 
-        {/* Warning Icon */}
+    
         <div className="mb-4">
           <div className="p-3 bg-red-100 rounded-full">
             <MdWarning className="w-8 h-8 text-red-600" />
           </div>
         </div>
 
-        {/* Title */}
+    
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           Remove Friend?
         </h3>
 
-        {/* Description */}
+     
         <p className="text-gray-600 text-center mb-6 px-6">
           Are you sure you want to remove <span className="font-bold">{selectedFriend?.username}</span> from your friends list?
         </p>
 
-        {/* Buttons */}
+     
         <div className="flex space-x-3">
           <button 
             onClick={() => setUnfriendConfirm(false)}
@@ -213,7 +213,7 @@ const unFriendHandler = async (friendId) => {
           </button>
           <button 
             onClick={() => {
-              unFriendHandler(selectedFriend?.id); // selectedFriend use করুন
+              unFriendHandler(selectedFriend?.id);
               setUnfriendConfirm(false);
             }} 
             className="flex bg-red-600 px-6 py-2 hover:bg-red-700 hover:text-white rounded-lg text-white font-semibold cursor-pointer transition-colors items-center space-x-2"
@@ -252,7 +252,7 @@ const unFriendHandler = async (friendId) => {
               friendList.includes(friend.id + data.uid) ? (
 <Button
   onClick={() => {
-    setSelectedFriend(friend); // friend info store করুন
+    setSelectedFriend(friend); 
     setUnfriendConfirm(true);
   }}
   className="text-[14px] bg-gray-200 cursor-default"

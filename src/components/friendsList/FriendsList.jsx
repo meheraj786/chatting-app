@@ -43,6 +43,11 @@ const FriendsList = () => {
       blockerName: blockerName,
       blockedName: blockedName,
     });
+    set(push(ref(db, "notification/")), {
+      notifyReciver: blockedId,
+      type: "block",
+      content: `${blockerName} blocked you`
+    });
     toast.success("Blocked Successful");
     remove(ref(db, "friendlist/" + friend.id));
   };
