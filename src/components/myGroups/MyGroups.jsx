@@ -7,6 +7,8 @@ import grpImg1 from "../../assets/grpImg1.png";
 import grpImg2 from "../../assets/grpImg2.png";
 import grpImg3 from "../../assets/grpImg3.png";
 import grpImg4 from "../../assets/grpImg4.jpg";
+import { FaTrashCan } from "react-icons/fa6";
+
 import {
   getDatabase,
   onValue,
@@ -26,13 +28,19 @@ const MyGroups = () => {
   const [joinReq, setJoinReq] = useState([]);
   const [showRequests, setShowRequests] = useState({});
   const [groupListLoading, setGroupListLoading] = useState(true);
+  const [showGroupInfo, setShowGroupInfo] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [groupMemberList, setGroupMemberList] = useState([])
   const data = useSelector((state) => state.userInfo.value);
 
-  const toggleRequests = (groupId) => {
-    setShowRequests((prev) => ({
-      ...prev,
-      [groupId]: !prev[groupId],
-    }));
+  const toggleRequests = (group) => {
+    setSelectedGroup(group);
+    setShowGroupInfo(true);
+  };
+
+  const closePopup = () => {
+    setShowGroupInfo(false);
+    setSelectedGroup(null);
   };
 
   const getRequestsForGroup = (groupId) => {
@@ -92,6 +100,30 @@ const MyGroups = () => {
     toast.success(`Request from ${request.wantedName} rejected`);
   };
 
+  useEffect(() => {
+    const memberRef = ref(db, "groupmembers/");
+    onValue(memberRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        const request = item.val();
+        if (request.creatorId == data.uid) {
+          arr.push({ ...request, id: item.key });
+        }
+      });
+      setGroupMemberList(arr);
+    });
+  }, []);
+  
+
+  const getMemberList=(groupId)=>{
+    return groupMemberList.filter((item)=> item.groupId==groupId)
+  }
+
+  const kickHandler= (group)=>{
+    remove(ref(db, "groupmembers/" + group.id));
+    toast.success(`${group.memberName} removed successfully`);
+  }
+
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
       <ToastContainer
@@ -121,7 +153,7 @@ const MyGroups = () => {
           </>
         ) : (
           groups.map((group) => (
-            <div className="border-b-2 border-gray-300 pb-4 mb-4">
+            <div key={group.id} className="border-b-2 border-gray-300 pb-4 mb-4">
               <Flex className="py-[10px] items-center justify-between">
                 <Flex className="gap-x-[14px] w-[65%] items-center justify-start">
                   <div>
@@ -144,64 +176,157 @@ const MyGroups = () => {
 
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => toggleRequests(group.id)}
-                    className="text-[12px] px-3 py-1"
+                    onClick={() => toggleRequests(group)}
+                    className="text-[12px] relative px-3 py-1"
                   >
-                    {showRequests[group.id] ? "Hide" : "Show"} (
-                    {getRequestsForGroup(group.id).length})
+                    Info {
+                      getRequestsForGroup(group.id).length >0 && (
+                        <span className="p-1 absolute -right-3 -top-2  text-[12px] rounded-full bg-red-500">{getRequestsForGroup(group.id).length}</span>
+                      )
+                    }
                   </Button>
                   <Button
                     onClick={() => deleteHandler(group.id)}
                     className="text-[12px] !font-normal px-3 py-1 !bg-gray-500 hover:!bg-gray-600"
                   >
-                    Delete
+                    <FaTrashCan />
+
                   </Button>
                 </div>
               </Flex>
-
-              {showRequests[group.id] && (
-                <div className="ml-16 mt-2 bg-gray-50 rounded-lg p-3">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">
-                    Join Requests:
-                  </h4>
-                  {getRequestsForGroup(group.id).length > 0 ? (
-                    <ul className="space-y-2">
-                      {getRequestsForGroup(group.id).map((req) => (
-                        <li
-                          key={req.id}
-                          className="flex items-center justify-between bg-white p-2 rounded border"
-                        >
-                          <span className="text-sm text-gray-800 font-medium">
-                            {req.wantedName}
-                          </span>
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => acceptRequest(req)}
-                              className="text-xs px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-                            >
-                              Accept
-                            </button>
-                            <button
-                              onClick={() => rejectRequest(req)}
-                              className="text-xs px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-sm text-gray-500 italic">
-                      No pending requests
-                    </p>
-                  )}
-                </div>
-              )}
             </div>
           ))
         )}
       </div>
+
+      {showGroupInfo && selectedGroup && (
+        <div className='fixed inset-0 flex justify-center items-center w-full z-[9999] h-full bg-white/10 backdrop-blur-[5px]'>
+          <div className="p-6 relative bg-white w-1/2 max-h-[80vh] rounded-lg shadow-lg overflow-hidden">
+            <span 
+              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 cursor-pointer text-2xl font-bold"
+              onClick={closePopup}
+            >
+              ×
+            </span>
+
+            <div className="mb-4">
+              <h3 className="text-3xl font-semibold text-gray-800 mb-2">
+                Group Information
+              </h3>
+              <p className="text-2xl text-gray-600">
+                <strong>{selectedGroup.groupName}</strong>
+              </p>
+            </div>
+            <Flex className="items-start">
+            <div className="overflow-y-auto w-1/2  max-h-[400px]">
+              {getRequestsForGroup(selectedGroup.id).length > 0 ? (
+                <div>
+                  <h3 className="text-[26px] mb-2">Group Join Requests</h3>
+                  {getRequestsForGroup(selectedGroup.id).map((req, idx) => (
+                    <Flex>
+                    <Flex
+                      key={req.id}
+                      className="py-[10px] border-b-2 border-gray-300 items-start justify-start"
+                    >
+                      <Flex className="gap-x-[5px] items-center  justify-start">
+                        <div>
+                          <img
+                            src={groupImg}
+                            className="avatar border w-[52px] h-[52px] rounded-full"
+                            alt=""
+                          />
+                        </div>
+
+                        <div className="w-[40%]">
+                          <h3 className="text-[14px] font-semibold text-black truncate w-full">
+                            {req.wantedName}
+                          </h3>
+                          <p className="text-[10px] text-black/50 truncate w-full">
+                            Wants to join group
+                          </p>
+                        </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => acceptRequest(req)}
+                          className="text-[14px]"
+                        >
+                          Accept
+                        </Button>
+                        <Button
+                          onClick={() => rejectRequest(req)}
+                          className="text-[14px] "
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                      </Flex>
+
+                    </Flex>
+                    </Flex>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500 italic text-center py-8">
+                  No pending requests
+                </p>
+              )}
+            </div>
+            <div className="overflow-y-auto w-1/2 max-h-[400px]">
+              {getMemberList(selectedGroup.id).length > 0 ? (
+                <div>
+                  <h3 className="text-[26px] mb-2">Group Join Requests</h3>
+                  {getMemberList(selectedGroup.id).map((req, idx) => (
+                    <Flex>
+                    <Flex
+                      key={req.id}
+                      className="py-[10px] border-b-2 border-gray-300 items-start justify-between"
+                    >
+                      
+                    
+                      <Flex className="gap-x-[14px]  items-center w-full  justify-start">
+                        <div>
+                          <img
+                            src={groupImg}
+                            className="avatar border w-[52px] h-[52px] rounded-full"
+                            alt=""
+                          />
+                        </div>
+
+                        <div className="w-[60%]">
+                          <h3 className="text-[14px] font-semibold text-black truncate w-full">
+                            {req.memberName}
+                          </h3>
+                          <p className="text-[10px] text-black/50 truncate w-full">
+                            Wants to join group
+                          </p>
+                        </div>
+                        <Button
+                          onClick={() => kickHandler(req)}
+                          className="text-[14px] bg-gray-200 hover:bg-gray-300"
+                        >
+                          Kick
+                        </Button>
+                      </Flex>
+
+                    </Flex>
+                    </Flex>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500 italic text-center py-8">
+                  No Members
+                </p>
+              )}
+            </div>
+
+            </Flex>
+
+            <Flex>
+
+            </Flex>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

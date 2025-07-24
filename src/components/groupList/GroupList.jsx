@@ -11,6 +11,7 @@ import grpImg4 from "../../assets/grpImg4.jpg";
 import grpImg5 from "../../assets/grpImg5.jpg";
 import { useSelector } from "react-redux";
 import {
+  get,
   getDatabase,
   onValue,
   push,
@@ -24,6 +25,7 @@ import UserSkeleton from "../skeleton/UserSkeleton";
 const GroupList = () => {
   const [createGroup, setCreateGroup] = useState(false);
   const [sendReq, setSendReq] = useState([]);
+  const [groupMemberList, setGroupMemberList]= useState([])
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
   const [groups, setGroups] = useState([]);
@@ -65,6 +67,19 @@ const GroupList = () => {
     setCreateGroup(false);
     toast.success("Group Created");
   };
+    useEffect(() => {
+      const memberRef = ref(db, "groupmembers/");
+      onValue(memberRef, (snapshot) => {
+        let arr = [];
+        snapshot.forEach((item) => {
+          const request = item.val();
+          if (request.memberId == data.uid) {
+            arr.push({ ...request, id: item.key });
+          }
+        });
+        setGroupMemberList(arr);
+      });
+    }, []);
 
   useEffect(() => {
     const groupList = ref(db, "grouplist/");
@@ -173,8 +188,6 @@ const GroupList = () => {
         {groupListLoading ? (
           <>
             <UserSkeleton />
-            <UserSkeleton />
-            <UserSkeleton />
           </>
         ) : (
           groups.map((group, i) => (
@@ -220,6 +233,54 @@ const GroupList = () => {
             </Flex>
           ))
         )}
+        {
+          groupListLoading ? (
+            <UserSkeleton />
+          ) : (
+            groupMemberList.map((group, i)=>{
+              <Flex
+              key={i}
+              className="py-[13px] border-b-2 border-gray-300 items-center justify-between"
+            >
+              <Flex className="gap-x-[14px] w-[70%] items-center justify-start">
+                <div>
+                  <img
+                    src={grpImg}
+                    className="avatar border w-[70px] h-[70px]  rounded-full"
+                    alt=""
+                  />
+                </div>
+
+                <div className="w-[60%]">
+                  <h3 className="text-[20px] font-semibold text-black truncate w-full">
+                    {group.groupName}
+                  </h3>
+                  <p className="font-medium text-[14px] text-[#4D4D4D]/75 truncate w-full">
+                    {group.lastMsg}
+                  </p>
+                </div>
+              </Flex>
+              {sendReq.some(
+                (req) => req.id === group.id && req.userId === data.uid
+              ) ? (
+                <Button
+                  onClick={() => cancelJoinRequest(group)}
+                  className="px-[22px] text-[14px]"
+                >
+                  Cancel
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => joinRequest(group)}
+                  className="px-[22px] text-[14px]"
+                >
+                  Leave
+                </Button>
+              )}
+            </Flex>
+          })
+          )
+        }
       </div>
     </div>
   );
