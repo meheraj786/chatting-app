@@ -16,6 +16,7 @@ import { Bounce, toast, ToastContainer } from "react-toastify";
 const FriendsList = () => {
   const [friendList, setFriendList] = useState([]);
   const [friendListLoading, setFriendListLoading] = useState(true);
+  const [blockPopup, setBlockPopup]= useState(true)
 
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
@@ -117,6 +118,7 @@ const FriendsList = () => {
                   </p>
                 </div>
               </Flex>
+
               <Button onClick={() => blockHandler(friend)}>Block</Button>
             </Flex>
           ))
