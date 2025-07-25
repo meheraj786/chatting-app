@@ -114,8 +114,8 @@ const cancelRequest = (friend, dontShow) => {
                   <h3 className="text-[20px] truncate font-semibold text-black w-full">
                     {user.sendername}
                   </h3>
-                  <p className="font-medium text-[14px] text-[#4D4D4D]/75 truncate w-full">
-                    {user.senderemail}
+                  <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
+                    {user.time}
                   </p>
                 </div>
               </Flex>

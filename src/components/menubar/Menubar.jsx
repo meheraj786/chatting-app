@@ -101,7 +101,7 @@ const Menubar = () => {
                     className="avatar relative w-[100px] mx-auto z-[0] h-[100px] rounded-full cursor-pointer"
                     alt=""
                   /> */}
-                  <LetterAvatar className="w-[100px] h-[100px]">
+                  <LetterAvatar className="w-[100px] h-[100px] !text-4xl">
                       {data.displayName.charAt(0)}
                     </LetterAvatar>
                 </div>

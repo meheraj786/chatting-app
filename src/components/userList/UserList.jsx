@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import LetterAvatar from "../../layouts/LetterAvatar";
+import time from "../time/time";
 
 const UserList = () => {
   const [userList, setUserList] = useState([]);
@@ -109,6 +110,7 @@ const unFriendHandler = async (friendId) => {
       sendername: data.displayName,
       reciverid: item.id,
       recivername: item.username,
+      time: time()
     });
     toast.success("Friend Request Sent");
   };
