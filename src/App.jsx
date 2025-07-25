@@ -9,6 +9,7 @@ import Setting from "./pages/Setting";
 import Menubar from "./components/menubar/Menubar";
 import { Provider } from "react-redux";
 import store from "./store/store";
+import Notification from "./pages/Notification";
 
 function App() {
   const router = createBrowserRouter([
@@ -39,6 +40,10 @@ function App() {
         {
           path: "setting",
           element: <Setting />,
+        },
+        {
+          path: "notification",
+          element: <Notification />,
         },
       ],
     },

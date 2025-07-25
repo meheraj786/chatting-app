@@ -3,7 +3,7 @@ import Flex from "../../layouts/Flex";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import { VscHome } from "react-icons/vsc";
 import { AiFillMessage } from "react-icons/ai";
-import { MdOutlineSettings } from "react-icons/md";
+import { MdOutlineNotifications, MdOutlineSettings } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { GrLogout } from "react-icons/gr";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -90,11 +90,12 @@ const Menubar = () => {
                   className={({ isActive }) =>
                     isActive
                       ? "relative navItem bg-primary text-primary  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-[10px] before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
-                      : "relative navItem bg-primary text-white  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-full before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
+                      : "relative navItem bg-primary text-[#C3C3C3]  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-full before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
                   }
                 >
                   <VscHome className="text-[46px] font-bold mx-auto" />
                 </NavLink>
+                
 
                 <NavLink
                   to="/chat"
@@ -105,6 +106,17 @@ const Menubar = () => {
                   }
                 >
                   <AiFillMessage className="text-[46px] font-bold mx-auto" />
+                </NavLink>
+                <NavLink
+                  to="/notification"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "relative navItem bg-primary text-primary  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-[10px] before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
+                      : "relative navItem bg-primary text-[#C3C3C3]  mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-full before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
+                  }
+                >
+                  <MdOutlineNotifications className="text-[46px] font-bold mx-auto" />
+
                 </NavLink>
                 <NavLink
                   to="/setting"
