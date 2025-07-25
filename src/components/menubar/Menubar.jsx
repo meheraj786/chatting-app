@@ -17,14 +17,17 @@ import { ImExit } from "react-icons/im";
 import { signOut } from "firebase/auth";
 import dp from "../../assets/dp.png";
 import { userInfo } from "../../features/user/userSlice";
+import { getDatabase, onValue, ref } from "firebase/database";
 
 const Menubar = () => {
   const auth = getAuth();
   const navigate = useNavigate();
+  const db= getDatabase()
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [verify, setVerify] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [notification, setNotification]= useState([])
   const data = useSelector((state) => state.userInfo.value);
 
   useEffect(() => {
@@ -32,6 +35,24 @@ const Menubar = () => {
       navigate("/registration");
     }
   }, []);
+
+    useEffect(() => {
+      const notificationRef = ref(db, "notification/");
+      onValue(notificationRef, (snapshot) => {
+        let arr = [];
+        snapshot.forEach((item) => {
+          const notification = item.val();
+  
+          if (notification.notifyReciver == data.uid) {
+            arr.push({
+              id: item.key,
+              ...notification,
+            });
+          }
+        });
+        setNotification(arr);
+      });
+    }, []);
 
   onAuthStateChanged(auth, (user) => {
     if (data) {
@@ -116,6 +137,12 @@ const Menubar = () => {
                   }
                 >
                   <MdOutlineNotifications className="text-[46px] font-bold mx-auto" />
+                  {
+                    notification.length>0 && (
+<span className="w-5 h-5 flex justify-center items-center bg-red-600 text-white rounded-full absolute top-1 left-7 text-[12px]">{notification.length}</span>
+                    )
+                  }
+                  
 
                 </NavLink>
                 <NavLink

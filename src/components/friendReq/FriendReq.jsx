@@ -40,17 +40,24 @@ const FriendReq = () => {
     });
   }, []);
 
-  const cancelRequest = (friend, dontShow) => {
-    remove(ref(db, "friendRequest/" + friend.id))
-      .then(() => {
-        if (!dontShow) {
-          toast.success("Friend request canceled");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+const cancelRequest = (friend, dontShow) => {
+  remove(ref(db, "friendRequest/" + friend.id))
+    .then(() => {
+      if (!dontShow) {
+        toast.success("Friend request canceled");
+        set(push(ref(db, "notification/")), {
+          notifyReciver: friend.senderid,
+          type: "negative",
+          content: `${friend.recivername} canceled your friend request`,
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      toast.error("Failed to cancel request");
+    });
+};
+
 
   const acceptFriendReq = (user) => {
     set(push(ref(db, "friendlist/")), {
@@ -60,6 +67,11 @@ const FriendReq = () => {
       recivername: data.displayName,
     }).then(() => {
       toast.success("Friend Request Accepted");
+      set(push(ref(db, "notification/")), {
+          notifyReciver: user.senderid,
+          type: "positive",
+          content: `${user.recivername} accept your friend request`,
+        });
       const dontShow = true;
       cancelRequest(user, dontShow);
     });

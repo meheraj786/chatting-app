@@ -9,7 +9,7 @@ import userImg from "../../assets/user.png";
 // import userImg3 from "../../assets/user3.png";
 // import userImg4 from "../../assets/user4.png";
 // import userImg5 from "../../assets/user5.png";
-import { getDatabase, onValue, ref, remove } from "firebase/database";
+import { getDatabase, onValue, push, ref, remove, set } from "firebase/database";
 import { useSelector } from "react-redux";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import { Bounce, toast, ToastContainer } from "react-toastify";
@@ -39,10 +39,15 @@ const BlockedUser = () => {
     });
   }, []);
 
-  const unBlockHandler = (id) => {
+  const unBlockHandler = (user) => {
     console.log("Block");
+    set(push(ref(db, "notification/")), {
+          notifyReciver: user.blockedId,
+          type: "positive",
+          content: `${user.blockerName} unblocked you`
+        });
     
-    remove(ref(db, "blocklist/" + id));
+    remove(ref(db, "blocklist/" + user.id));
     toast.success("User Unblocked")
   };
 
@@ -99,7 +104,7 @@ const BlockedUser = () => {
               </Flex>
               {user.blockerId == data.uid && (
                 <Button
-                  onClick={() => unBlockHandler(user.id)}
+                  onClick={() => unBlockHandler(user)}
                   className="text-[12px]"
                 >
                   Unblock
