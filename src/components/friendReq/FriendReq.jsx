@@ -18,6 +18,8 @@ import userImg4 from "../../assets/user4.png";
 import Flex from "../../layouts/Flex";
 import { toast } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
+import time from "../time/time";
+import LetterAvatar from "../../layouts/LetterAvatar";
 
 const FriendReq = () => {
   const [requestList, setRequestList] = useState([]);
@@ -48,6 +50,7 @@ const cancelRequest = (friend, dontShow) => {
         set(push(ref(db, "notification/")), {
           notifyReciver: friend.senderid,
           type: "negative",
+          time: time(),
           content: `${friend.recivername} canceled your friend request`,
         });
       }
@@ -70,6 +73,7 @@ const cancelRequest = (friend, dontShow) => {
       set(push(ref(db, "notification/")), {
           notifyReciver: user.senderid,
           type: "positive",
+          time: time(),
           content: `${user.recivername} accept your friend request`,
         });
       const dontShow = true;
@@ -97,11 +101,14 @@ const cancelRequest = (friend, dontShow) => {
             >
               <Flex className="gap-x-[14px] w-[60%] justify-start">
                 <div>
-                  <img
+                  {/* <img
                     src={userImg}
                     className="avatar border w-[70px] h-[70px] rounded-full"
                     alt=""
-                  />
+                  /> */}
+                  <LetterAvatar>
+                      {user.sendername.charAt(0)}
+                    </LetterAvatar>
                 </div>
                 <div className="w-[55%]">
                   <h3 className="text-[20px] truncate font-semibold text-black w-full">

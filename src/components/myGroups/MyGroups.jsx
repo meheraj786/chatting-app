@@ -22,6 +22,9 @@ import { useSelector } from "react-redux";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import Button from "../../layouts/Button";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import time from "../time/time";
+import LetterAvatar from "../../layouts/LetterAvatar";
+import { IoClose, IoWarningOutline } from "react-icons/io5";
 
 const MyGroups = () => {
   const db = getDatabase();
@@ -35,6 +38,7 @@ const MyGroups = () => {
   const [memberGroup, setMemberGroup] = useState([]);
   const [grpDeletePopup, setGrpDeletePopup] = useState(false);
   const data = useSelector((state) => state.userInfo.value);
+  const [groupLeavePopup, setGroupLeavePopup] = useState(false);
 
   const toggleRequests = (group) => {
     setSelectedGroup(group);
@@ -119,6 +123,7 @@ const MyGroups = () => {
     set(push(ref(db, "notification/")), {
       notifyReciver: request.wantedId,
       type: "positive",
+      time: time(),
       content: `Your request to join the group "${request.groupName}" has been approved. Welcome to the group!`,
     });
 
@@ -131,6 +136,7 @@ const MyGroups = () => {
     set(push(ref(db, "notification/")), {
       notifyReciver: request.wantedId,
       type: "negative",
+      time: time(),
       content: `Your request to join the group "${request.groupName}" has been Rejected.`,
     });
     toast.success(`Request from ${request.wantedName} rejected`);
@@ -156,6 +162,7 @@ const MyGroups = () => {
     set(push(ref(db, "notification/")), {
       notifyReciver: item.creatorId,
       type: "negative",
+      time: time(),
       content: `"${item.memberName}" has left the group "${item.groupName}".`,
     });
   };
@@ -169,7 +176,8 @@ const MyGroups = () => {
     set(push(ref(db, "notification/")), {
       notifyReciver: group.memberId,
       type: "negative",
-      content: `You have been removed from the group "${group.groupName}".`
+      time: time(),
+      content: `You have been removed from the group "${group.groupName}".`,
     });
     toast.success(`${group.memberName} removed successfully`);
   };
@@ -210,11 +218,12 @@ const MyGroups = () => {
               <Flex className="py-[10px] items-center justify-between">
                 <Flex className="gap-x-[14px] w-[65%] items-center justify-start">
                   <div>
-                    <img
+                    {/* <img
                       src={groupImg}
                       className="avatar border w-[52px] h-[52px] rounded-full"
                       alt=""
-                    />
+                    /> */}
+                    <LetterAvatar>{group.groupName.charAt(0)}</LetterAvatar>
                   </div>
 
                   <div className="w-[40%]">
@@ -315,15 +324,18 @@ const MyGroups = () => {
               key={req.id}
               className="py-[10px] border-b-2 border-gray-300 w-full items-start justify-between"
             >
-              <Flex className="gap-x-[5px] items-center w-full justify-between
+              <Flex
+                className="gap-x-[5px] items-center w-full justify-between
               
-              3">
+              3"
+              >
                 <div>
-                  <img
+                  {/* <img
                     src={groupImg}
                     className="avatar border w-[52px] h-[52px] rounded-full"
                     alt=""
-                  />
+                  /> */}
+                  <LetterAvatar>{req.groupName.charAt(0)}</LetterAvatar>
                 </div>
 
                 <div className="w-[40%]">
@@ -335,7 +347,60 @@ const MyGroups = () => {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => leaveHandler(req)}>Leave</Button>
+                  <Button onClick={() => setGroupLeavePopup(true)}>Leave</Button>
+                  {groupLeavePopup && (
+                    <div className="fixed inset-0 z-[99999] flex justify-center items-center bg-black/40 backdrop-blur-sm">
+                      <div className="w-full max-w-md mx-4 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+                        <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
+                              <IoWarningOutline className="w-5 h-5 text-red-500" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900">
+                              Leave Group
+                            </h3>
+                          </div>
+                          <button
+                            onClick={() => setGroupLeavePopup(false)}
+                            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+                          >
+                            <IoClose className="w-4 h-4 text-gray-500" />
+                          </button>
+                        </div>
+
+                        <div className="p-6">
+                          <p className="text-gray-600 mb-2">
+                            Are you sure you want to leave
+                          </p>
+                          <p className="font-medium text-gray-900 mb-4">
+                            "{req.groupName}"?
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            You'll no longer receive messages from this group
+                            and won't be able to participate in conversations.
+                          </p>
+                        </div>
+
+                        <div className="flex gap-3 p-6 pt-0">
+                          <button
+                            onClick={() => setGroupLeavePopup(false)}
+                            className="flex-1 px-4 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => {
+                              leaveHandler(req);
+                              setGroupLeavePopup(false);
+                            }}
+                            className="flex-1 px-4 py-2.5 text-white bg-red-500 hover:bg-red-600 rounded-lg font-medium transition-colors"
+                          >
+                            Leave Group
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </Flex>
             </Flex>

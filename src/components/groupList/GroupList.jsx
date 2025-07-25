@@ -21,6 +21,8 @@ import {
 } from "firebase/database";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
+import LetterAvatar from "../../layouts/LetterAvatar";
+import { IoClose } from "react-icons/io5";
 
 const GroupList = () => {
   const [createGroup, setCreateGroup] = useState(false);
@@ -128,37 +130,64 @@ const GroupList = () => {
         theme="dark"
         transition={Bounce}
       />
-      {createGroup && (
-        <div className="fixed top-0 left-0 flex justify-center items-center w-full z-[9999] h-full bg-gray-200/10 backdrop-blur-[3px]">
-          <div className="w-1/2 flex flex-col justify-center items-center h-1/2 relative bg-white shadow-2xl rounded-lg">
-            <span
-              onClick={() => setCreateGroup(false)}
-              className="absolute font-semibold text-[22px] cursor-pointer right-4 top-4"
-            >
-              ✕
-            </span>
-            <div className="relative">
-              <input
-                type="text"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                id="floating_outlined"
-                className="block w-full px-[26px] py-[26px] xl:w-[368px] text-xl text-secondary font-semibold bg-transparent rounded-lg border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-secondary/30 peer"
-                placeholder=" "
-              />
-              <label
-                htmlFor="floating_outlined"
-                className="absolute text-sm text-secondary/70 duration-300 transform top-2 z-10 origin-[0] bg-white -translate-y-4 px-4 peer-focus:px-4 peer-focus:text-secondary/70 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-2/5 rtl:peer-focus:left-auto start-4"
-              >
-                Group Name
-              </label>
-            </div>
-            <Button onClick={createGroupHandler} className="mt-10">
-              Create Group
-            </Button>
-          </div>
-        </div>
-      )}
+{createGroup && (
+ <div className="fixed inset-0 z-[9999] flex justify-center items-center bg-black/40 backdrop-blur-sm">
+   <div className="w-full max-w-lg mx-4 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+
+     <div className="flex items-center justify-between p-6 border-b border-gray-100">
+       <h3 className="text-lg font-semibold text-gray-900">
+         Create New Group
+       </h3>
+       <button 
+         onClick={() => setCreateGroup(false)}
+         className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+       >
+         <IoClose className="w-5 h-5 text-gray-500" />
+       </button>
+     </div>
+
+     <div className="p-6">
+       <div className="mb-6">
+         <label 
+           htmlFor="groupName" 
+           className="block text-sm font-medium text-gray-700 mb-2"
+         >
+           Group Name
+         </label>
+         <input
+           type="text"
+           id="groupName"
+           value={groupName}
+           onChange={(e) => setGroupName(e.target.value)}
+           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-black outline-none transition-colors text-gray-900 placeholder-gray-500"
+           placeholder="Enter group name"
+         />
+       </div>
+       
+       <p className="text-sm text-gray-500 mb-6">
+         Choose a name that describes your group's purpose or topic.
+       </p>
+     </div>
+
+
+     <div className="flex gap-3 p-6 pt-0 border-t border-gray-100">
+       <button
+         onClick={() => setCreateGroup(false)}
+         className="flex-1 px-4 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+       >
+         Cancel
+       </button>
+       <button
+         onClick={createGroupHandler}
+         disabled={!groupName.trim()}
+         className="flex-1 px-4 py-2.5 text-white bg-blue-500 hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+       >
+         Create Group
+       </button>
+     </div>
+   </div>
+ </div>
+)}
       <Flex className="justify-between items-center mb-2">
         <h3 className="text-[20px] font-semibold text-black">Group List</h3>
         <Button onClick={() => setCreateGroup(true)}>Create Group</Button>
@@ -177,11 +206,14 @@ const GroupList = () => {
               >
                 <Flex className="gap-x-[14px] w-[70%] items-center justify-start">
                   <div>
-                    <img
+                    {/* <img
                       src={grpImg}
                       className="avatar border w-[70px] h-[70px] rounded-full"
                       alt={group.groupName}
-                    />
+                    /> */}
+                    <LetterAvatar>
+                                          {group.groupName.charAt(0)}
+                                        </LetterAvatar>
                   </div>
 
                   <div className="w-[60%]">

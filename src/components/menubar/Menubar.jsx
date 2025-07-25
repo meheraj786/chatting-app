@@ -18,6 +18,7 @@ import { signOut } from "firebase/auth";
 import dp from "../../assets/dp.png";
 import { userInfo } from "../../features/user/userSlice";
 import { getDatabase, onValue, ref } from "firebase/database";
+import LetterAvatar from "../../layouts/LetterAvatar";
 
 const Menubar = () => {
   const auth = getAuth();
@@ -95,11 +96,14 @@ const Menubar = () => {
                   <div className="absolute top-1/2 left-1/2 bg-gray-500/40 rounded-full z-[555] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <FaCloudUploadAlt className="text-white absolute z-[555] text-[25px]" />
                   </div>
-                  <img
+                  {/* <img
                     src={dp}
                     className="avatar relative w-[100px] mx-auto z-[0] h-[100px] rounded-full cursor-pointer"
                     alt=""
-                  />
+                  /> */}
+                  <LetterAvatar className="w-[100px] h-[100px]">
+                      {data.displayName.charAt(0)}
+                    </LetterAvatar>
                 </div>
                 <p className="text-white text-center font-primary font-bold mt-3">
                   {data.displayName}

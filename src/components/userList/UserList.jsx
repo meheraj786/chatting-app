@@ -17,6 +17,7 @@ import {
 import { useSelector } from "react-redux";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
+import LetterAvatar from "../../layouts/LetterAvatar";
 
 const UserList = () => {
   const [userList, setUserList] = useState([]);
@@ -229,11 +230,16 @@ const unFriendHandler = async (friendId) => {
 }
               <Flex className="gap-x-[14px] w-[65%] items-center justify-start">
                 <div>
-                  <img
+                  {/* <img
                     src={user}
                     className="avatar border w-[52px] h-[52px] rounded-full"
                     alt=""
-                  />
+                  /> */}
+                  <LetterAvatar>
+  {friend?.username?.charAt(0)}
+</LetterAvatar>
+
+
                 </div>
 
                 <div className="w-[60%]">

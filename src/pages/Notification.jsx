@@ -16,7 +16,7 @@ const Notification = () => {
   const data = useSelector((state) => state.userInfo.value);
 
   
-  console.log(time());
+
   
 
   useEffect(() => {
@@ -206,7 +206,7 @@ const Notification = () => {
                       {notification.content}
                     </p>
                     <div className="flex items-center gap-3 mt-2">
-                      <span className="text-sm text-gray-500">time</span>
+                      <span className="text-sm text-gray-500">{notification?.time}</span>
                     </div>
                   </div>
                 </div>

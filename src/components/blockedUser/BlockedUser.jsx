@@ -13,6 +13,8 @@ import { getDatabase, onValue, push, ref, remove, set } from "firebase/database"
 import { useSelector } from "react-redux";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import { Bounce, toast, ToastContainer } from "react-toastify";
+import time from "../time/time";
+import LetterAvatar from "../../layouts/LetterAvatar";
 
 const BlockedUser = () => {
   const db = getDatabase();
@@ -44,6 +46,7 @@ const BlockedUser = () => {
     set(push(ref(db, "notification/")), {
           notifyReciver: user.blockedId,
           type: "positive",
+          time: time(),
           content: `${user.blockerName} unblocked you`
         });
     
@@ -84,11 +87,16 @@ const BlockedUser = () => {
             >
               <Flex className="gap-x-[14px] w-[60%] items-center justify-start">
                 <div>
-                  <img
+                  {/* <img
                     src={userImg}
                     className="avatar border w-[52px] h-[52px] rounded-full"
                     alt=""
-                  />
+                  /> */}
+                  <LetterAvatar>
+                                        {user.blockerId == data.uid
+                      ? user.blockedName.charAt(0)
+                      : user.blockerName.charAt(0)}
+                                      </LetterAvatar>
                 </div>
 
                 <div className="w-[60%]">
