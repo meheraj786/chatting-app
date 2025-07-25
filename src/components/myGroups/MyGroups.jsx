@@ -116,6 +116,11 @@ const MyGroups = () => {
       memberName: request.wantedName,
       creatorId: request.creatorId,
     });
+    set(push(ref(db, "notification/")), {
+      notifyReciver: request.wantedId,
+      type: "positive",
+      content: `Your request to join the group "${request.groupName}" has been approved. Welcome to the group!`,
+    });
 
     remove(ref(db, "joingroupreq/" + request.id));
     toast.success(`${request.wantedName} added to group`);
@@ -123,6 +128,11 @@ const MyGroups = () => {
 
   const rejectRequest = (request) => {
     remove(ref(db, "joingroupreq/" + request.id));
+    set(push(ref(db, "notification/")), {
+      notifyReciver: request.wantedId,
+      type: "negative",
+      content: `Your request to join the group "${request.groupName}" has been Rejected.`,
+    });
     toast.success(`Request from ${request.wantedName} rejected`);
   };
 
@@ -143,6 +153,11 @@ const MyGroups = () => {
   const leaveHandler = (item) => {
     remove(ref(db, "groupmembers/" + item.id));
     toast.success(`Leave from ${item.groupName} successful`);
+    set(push(ref(db, "notification/")), {
+      notifyReciver: item.creatorId,
+      type: "negative",
+      content: `"${item.memberName}" has left the group "${item.groupName}".`,
+    });
   };
 
   const getMemberList = (groupId) => {
@@ -151,6 +166,11 @@ const MyGroups = () => {
 
   const kickHandler = (group) => {
     remove(ref(db, "groupmembers/" + group.id));
+    set(push(ref(db, "notification/")), {
+      notifyReciver: group.memberId,
+      type: "negative",
+      content: `You have been removed from the group "${group.groupName}".`
+    });
     toast.success(`${group.memberName} removed successfully`);
   };
 
@@ -209,19 +229,17 @@ const MyGroups = () => {
 
                 <div className="flex gap-2">
                   <button
-  onClick={() => toggleRequests(group)}
-  className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium  bg-black text-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none hover:text-black cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
->
-  <span className="">
-    Info
-  </span>
-  
-  {getRequestsForGroup(group.id).length > 0 && (
-    <span className="absolute -right-2 -top-2 min-w-[18px] h-[18px] flex items-center justify-center text-[9px] font-bold text-white bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-full border-2 border-white shadow-lg transform scale-100 hover:scale-110 transition-transform duration-200">
-      {getRequestsForGroup(group.id).length}
-    </span>
-  )}
-</button>
+                    onClick={() => toggleRequests(group)}
+                    className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium  bg-black text-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none hover:text-black cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
+                    <span className="">Info</span>
+
+                    {getRequestsForGroup(group.id).length > 0 && (
+                      <span className="absolute -right-2 -top-2 min-w-[18px] h-[18px] flex items-center justify-center text-[9px] font-bold text-white bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-full border-2 border-white shadow-lg transform scale-100 hover:scale-110 transition-transform duration-200">
+                        {getRequestsForGroup(group.id).length}
+                      </span>
+                    )}
+                  </button>
                   {grpDeletePopup && (
                     <div className="fixed inset-0 z-[99999] w-full h-full flex justify-center items-center bg-black/50 backdrop-blur-sm">
                       <div className="w-[90%] max-w-md relative flex flex-col justify-center items-center p-8 rounded-2xl shadow-2xl bg-white border border-red-100">
@@ -289,16 +307,17 @@ const MyGroups = () => {
               </Flex>
             </div>
           ))
-          
         )}
 
         {memberGroup.map((req) => (
           <Flex>
             <Flex
               key={req.id}
-              className="py-[10px] border-b-2 border-gray-300 items-start justify-start"
+              className="py-[10px] border-b-2 border-gray-300 w-full items-start justify-between"
             >
-              <Flex className="gap-x-[5px] items-center  justify-start">
+              <Flex className="gap-x-[5px] items-center w-full justify-between
+              
+              3">
                 <div>
                   <img
                     src={groupImg}
@@ -322,11 +341,11 @@ const MyGroups = () => {
             </Flex>
           </Flex>
         ))}
-              {
-        !groupListLoading && groups.length==0 && memberGroup.length==0 && (
-          <p className="mt-5 text-gray-500 text-center italic">No Groups Found</p>
-        )
-      }
+        {!groupListLoading && groups.length == 0 && memberGroup.length == 0 && (
+          <p className="mt-5 text-gray-500 text-center italic">
+            No Groups Found
+          </p>
+        )}
       </div>
 
       {showGroupInfo && selectedGroup && (
@@ -498,8 +517,6 @@ const MyGroups = () => {
           </div>
         </div>
       )}
-
-
     </div>
   );
 };

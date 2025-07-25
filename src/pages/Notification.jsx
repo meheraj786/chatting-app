@@ -6,6 +6,7 @@ import {
   AiOutlineCloseCircle,
   AiOutlineInfoCircle,
 } from "react-icons/ai";
+import time from "../components/time/time";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -13,6 +14,10 @@ const Notification = () => {
   const [filter, setFilter] = useState("all");
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
+
+  
+  console.log(time());
+  
 
   useEffect(() => {
     const notificationRef = ref(db, "notification/");
@@ -202,15 +207,6 @@ const Notification = () => {
                     </p>
                     <div className="flex items-center gap-3 mt-2">
                       <span className="text-sm text-gray-500">time</span>
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          notification.type === "positive"
-                            ? "bg-gray-100 text-gray-700"
-                            : "bg-gray-900 text-white"
-                        }`}
-                      >
-                        {notification.type}
-                      </span>
                     </div>
                   </div>
                 </div>
