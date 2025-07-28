@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import time from "../time/time";
 import LetterAvatar from "../../layouts/LetterAvatar";
+import Sbutton from "../../layouts/Sbutton";
 
 const FriendReq = () => {
   const [requestList, setRequestList] = useState([]);
@@ -99,7 +100,7 @@ const cancelRequest = (friend, dontShow) => {
               key={user.id}
               className="py-[13px] border-b-2 border-gray-300 items-center justify-between"
             >
-              <Flex className="gap-x-[14px] w-[60%] justify-start">
+              <Flex className="gap-x-[14px] w-[65%] justify-start">
                 <div>
                   {/* <img
                     src={userImg}
@@ -119,18 +120,16 @@ const cancelRequest = (friend, dontShow) => {
                   </p>
                 </div>
               </Flex>
-              <Button
+              <Sbutton
                 onClick={() => acceptFriendReq(user)}
-                className="px-[15px]"
               >
                 Accept
-              </Button>
-              <Button
+              </Sbutton>
+              <Sbutton
                 onClick={() => cancelRequest(user)}
-                className="px-[15px]"
               >
                 Reject
-              </Button>
+              </Sbutton>
             </Flex>
           ))
         ) : (

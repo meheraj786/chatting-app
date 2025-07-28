@@ -19,6 +19,7 @@ import { Bounce, toast, ToastContainer } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import LetterAvatar from "../../layouts/LetterAvatar";
 import time from "../time/time";
+import Sbutton from "../../layouts/Sbutton";
 
 const UserList = () => {
   const [userList, setUserList] = useState([]);
@@ -258,30 +259,28 @@ const unFriendHandler = async (friendId) => {
                 <span className="text-[12px] text-gray-400">Block</span>
               ) : friendList.includes(data.uid + friend.id) ||
               friendList.includes(friend.id + data.uid) ? (
-<Button
+<Sbutton
   onClick={() => {
     setSelectedFriend(friend); 
     setUnfriendConfirm(true);
   }}
-  className="text-[14px] bg-gray-200 cursor-default"
 >
   Unfriend
-</Button>
+</Sbutton>
               ) :requestList.includes(data.uid + friend.id) ||
                 requestList.includes(friend.id + data.uid) ? (
-                <Button
+                <Sbutton
                   onClick={() => cancelRequest(friend)}
-                  className="text-[14px] !text-black bg-white"
                 >
                   -
-                </Button>
+                </Sbutton>
               ) : (
-                <Button
+                <Sbutton
                   onClick={() => handleRequest(friend)}
                   className="text-[14px] bg-black"
                 >
                   +
-                </Button>
+                </Sbutton>
               )}
             </Flex>
           ))

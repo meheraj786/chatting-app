@@ -11,13 +11,8 @@ import time from "../components/time/time";
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
-
-  
-
-  
 
   useEffect(() => {
     const notificationRef = ref(db, "notification/");
@@ -48,38 +43,29 @@ const Notification = () => {
     });
   };
 
-  const getFilteredNotifications = () => {
-    if (filter === "all") return notifications;
-    return notifications.filter((notification) => notification.type === filter);
-  };
-
   const getNotificationIcon = (type) => {
-    switch (type) {
-      case "positive":
-        return (
-          <div className="w-10 h-10 bg-green-400 rounded-full flex items-center justify-center">
-            <AiOutlineCheckCircle className="w-5 h-5 text-white" />
-          </div>
-        );
-      case "negative":
-        return (
-          <div className="w-10 h-10 bg-red-400 rounded-full flex items-center justify-center">
-            <AiOutlineCloseCircle className="w-5 h-5 text-white" />
-          </div>
-        );
-      default:
-        return (
-          <div
-            className="w-10 h-10 bg-yellow-
-          rounded-full flex items-center justify-center"
-          >
-            <AiOutlineInfoCircle className="w-5 h-5 text-gray-600" />
-          </div>
-        );
+    if (type === "positive") {
+      return (
+        <div className="w-10 h-10 bg-green-400 rounded-full flex items-center justify-center">
+          <AiOutlineCheckCircle className="w-5 h-5 text-white" />
+        </div>
+      );
+    } else if (type === "negative") {
+      return (
+        <div className="w-10 h-10 bg-red-400 rounded-full flex items-center justify-center">
+          <AiOutlineCloseCircle className="w-5 h-5 text-white" />
+        </div>
+      );
+    } else {
+      return (
+        <div
+          className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center"
+        >
+          <AiOutlineInfoCircle className="w-5 h-5 text-gray-600" />
+        </div>
+      );
     }
   };
-
-  const filteredNotifications = getFilteredNotifications();
 
   if (loading) {
     return (
@@ -124,49 +110,10 @@ const Notification = () => {
             </button>
           )}
         </div>
-
-        <div className="flex gap-1 bg-white rounded-lg p-1 border border-gray-200 w-fit">
-          {[
-            { key: "all", label: "All", count: notifications.length },
-            {
-              key: "positive",
-              label: "Positive",
-              count: notifications.filter((n) => n.type === "positive").length,
-            },
-            {
-              key: "negative",
-              label: "Negative",
-              count: notifications.filter((n) => n.type === "negative").length,
-            },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setFilter(tab.key)}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-                filter === tab.key
-                  ? "bg-gray-900 text-white shadow-sm"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              }`}
-            >
-              {tab.label}{" "}
-              {tab.count > 0 && (
-                <span
-                  className={`ml-1 text-xs px-1.5 py-0.5 rounded-full ${
-                    filter === tab.key
-                      ? "bg-white/20 text-white"
-                      : "bg-gray-200 text-gray-600"
-                  }`}
-                >
-                  {tab.count}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="space-y-3">
-        {filteredNotifications.length === 0 ? (
+        {notifications.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
@@ -187,13 +134,11 @@ const Notification = () => {
               No notifications
             </h3>
             <p className="text-gray-600">
-              {filter === "all"
-                ? "You're all caught up! No new notifications."
-                : `No ${filter} notifications at the moment.`}
+              You're all caught up! No new notifications.
             </p>
           </div>
         ) : (
-          filteredNotifications.map((notification) => (
+          notifications.map((notification) => (
             <div
               key={notification.id}
               className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200 group"

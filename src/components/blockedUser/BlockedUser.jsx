@@ -15,6 +15,7 @@ import UserSkeleton from "../skeleton/UserSkeleton";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import time from "../time/time";
 import LetterAvatar from "../../layouts/LetterAvatar";
+import Sbutton from "../../layouts/Sbutton";
 
 const BlockedUser = () => {
   const db = getDatabase();
@@ -111,12 +112,12 @@ const BlockedUser = () => {
                 </div>
               </Flex>
               {user.blockerId == data.uid && (
-                <Button
+                <Sbutton
                   onClick={() => unBlockHandler(user)}
                   className="text-[12px]"
                 >
                   Unblock
-                </Button>
+                </Sbutton>
               )}
             </Flex>
           ))
