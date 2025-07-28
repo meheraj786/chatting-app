@@ -25,6 +25,7 @@ import { Bounce, toast, ToastContainer } from "react-toastify";
 import time from "../time/time";
 import LetterAvatar from "../../layouts/LetterAvatar";
 import { IoClose, IoWarningOutline } from "react-icons/io5";
+import Sbutton from "../../layouts/Sbutton";
 
 const MyGroups = () => {
   const db = getDatabase();
@@ -322,10 +323,10 @@ const MyGroups = () => {
           <Flex>
             <Flex
               key={req.id}
-              className="py-[10px] border-b-2 border-gray-300 w-full items-start justify-between"
+              className="py-[10px] border-b-2 border-gray-300 w-full items-center justify-between"
             >
               <Flex
-                className="gap-x-[5px] items-center w-full justify-between
+                className="gap-x-[15px] items-center w-full justify-start
               
               3"
               >
@@ -338,7 +339,7 @@ const MyGroups = () => {
                   <LetterAvatar>{req.groupName.charAt(0)}</LetterAvatar>
                 </div>
 
-                <div className="w-[40%]">
+                <div className="w-[60%]">
                   <h3 className="text-[14px] font-semibold text-black truncate w-full">
                     {req.groupName}
                   </h3>
@@ -347,7 +348,7 @@ const MyGroups = () => {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => setGroupLeavePopup(true)}>Leave</Button>
+                  <Sbutton onClick={() => setGroupLeavePopup(true)}>Leave</Sbutton>
                   {groupLeavePopup && (
                     <div className="fixed inset-0 z-[99999] flex justify-center items-center bg-black/40 backdrop-blur-sm">
                       <div className="w-full max-w-md mx-4 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">

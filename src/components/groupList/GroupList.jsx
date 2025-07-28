@@ -181,7 +181,7 @@ const GroupList = () => {
               <button
                 onClick={createGroupHandler}
                 disabled={!groupName.trim()}
-                className="flex-1 px-4 py-2.5 text-white bg-blue-500 hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+                className="flex-1 px-4 py-2.5 text-white bg-black hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
               >
                 Create Group
               </button>
