@@ -57,7 +57,6 @@ const GroupList = () => {
       snapshot.forEach((item) => {
         const request = item.val();
         if (request.memberId === data.uid) {
-          // === এর বদলে ==
           arr.push(request.groupId);
         }
       });
@@ -73,7 +72,6 @@ const GroupList = () => {
         const groupItem = group.val();
         const groupId = group.key;
         if (groupItem.creatorId !== data.uid) {
-          // !== এর বদলে !=
           arr.push({ ...groupItem, id: groupId });
         }
       });
