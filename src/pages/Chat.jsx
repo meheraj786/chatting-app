@@ -11,7 +11,7 @@ import { FaPaperPlane } from "react-icons/fa";
 import { MdEmojiEmotions } from "react-icons/md";
 import { IoCameraOutline } from "react-icons/io5";
 import Conversation from "../components/conversation/Conversation";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, ref, remove } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
 import LetterAvatar from "../layouts/LetterAvatar";
 import UserSkeleton from "../components/skeleton/UserSkeleton";
@@ -19,11 +19,12 @@ import Sbutton from "../layouts/Sbutton";
 import { roomUser } from "../features/chatRoom/chatRoom";
 
 const Chat = () => {
-  const dispatch= useDispatch()
+  const dispatch = useDispatch();
   const [friendList, setFriendList] = useState([]);
   const [friendListLoading, setFriendListLoading] = useState(true);
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
+  const [msgNotification, setMsgNotification] = useState([]);
 
   useEffect(() => {
     const requestRef = ref(db, "friendlist/");
@@ -39,99 +40,38 @@ const Chat = () => {
       setFriendListLoading(false);
     });
   }, []);
-  const friends = [
-    {
-      img: userImg1,
-      frndName: "Jessica Williams",
-      lastMsg: "Thanks for your help!",
-      lastTime: "Yesterday, 5:45pm",
-      active: true,
-      message: [
-        {
-          message: "Hello",
-          sender: "friend",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "How are you doing?",
-          sender: "friend",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "Hello",
-          sender: "self",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "I am good and how about you?",
-          sender: "self",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "I am doing well. Can we meet up tomorrow?",
-          sender: "friend",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "Sure!",
-          sender: "self",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "Hello",
-          sender: "friend",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "How are you doing?",
-          sender: "friend",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "Hello",
-          sender: "self",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "I am good and how about you?",
-          sender: "self",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "I am doing well. Can we meet up tomorrow?",
-          sender: "friend",
-          lastTime: "Yesterday, 3:12pm",
-        },
-        {
-          message: "Sure!",
-          sender: "self",
-          lastTime: "Yesterday, 3:12pm",
-        },
-      ],
-    },
-    {
-      img: userImg2,
-      frndName: "David Kumar",
-      lastMsg: "Let's catch up soon",
-      lastTime: "Yesterday, 3:12pm",
-      active: true,
-    },
-    {
-      img: userImg3,
-      frndName: "Lisa Zhang",
-      lastMsg: "Perfect! See you then",
-      lastTime: "Tuesday, 11:30am",
-      active: true,
-    },
-    {
-      img: userImg4,
-      frndName: "Ryan O'Connor",
-      lastMsg: "Great work on the project",
-      lastTime: "Monday, 4:15pm",
-      active: false,
-    },
-  ];
-  const convoFriend = friends.slice(0, 1);
+  useEffect(() => {
+    const notificationRef = ref(db, "messagenotification/");
+    onValue(notificationRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        const notification = item.val();
+
+        if (notification.reciverid == data.uid) {
+          arr.push({
+            id: item.key,
+            ...notification,
+          });
+        }
+      });
+      setMsgNotification(arr);
+    });
+  }, []);
+
+  const handleMsgNotificationDelete = (friend) => {
+    msgNotification.forEach((item) => {
+      if (
+        (item.senderid === friend.senderid &&
+          item.reciverid === friend.reciverid) ||
+        (item.senderid === friend.reciverid &&
+          item.reciverid === friend.senderid)
+      ) {
+        const notificationRef = ref(db, "messagenotification/" + item.id);
+        remove(notificationRef);
+      }
+    });
+  };
+
   return (
     <Flex className="mt-[32px] font-poppins items-start xl:w-[80%]">
       <div className="mx-auto xl:mx-0">
@@ -178,7 +118,24 @@ const Chat = () => {
                   </div>
                 </Flex>
                 <span className="text-xl text-black  text-right">
-                  <Sbutton onClick={()=>dispatch(roomUser(friend))}>chat</Sbutton>
+                  <Sbutton
+                    className="relative"
+                    onClick={() => {
+                      handleMsgNotificationDelete(friend);
+                      dispatch(roomUser(friend));
+                    }}
+                  >
+                    {msgNotification.some(
+                      (item) =>
+                        (item.senderid === friend.senderid &&
+                          item.reciverid === friend.reciverid) ||
+                        (item.senderid === friend.reciverid &&
+                          item.reciverid === friend.senderid)
+                    ) && (
+                      <span className="w-[12px] h-[12px] absolute top-0 left-0 rounded-full bg-red-500"></span>
+                    )}
+                    chat
+                  </Sbutton>
                 </span>
               </Flex>
             ))}
@@ -191,7 +148,7 @@ const Chat = () => {
         </div>
       </div>
 
-      <Conversation friends={convoFriend} />
+      <Conversation friendList={friendList} msgNotification={msgNotification} />
     </Flex>
   );
 };

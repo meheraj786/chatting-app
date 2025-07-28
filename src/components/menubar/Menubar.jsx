@@ -29,6 +29,7 @@ const Menubar = () => {
   const [verify, setVerify] = useState(false);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification]= useState([])
+  const [msgNotification, setMsgNotification]= useState([])
   const data = useSelector((state) => state.userInfo.value);
 
   useEffect(() => {
@@ -54,6 +55,24 @@ const Menubar = () => {
         setNotification(arr);
       });
     }, []);
+    useEffect(() => {
+      const notificationRef = ref(db, "messagenotification/");
+      onValue(notificationRef, (snapshot) => {
+        let arr = [];
+        snapshot.forEach((item) => {
+          const notification = item.val();
+  
+          if (notification.reciverid == data.uid) {
+            arr.push({
+              id: item.key,
+              ...notification,
+            });
+          }
+        });
+        setMsgNotification(arr);
+      });
+    }, [data.uid, db]);
+    
 
   onAuthStateChanged(auth, (user) => {
     if (data) {
@@ -130,6 +149,11 @@ const Menubar = () => {
                       : "relative navItem bg-primary text-[#C3C3C3] mx-auto transition-all z-10 w-full group hover:text-primary after:group-hover:bg-primary py-5 after:content-[''] after:ml-[25px] after:w-full after:h-full after:rounded-l-[20px] after:absolute after:top-0 after:z-[-2] before:z-[-1] after:left-0 after:bg-white before:content-[''] before:absolute before:w-full before:h-full before:bg-primary before:rounded-l-[20px] before:top-0 before:right-0 "
                   }
                 >
+                  {
+                    msgNotification.length>0 && (
+<span className="w-5 h-5 flex justify-center items-center bg-red-600 text-white rounded-full absolute top-1 left-7 text-[12px]">{msgNotification.length}</span>
+                    )
+                  }
                   <AiFillMessage className="text-[46px] font-bold mx-auto" />
                 </NavLink>
                 <NavLink
