@@ -177,7 +177,8 @@ const UserList = () => {
             <UserSkeleton />
             <UserSkeleton />
           </>
-        ) : filterUser.length>0 ? filterUser.map((friend, idx) => (
+        ) : filterUser.length > 0 ? (
+          filterUser.map((friend, idx) => (
             <Flex
               key={idx}
               className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
@@ -275,7 +276,8 @@ const UserList = () => {
                 </Sbutton>
               )}
             </Flex>
-          )) :
+          ))
+        ) : (
           userList.map((friend, idx) => (
             <Flex
               key={idx}
@@ -375,7 +377,7 @@ const UserList = () => {
               )}
             </Flex>
           ))
-        }
+        )}
       </div>
     </div>
   );

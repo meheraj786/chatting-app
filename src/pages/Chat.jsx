@@ -12,11 +12,14 @@ import { MdEmojiEmotions } from "react-icons/md";
 import { IoCameraOutline } from "react-icons/io5";
 import Conversation from "../components/conversation/Conversation";
 import { getDatabase, onValue, ref } from "firebase/database";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LetterAvatar from "../layouts/LetterAvatar";
 import UserSkeleton from "../components/skeleton/UserSkeleton";
+import Sbutton from "../layouts/Sbutton";
+import { roomUser } from "../features/chatRoom/chatRoom";
 
 const Chat = () => {
+  const dispatch= useDispatch()
   const [friendList, setFriendList] = useState([]);
   const [friendListLoading, setFriendListLoading] = useState(true);
   const db = getDatabase();
@@ -175,7 +178,7 @@ const Chat = () => {
                   </div>
                 </Flex>
                 <span className="text-xl text-black  text-right">
-                  <BsThreeDotsVertical />
+                  <Sbutton onClick={()=>dispatch(roomUser(friend))}>chat</Sbutton>
                 </span>
               </Flex>
             ))}
