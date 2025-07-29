@@ -45,7 +45,7 @@ const Menubar = () => {
         snapshot.forEach((item) => {
           const notification = item.val();
   
-          if (notification.notifyReciver == data.uid) {
+          if (notification.notifyReciver == data?.uid) {
             arr.push({
               id: item.key,
               ...notification,
@@ -71,7 +71,7 @@ const Menubar = () => {
         });
         setMsgNotification(arr);
       });
-    }, [data.uid, db]);
+    }, [data?.uid, db]);
     
 
   onAuthStateChanged(auth, (user) => {
