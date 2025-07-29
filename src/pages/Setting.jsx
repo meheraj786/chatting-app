@@ -8,9 +8,13 @@ import { IoMdHelpCircleOutline } from 'react-icons/io';
 import { FaKey } from 'react-icons/fa';
 import { HiTrash } from 'react-icons/hi';
 import dp from '../assets/dp.png'
+import { useSelector } from 'react-redux';
+import LetterAvatar from '../layouts/LetterAvatar';
 
 
 const Setting = () => {
+  
+  const data = useSelector((state) => state.userInfo.value);
   return (
     <div className='xl:w-[82%] w-full font-poppins h-screen rounded-[20px] pt-[30px]'>
       <SearchInput className="mb-[36px]"/>
@@ -27,15 +31,16 @@ const Setting = () => {
                           <div
                             
                           >
-                            <img src={dp} className="avatar w-[100px] relative h-[100px]  rounded-full" alt="" />
+                            {/* <img src={dp} className="avatar w-[100px] relative h-[100px]  rounded-full" alt="" /> */}
+                            <LetterAvatar className="w-[100px] relative h-[100px]">{data.displayName.charAt(0)}</LetterAvatar>
                             
                           </div>
             
                           <div className="xl:w-[70%]">
                             <h3 className="text-[25px] font-semibold text-black truncate w-full">
-                              Meheraj Hosen
+                              {data.displayName}
                             </h3>
-                            <p className='text-[20px]'>A Dreamer</p>
+                            <p className='text-[20px]'>No Bio</p>
                             
                           </div>
                         </Flex>

@@ -55,6 +55,7 @@ const Menubar = () => {
       setNotification(arr);
     });
   }, []);
+  
   useEffect(() => {
     const notificationRef = ref(db, "messagenotification/");
     onValue(notificationRef, (snapshot) => {

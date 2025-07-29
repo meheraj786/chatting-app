@@ -4,7 +4,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdEmojiEmotions } from "react-icons/md";
 import { IoCameraOutline } from "react-icons/io5";
 import Button from "../../layouts/Button";
-import { FaPaperPlane } from "react-icons/fa";
+import { FaLessThanEqual, FaPaperPlane } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import LetterAvatar from "../../layouts/LetterAvatar";
 import {
@@ -38,6 +38,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
       container.scrollTop = container.scrollHeight;
     }
   };
+  console.log(roomuser);
 
   useEffect(() => {
     scrollToBottom();
@@ -47,10 +48,10 @@ const Conversation = ({ msgNotification, isFriend }) => {
     const timeoutId = setTimeout(() => {
       if (roomuser?.id && isFriend && Array.isArray(isFriend)) {
         if (!isFriend.includes(roomuser.id)) {
-          console.log("User is not in friend list, removing from chat");
+          console.log("User is not in friend list");
           dispatch(roomUser(null));
         } else {
-          console.log("User is friend, keeping in chat");
+          console.log("User is friend");
         }
       }
     }, 3000);
@@ -148,7 +149,10 @@ const Conversation = ({ msgNotification, isFriend }) => {
 
   return (
     <div
-      onClick={handleMsgNotificationDelete}
+      onClick={(e)=>{e.stopPropagation()
+        handleMsgNotificationDelete()
+        setEmojiActive(false)
+      }}
       className="convo mt-10 xl:mt-0 shadow-shadow rounded-[20px] xl:w-[62%] h-[93vh]"
     >
       <Flex className="details w-full h-[15%]">
@@ -255,7 +259,9 @@ const Conversation = ({ msgNotification, isFriend }) => {
             </div>
           )}
           <MdEmojiEmotions
-            onClick={() => setEmojiActive(!emojiActive)}
+            onClick={(e) => {
+               e.stopPropagation()
+              setEmojiActive(!emojiActive)}}
             className="absolute cursor-pointer hover:text-black top-1/2 text-black/50 right-[48px] text-[20px] -translate-y-1/2"
           />
           <IoCameraOutline className="absolute top-1/2 text-black/50 right-[15px] text-[20px] -translate-y-1/2" />
