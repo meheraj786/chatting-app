@@ -26,8 +26,22 @@ const Chat = () => {
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
   const roomuser = useSelector((state) => state.roomUser.value);
+  const [filterFriends, setFilterFriends] = useState([]);
 
   const [msgNotification, setMsgNotification] = useState([]);
+
+    const handleSearch = (e) => {
+    let arr = [];
+    friendList.filter((item) => {
+      console.log(item);
+      let username= item.senderid==data.uid ? item.recivername : item.sendername
+      
+      if (username.toLowerCase().includes(e.target.value.toLowerCase())) {
+        arr.push(item);
+      }
+      setFilterFriends(arr);
+    });
+  };
 
   useEffect(() => {
     const requestRef = ref(db, "friendlist/");
@@ -82,7 +96,7 @@ const Chat = () => {
   return (
     <Flex className="mt-[32px] font-poppins items-start xl:w-[80%]">
       <div className="mx-auto xl:mx-0">
-        <SearchInput className="xl:w-[447px]" />
+        <SearchInput onChange={handleSearch} className="xl:w-[447px]" />
         <div className="xl:w-[447px] w-full shadow-shadow max-h-[85vh] overflow-y-auto rounded-[20px] px-[20px] font-poppins py-[20px]">
           <Flex className="justify-between items-center mb-2">
             <h3 className="text-[20px] font-semibold text-black">Friends</h3>
@@ -91,7 +105,7 @@ const Chat = () => {
 
           <div className="overflow-y-auto ">
             {friendListLoading && <UserSkeleton />}
-            {friendList.map((friend, i) => (
+            {filterFriends.length > 0 ? filterFriends.map((friend, i) => (
               <Flex
                 key={i}
                 className={`py-[10px] border-b-2 border-gray-300 items-center justify-between ${friend.id==roomuser?.id ? "bg-gray-100 rounded-lg" : "bg-none"}`}
@@ -139,7 +153,61 @@ const Chat = () => {
                         (item.senderid === friend.reciverid &&
                           item.reciverid === friend.senderid)
                     ) && (
-                      <span className="w-[12px] h-[12px] absolute top-0 left-0 rounded-full bg-red-500"></span>
+                      <span className="w-[12px] h-[12px] absolute top-0 left-0 rounded-full animate-pulse bg-red-500"></span>
+                    )}
+                    chat
+                  </Sbutton>
+                </span>
+              </Flex>
+            )) : friendList.map((friend, i) => (
+              <Flex
+                key={i}
+                className={`py-[10px] border-b-2 border-gray-300 items-center justify-between ${friend.id==roomuser?.id ? "bg-gray-100 rounded-lg" : "bg-none"}`}
+              >
+                <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
+                  <div className=" relative ">
+                    {/* <img
+                      src={friend.img}
+                      className="avatar w-[52px] relative z-0 h-[52px] rounded-full"
+                      alt=""
+                    /> */}
+                    <LetterAvatar>
+                      {friend.senderid == data.uid
+                        ? friend.recivername.charAt(0)
+                        : friend.sendername.charAt(0)}
+                    </LetterAvatar>
+                    {friend.active && (
+                      <span className="w-4 h-4 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]"></span>
+                    )}
+                  </div>
+
+                  <div className="w-[60%]">
+                    <h3 className="text-[14px] font-semibold text-black truncate w-full">
+                      {friend.senderid == data.uid
+                        ? friend.recivername
+                        : friend.sendername}
+                    </h3>
+                    <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
+                      Recently
+                    </p>
+                  </div>
+                </Flex>
+                <span className="text-xl text-black  text-right">
+                  <Sbutton
+                    className="relative"
+                    onClick={() => {
+                      handleMsgNotificationDelete(friend);
+                      dispatch(roomUser(friend));
+                    }}
+                  >
+                    {msgNotification.some(
+                      (item) =>
+                        (item.senderid === friend.senderid &&
+                          item.reciverid === friend.reciverid) ||
+                        (item.senderid === friend.reciverid &&
+                          item.reciverid === friend.senderid)
+                    ) && (
+                      <span className="w-[12px] h-[12px] absolute top-0 left-0 rounded-full animate-pulse bg-red-500"></span>
                     )}
                     chat
                   </Sbutton>

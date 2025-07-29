@@ -53,7 +53,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
           console.log("User is friend, keeping in chat");
         }
       }
-    }, 1000);
+    }, 3000);
 
     return () => clearTimeout(timeoutId);
   }, [isFriend, roomuser?.id, dispatch]);
@@ -196,7 +196,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
             >
               <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
                 {msg.message === "like" ? (
-                  <AiFillLike className="text-[34px]" />
+                  <AiFillLike className="text-[34px] animate-floating" />
                 ) : (
                   msg.message
                 )}
@@ -212,7 +212,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
             >
               <span className='text-white bg-primary px-[28px] py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
                 {msg.message === "like" ? (
-                  <AiFillLike className="text-[34px]" />
+                  <AiFillLike className="text-[34px] animate-floating" />
                 ) : (
                   msg.message
                 )}
