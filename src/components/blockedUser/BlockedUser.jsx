@@ -9,7 +9,14 @@ import userImg from "../../assets/user.png";
 // import userImg3 from "../../assets/user3.png";
 // import userImg4 from "../../assets/user4.png";
 // import userImg5 from "../../assets/user5.png";
-import { getDatabase, onValue, push, ref, remove, set } from "firebase/database";
+import {
+  getDatabase,
+  onValue,
+  push,
+  ref,
+  remove,
+  set,
+} from "firebase/database";
 import { useSelector } from "react-redux";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import time from "../time/time";
@@ -45,22 +52,19 @@ const BlockedUser = () => {
   const unBlockHandler = (user) => {
     console.log("Block");
     set(push(ref(db, "notification/")), {
-          notifyReciver: user.blockedId,
-          type: "positive",
-          time: time(),
-          content: `${user.blockerName} unblocked you`
-        });
-    
+      notifyReciver: user.blockedId,
+      type: "positive",
+      time: time(),
+      content: `${user.blockerName} unblocked you`,
+    });
+
     remove(ref(db, "blocklist/" + user.id));
-    toast.success("User Unblocked")
+    toast.success("User Unblocked");
   };
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
-        <Toaster
-  position="top-right"
-  reverseOrder={false}
-/>
+      <Toaster position="top-right" reverseOrder={false} />
       <Flex className="justify-between items-center mb-2">
         <h3 className="text-[20px] font-semibold text-black">Blocked Users</h3>
         <BsThreeDotsVertical />
@@ -85,10 +89,10 @@ const BlockedUser = () => {
                     alt=""
                   /> */}
                   <LetterAvatar>
-                                        {user.blockerId == data.uid
+                    {user.blockerId == data.uid
                       ? user.blockedName.charAt(0)
                       : user.blockerName.charAt(0)}
-                                      </LetterAvatar>
+                  </LetterAvatar>
                 </div>
 
                 <div className="w-[60%]">
@@ -113,10 +117,11 @@ const BlockedUser = () => {
             </Flex>
           ))
         )}
-        {!blockListLoading && blockList.length==0 && (
-          <p className="mt-5 text-gray-500 text-center italic">No Block User Found</p>
-        )
-      }
+        {!blockListLoading && blockList.length == 0 && (
+          <p className="mt-5 text-gray-500 text-center italic">
+            No Block User Found
+          </p>
+        )}
       </div>
     </div>
   );

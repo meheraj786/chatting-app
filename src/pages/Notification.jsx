@@ -112,7 +112,7 @@ const Notification = () => {
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 h-[88%] overflow-y-auto">
         {notifications.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
