@@ -16,11 +16,11 @@ import userImg2 from "../../assets/user2.png";
 import userImg3 from "../../assets/user3.png";
 import userImg4 from "../../assets/user4.png";
 import Flex from "../../layouts/Flex";
-import { toast } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import time from "../time/time";
 import LetterAvatar from "../../layouts/LetterAvatar";
 import Sbutton from "../../layouts/Sbutton";
+import toast, { Toaster } from "react-hot-toast";
 
 const FriendReq = () => {
   const [requestList, setRequestList] = useState([]);
@@ -84,6 +84,10 @@ const cancelRequest = (friend, dontShow) => {
 
   return (
     <div className="xl:w-[36%] w-full h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px] ">
+      <Toaster
+  position="top-right"
+  reverseOrder={false}
+/>
       <Flex className="">
         <h3 className="text-[20px] font-semibold text-black">Friend Request</h3>
         <BsThreeDotsVertical />

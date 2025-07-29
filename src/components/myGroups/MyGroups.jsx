@@ -21,11 +21,11 @@ import {
 import { useSelector } from "react-redux";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import Button from "../../layouts/Button";
-import { Bounce, toast, ToastContainer } from "react-toastify";
 import time from "../time/time";
 import LetterAvatar from "../../layouts/LetterAvatar";
 import { IoClose, IoWarningOutline } from "react-icons/io5";
 import Sbutton from "../../layouts/Sbutton";
+import toast, { Toaster } from "react-hot-toast";
 
 const MyGroups = () => {
   const db = getDatabase();
@@ -185,19 +185,7 @@ const MyGroups = () => {
 
   return (
     <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce}
-      />
+      <Toaster position="top-right" reverseOrder={false} />
 
       <Flex className="justify-between items-center mb-2">
         <h3 className="text-[20px] font-semibold text-black">My Groups</h3>

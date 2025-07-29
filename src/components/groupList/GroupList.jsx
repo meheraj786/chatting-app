@@ -19,11 +19,11 @@ import {
   remove,
   set,
 } from "firebase/database";
-import { Bounce, toast, ToastContainer } from "react-toastify";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import LetterAvatar from "../../layouts/LetterAvatar";
 import { IoClose } from "react-icons/io5";
 import Sbutton from "../../layouts/Sbutton";
+import toast, { Toaster } from "react-hot-toast";
 
 const GroupList = () => {
   const [createGroup, setCreateGroup] = useState(false);
@@ -118,19 +118,7 @@ const GroupList = () => {
 
   return (
     <div className="xl:w-[36%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce}
-      />
+<Toaster position="top-right" reverseOrder={false} />
       {createGroup && (
         <div className="fixed inset-0 z-[9999] flex justify-center items-center bg-black/40 backdrop-blur-sm">
           <div className="w-full max-w-lg mx-4 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
