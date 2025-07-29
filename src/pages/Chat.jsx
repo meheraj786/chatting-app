@@ -22,24 +22,31 @@ const Chat = () => {
   const dispatch = useDispatch();
   const [friendList, setFriendList] = useState([]);
   const [friendListLoading, setFriendListLoading] = useState(true);
+  const [isFriend, setIsFriend] = useState([]);
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
+  const roomuser = useSelector((state) => state.roomUser.value);
+
   const [msgNotification, setMsgNotification] = useState([]);
 
   useEffect(() => {
     const requestRef = ref(db, "friendlist/");
     onValue(requestRef, (snapshot) => {
       let arr = [];
+      let arr2 = [];
       snapshot.forEach((item) => {
         const request = item.val();
         if (request.senderid == data.uid || request.reciverid == data.uid) {
           arr.push({ ...request, id: item.key });
+          arr2.push(...item.key, item.key);
         }
       });
       setFriendList(arr);
+      setIsFriend(arr2);
       setFriendListLoading(false);
     });
-  }, []);
+  }, [db]);
+
   useEffect(() => {
     const notificationRef = ref(db, "messagenotification/");
     onValue(notificationRef, (snapshot) => {
@@ -87,7 +94,7 @@ const Chat = () => {
             {friendList.map((friend, i) => (
               <Flex
                 key={i}
-                className="py-[10px] border-b-2 border-gray-300 items-center justify-between"
+                className={`py-[10px] border-b-2 border-gray-300 items-center justify-between ${friend.id==roomuser?.id ? "bg-gray-100 rounded-lg" : "bg-none"}`}
               >
                 <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
                   <div className=" relative ">
@@ -148,7 +155,7 @@ const Chat = () => {
         </div>
       </div>
 
-      <Conversation friendList={friendList} msgNotification={msgNotification} />
+      <Conversation isFriend={isFriend} msgNotification={msgNotification} />
     </Flex>
   );
 };

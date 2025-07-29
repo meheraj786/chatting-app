@@ -72,18 +72,26 @@ const UserList = () => {
     });
   }, []);
 
-  const unFriendHandler = async (friendId) => {
+  const unFriendHandler = async (selectedFriend) => {
     const friendListRef = ref(db, "friendlist/");
     const snapshot = await get(friendListRef);
 
     snapshot.forEach((item) => {
       const friend = item.val();
       if (
-        (friend.senderid === data.uid && friend.reciverid === friendId) ||
-        (friend.senderid === friendId && friend.reciverid === data.uid)
+        (friend.senderid === data.uid &&
+          friend.reciverid === selectedFriend.id) ||
+        (friend.senderid === selectedFriend.id && friend.reciverid === data.uid)
       ) {
         remove(ref(db, "friendlist/" + item.key));
         toast.success("Unfriended successfully");
+        set(push(ref(db, "notification/")), {
+          notifyReciver:
+            friend.senderid == data.uid ? friend.reciverid : friend.reciverid,
+          type: "negative",
+          time: time(),
+          content: `${data.displayName} unfriend you`,
+        });
       }
     });
   };
@@ -320,7 +328,7 @@ const UserList = () => {
                       </button>
                       <button
                         onClick={() => {
-                          unFriendHandler(selectedFriend?.id);
+                          unFriendHandler(selectedFriend);
                           setUnfriendConfirm(false);
                         }}
                         className="flex bg-red-600 px-6 py-2 hover:bg-red-700 hover:text-white rounded-lg text-white font-semibold cursor-pointer transition-colors items-center space-x-2"

@@ -20,7 +20,7 @@ import EmojiPicker from "emoji-picker-react";
 import { AiFillLike } from "react-icons/ai";
 import { roomUser } from "../../features/chatRoom/chatRoom";
 
-const Conversation = ({ msgNotification, friendList }) => {
+const Conversation = ({ msgNotification, isFriend }) => {
   const db = getDatabase();
   const dispatch = useDispatch();
   const data = useSelector((state) => state.userInfo.value);
@@ -43,6 +43,21 @@ const Conversation = ({ msgNotification, friendList }) => {
     scrollToBottom();
   }, [messageList]);
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (roomuser?.id && isFriend && Array.isArray(isFriend)) {
+        if (!isFriend.includes(roomuser.id)) {
+          console.log("User is not in friend list, removing from chat");
+          dispatch(roomUser(null));
+        } else {
+          console.log("User is friend, keeping in chat");
+        }
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [isFriend, roomuser?.id, dispatch]);
+
   const handleMsgNotificationDelete = () => {
     if (!roomuser || !msgNotification.length) return;
 
@@ -64,7 +79,9 @@ const Conversation = ({ msgNotification, friendList }) => {
     onValue(messageRef, (snapshot) => {
       let arr = [];
       const roomuserId =
-        data.uid === roomuser.senderid ? roomuser.reciverid : roomuser.senderid;
+        data.uid === roomuser?.senderid
+          ? roomuser?.reciverid
+          : roomuser?.senderid;
 
       snapshot.forEach((item) => {
         const message = item.val();
