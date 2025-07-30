@@ -87,7 +87,7 @@ const UserList = () => {
         toast.success("Unfriended successfully");
         set(push(ref(db, "notification/")), {
           notifyReciver:
-            friend.senderid == data.uid ? friend.reciverid : friend.reciverid,
+            friend.senderid == data.uid ? friend.reciverid : friend.senderid,
           type: "negative",
           time: time(),
           content: `${data.displayName} unfriend you`,

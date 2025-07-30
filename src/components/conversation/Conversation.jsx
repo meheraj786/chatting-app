@@ -49,7 +49,7 @@ const unFriendHandler=()=>{
         toast.success("Unfriended successfully");
         set(push(ref(db, "notification/")), {
           notifyReciver:
-            roomuser.senderid == data.uid ? roomuser.reciverid : roomuser.reciverid,
+            roomuser.senderid == data.uid ? roomuser.reciverid : roomuser.senderid,
           type: "negative",
           time: time(),
           content: `${data.displayName} unfriend you`,
