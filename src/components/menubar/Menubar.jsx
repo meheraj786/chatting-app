@@ -38,6 +38,10 @@ const Menubar = () => {
     }
   }, []);
 
+    const handleReload = () => {
+    window.location.reload();
+  };
+
   useEffect(() => {
     const notificationRef = ref(db, "notification/");
     onValue(notificationRef, (snapshot) => {
@@ -263,6 +267,7 @@ const Menubar = () => {
             Please Verify Your Email at this email{" "}
             <span className="font-bold">{data.email}</span>{" "}
           </p>
+          <Flex>
           <button
             onClick={signoutHandler}
             className="flex items-center mt-10 gap-x-2  cursor-pointer py-5 bg-primary text-white font-semibold rounded-[9px] text-sm px-4"
@@ -270,6 +275,14 @@ const Menubar = () => {
             <IoArrowBack className="text-[20px]" />
             Back To Login
           </button>
+          <button
+            onClick={handleReload}
+            className="flex items-center mt-10 gap-x-2  cursor-pointer py-5 bg-primary text-white font-semibold rounded-[9px] text-sm px-4"
+          >
+            <IoArrowBack className="text-[20px]" />
+            Back To Login
+          </button>
+          </Flex>
         </Flex>
       )}
     </>
