@@ -43,6 +43,22 @@ const Chat = () => {
     });
   };
 
+    const cleanupUnfriendNotifications = () => {
+    msgNotification.forEach((notification) => {
+      const isFriendNotification = friendList.some((friend) => {
+        return (
+          (notification.senderid === friend.senderid && notification.reciverid === friend.reciverid) ||
+          (notification.senderid === friend.reciverid && notification.reciverid === friend.senderid)
+        );
+      });
+      if (!isFriendNotification) {
+        const notificationRef = ref(db, "messagenotification/" + notification.id);
+        remove(notificationRef);
+        console.log(`Removed notification from unfriended user: ${notification.id}`);
+      }
+    });
+  };
+
   useEffect(() => {
     const requestRef = ref(db, "friendlist/");
     onValue(requestRef, (snapshot) => {
@@ -59,7 +75,7 @@ const Chat = () => {
       setIsFriend(arr2);
       setFriendListLoading(false);
     });
-  }, [db]);
+  }, [db, data.uid]);
 
   useEffect(() => {
     const notificationRef = ref(db, "messagenotification/");
@@ -78,6 +94,16 @@ const Chat = () => {
       setMsgNotification(arr);
     });
   }, []);
+
+    useEffect(() => {
+    if (!friendListLoading && friendList.length >= 0 && msgNotification.length > 0) {
+      cleanupUnfriendNotifications();
+    }
+  }, [friendList, msgNotification, friendListLoading]);
+
+  console.log(msgNotification);
+
+  
 
   const handleMsgNotificationDelete = (friend) => {
     msgNotification.forEach((item) => {
@@ -108,9 +134,9 @@ const Chat = () => {
             {filterFriends.length > 0 ? filterFriends.map((friend, i) => (
               <Flex
                 key={i}
-                className={`py-[10px] border-b-2 border-gray-300 items-center justify-between ${friend.id==roomuser?.id ? "bg-gray-100 rounded-lg" : "bg-none"}`}
+                className={`py-[10px] border-b-2 border-gray-300 items-center justify-between ${friend.id==roomuser?.id ? "border-2 bg-blue-100 rounded-2xl" : "bg-none"}`}
               >
-                <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
+                <Flex className="gap-x-[14px] w-[65%] justify-start items-center ">
                   <div className=" relative ">
                     {/* <img
                       src={friend.img}
@@ -162,7 +188,7 @@ const Chat = () => {
             )) : friendList.map((friend, i) => (
               <Flex
                 key={i}
-                className={`py-[10px] border-b-2 border-gray-300 items-center justify-between ${friend.id==roomuser?.id ? "bg-gray-100 rounded-lg" : "bg-none"}`}
+                className={`py-[10px] border-b-2 border-gray-300 items-center transition-all justify-between ${friend.id==roomuser?.id ? "border-2 bg-blue-100 rounded-2xl" : "bg-none"}`}
               >
                 <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
                   <div className=" relative ">

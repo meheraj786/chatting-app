@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Flex from "../../layouts/Flex";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { MdEmojiEmotions } from "react-icons/md";
+import { MdClose, MdEmojiEmotions, MdPersonRemove, MdWarning } from "react-icons/md";
 import { IoCameraOutline } from "react-icons/io5";
 import Button from "../../layouts/Button";
 import { FaLessThanEqual, FaPaperPlane } from "react-icons/fa";
@@ -19,6 +19,8 @@ import time from "../time/time";
 import EmojiPicker from "emoji-picker-react";
 import { AiFillLike } from "react-icons/ai";
 import { roomUser } from "../../features/chatRoom/chatRoom";
+import { BiBlock, BiChat } from "react-icons/bi";
+import toast, { Toaster } from "react-hot-toast";
 
 const Conversation = ({ msgNotification, isFriend }) => {
   const db = getDatabase();
@@ -28,6 +30,9 @@ const Conversation = ({ msgNotification, isFriend }) => {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [emojiActive, setEmojiActive] = useState(false);
+  const [activeDropdown, setActiveDropdown]= useState(false)
+  const [unfriendConfirm, setUnfriendConfirm]= useState(false)
+  const [blockPopup, setBlockPopup]= useState(false)
 
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -38,7 +43,50 @@ const Conversation = ({ msgNotification, isFriend }) => {
       container.scrollTop = container.scrollHeight;
     }
   };
-  console.log(roomuser);
+
+const unFriendHandler=()=>{
+  remove(ref(db, "friendlist/" + roomuser.id));
+        toast.success("Unfriended successfully");
+        set(push(ref(db, "notification/")), {
+          notifyReciver:
+            roomuser.senderid == data.uid ? roomuser.reciverid : roomuser.reciverid,
+          type: "negative",
+          time: time(),
+          content: `${data.displayName} unfriend you`,
+        });
+}
+
+const blockHandler=()=>{
+      let blockerId = "";
+    let blockedId = "";
+    let blockerName = "";
+    let blockedName = "";
+    if (roomuser.senderid == data.uid) {
+      blockerId = roomuser.senderid;
+      blockerName = roomuser.sendername;
+      blockedId = roomuser.reciverid;
+      blockedName = roomuser.recivername;
+    } else {
+      blockerId = roomuser.reciverid;
+      blockerName = roomuser.recivername;
+      blockedId = roomuser.senderid;
+      blockedName = roomuser.sendername;
+    }
+    set(push(ref(db, "blocklist/")), {
+      blockerId: blockerId,
+      blockedId: blockedId,
+      blockerName: blockerName,
+      blockedName: blockedName,
+    });
+    set(push(ref(db, "notification/")), {
+      notifyReciver: blockedId,
+      type: "negative",
+      time: time(),
+      content: `${blockerName} blocked you`,
+    });
+    toast.success("Blocked Successful");
+    remove(ref(db, "friendlist/" + roomuser.id));
+}
 
   useEffect(() => {
     scrollToBottom();
@@ -153,8 +201,163 @@ const Conversation = ({ msgNotification, isFriend }) => {
         handleMsgNotificationDelete()
         setEmojiActive(false)
       }}
-      className="convo mt-10 xl:mt-0 shadow-shadow rounded-[20px] xl:w-[62%] h-[93vh]"
+      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[62%] h-[93vh]"
     >
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
+                    {blockPopup &&  (
+                <div className="fixed inset-0 z-[99999] w-full h-full flex justify-center items-center bg-black/50 backdrop-blur-sm">
+                  <div className="w-[90%] max-w-md relative flex flex-col justify-center items-center p-8 rounded-2xl shadow-2xl bg-white border border-orange-100">
+                    <button
+                      className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer text-2xl font-bold hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center"
+                      onClick={() => {
+                        setBlockPopup(false);
+                      }}
+                    >
+                      ×
+                    </button>
+
+                    <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+                      <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-2xl">🚫</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 mb-4">
+                      <LetterAvatar>
+                        {roomuser.senderid == data.uid
+                          ? roomuser.recivername.charAt(0)
+                          : roomuser.sendername.charAt(0)}
+                      </LetterAvatar>
+                      <div>
+                        <h4 className="font-semibold text-gray-800">
+                          {roomuser.senderid == data.uid
+                            ? roomuser.recivername
+                            : roomuser.sendername}
+                        </h4>
+                        <p className="text-sm text-gray-500">Will be blocked</p>
+                      </div>
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
+                      Block User
+                    </h2>
+
+                    <p className="text-gray-600 text-center mb-8 leading-relaxed">
+                      Are you sure you want to block this user?
+                      <br />
+                      <span className="text-orange-600 font-semibold">
+                        They won't be able to message you.
+                      </span>
+                    </p>
+
+                    <div className="flex gap-4 w-full">
+                      <button
+                        onClick={() => {
+                          setBlockPopup(false);
+                          setActiveDropdown(false);
+                        }}
+                        className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:shadow-md"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          blockHandler();
+                          setBlockPopup(false);
+                          setActiveDropdown(false);
+                        }}
+                        className="flex-1 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
+                      >
+                        Block
+                      </button>
+                    </div>
+
+                    <div className="mt-6 p-3 bg-orange-50 border border-orange-200 rounded-lg w-full">
+                      <p className="text-orange-700 text-sm text-center flex items-center justify-center gap-2">
+                        <span className="text-orange-500">ℹ️</span>
+                        You can unblock this user anytime from Blocked Users
+                        List
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+                    {unfriendConfirm && (
+                      <div className="fixed inset-0 flex justify-center items-center w-full z-[9999] h-full bg-black/20 backdrop-blur-sm">
+                        <div className="w-1/2 max-w-1/2 flex flex-col justify-center items-center min-h-[500px] relative bg-white shadow-2xl gap-y-5 rounded-xl border border-gray-100">
+                          <span
+                            className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors p-1"
+                            onClick={() => setUnfriendConfirm(false)}
+                          >
+                            <MdClose size={24} />
+                          </span>
+      
+                          <div className="mb-4">
+                            <div className="p-3 bg-red-100 rounded-full">
+                              <MdWarning className="w-8 h-8 text-red-600" />
+                            </div>
+                          </div>
+      
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            Remove Friend?
+                          </h3>
+      
+                          <p className="text-gray-600 text-center mb-6 px-6">
+                            Are you sure you want to remove{" "}
+                            <span className="font-bold">
+                              {roomuser?.sendername==data.displayName ? roomuser.recivername : roomuser.sendername}
+                            </span>{" "}
+                            from your friends list?
+                          </p>
+      
+                          <div className="flex space-x-3">
+                            <button
+                              onClick={() => {setUnfriendConfirm(false)
+                                setActiveDropdown(false)
+                              }}
+                              className="px-6 py-2 cursor-pointer bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => {
+                                unFriendHandler();
+                                setActiveDropdown(false)
+                                setUnfriendConfirm(false);
+                              }}
+                              className="flex bg-red-600 px-6 py-2 hover:bg-red-700 hover:text-white rounded-lg text-white font-semibold cursor-pointer transition-colors items-center space-x-2"
+                            >
+                              <MdPersonRemove />
+                              <span>UnFriend</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                      {activeDropdown && (
+                        <div className="absolute right-15 top-18 mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg z-[9999]">
+                          <button
+                            onClick={() => setUnfriendConfirm(true)}
+                            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 flex items-center gap-2 rounded-t-lg transition-colors"
+                          >
+                            <BiChat className="text-base" />
+                            Unfriend
+                          </button>
+                          <button
+                            onClick={() => {
+                              setBlockPopup(true);
+                              setActiveDropdown(null);
+                            }}
+                            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 flex items-center gap-2 rounded-b-lg transition-colors"
+                          >
+                            <BiBlock className="text-base" />
+                            Block
+                          </button>
+                        </div>
+                      )}
       <Flex className="details w-full h-[15%]">
         <Flex className="py-[10px] w-full border-b-2 mx-[50px] pb-[25px] border-gray-300 items-center justify-between">
           <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
@@ -182,7 +385,9 @@ const Conversation = ({ msgNotification, isFriend }) => {
               </h3>
             </div>
           </Flex>
-          <span className="text-3xl text-black text-right">
+          <span onClick={()=>{
+            setActiveDropdown(!activeDropdown)
+          }} className="text-3xl hover:bg-gray-100 p-1 rounded-full text-black text-right">
             <BsThreeDotsVertical />
           </span>
         </Flex>
