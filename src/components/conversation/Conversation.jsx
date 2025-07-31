@@ -37,6 +37,31 @@ const Conversation = ({ msgNotification, isFriend }) => {
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
+  const getSafeName = (name) => {
+    return name && typeof name === 'string' && name.trim() ? name : 'Unknown User';
+  };
+
+  const getSafeFirstChar = (name) => {
+    const safeName = getSafeName(name);
+    return safeName.charAt(0).toUpperCase();
+  };
+
+  const getCurrentPartnerName = () => {
+    if (!roomuser) return 
+    
+    return data.uid === roomuser.senderid
+      ? getSafeName(roomuser.recivername)
+      : getSafeName(roomuser.sendername);
+  };
+
+  const getCurrentPartnerChar = () => {
+    if (!roomuser) return 
+    
+    return data.uid === roomuser.senderid
+      ? getSafeFirstChar(roomuser.recivername)
+      : getSafeFirstChar(roomuser.sendername);
+  };
+
   const scrollToBottom = () => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current;
@@ -63,14 +88,14 @@ const blockHandler=()=>{
     let blockedName = "";
     if (roomuser.senderid == data.uid) {
       blockerId = roomuser.senderid;
-      blockerName = roomuser.sendername;
+      blockerName = getSafeName(roomuser.sendername);
       blockedId = roomuser.reciverid;
-      blockedName = roomuser.recivername;
+      blockedName = getSafeName(roomuser.recivername);
     } else {
       blockerId = roomuser.reciverid;
-      blockerName = roomuser.recivername;
+      blockerName = getSafeName(roomuser.recivername);
       blockedId = roomuser.senderid;
-      blockedName = roomuser.sendername;
+      blockedName = getSafeName(roomuser.sendername);
     }
     set(push(ref(db, "blocklist/")), {
       blockerId: blockerId,
@@ -108,7 +133,7 @@ const blockHandler=()=>{
   }, [isFriend, roomuser?.id, dispatch]);
 
   const handleMsgNotificationDelete = () => {
-    if (!roomuser || !msgNotification.length) return;
+    if (!roomuser || !msgNotification?.length) return;
 
     msgNotification.forEach((item) => {
       if (
@@ -124,8 +149,10 @@ const blockHandler=()=>{
   };
 
   useEffect(() => {
+    if (!roomuser || !data?.uid) return;
+
     const messageRef = ref(db, "message/");
-    onValue(messageRef, (snapshot) => {
+    const unsubscribe = onValue(messageRef, (snapshot) => {
       let arr = [];
       const roomuserId =
         data.uid === roomuser?.senderid
@@ -144,22 +171,24 @@ const blockHandler=()=>{
       });
       setMessageList(arr);
     });
-  }, [db, data.uid, roomuser]);
+
+    return () => unsubscribe();
+  }, [db, data?.uid, roomuser]);
 
   const sentMessageHandler = (like) => {
-    if (!roomuser) return;
+    if (!roomuser || !data?.uid) return;
 
     const receiverid =
       data.uid === roomuser.senderid ? roomuser.reciverid : roomuser.senderid;
     const receivername =
       data.uid === roomuser.senderid
-        ? roomuser.recivername
-        : roomuser.sendername;
+        ? getSafeName(roomuser.recivername)
+        : getSafeName(roomuser.sendername);
 
     if (like === "like") {
       set(push(ref(db, "message/")), {
         senderid: data.uid,
-        sendername: data.displayName,
+        sendername: data.displayName || 'Unknown',
         reciverid: receiverid,
         recivername: receivername,
         message: "like",
@@ -170,7 +199,7 @@ const blockHandler=()=>{
 
       set(push(ref(db, "message/")), {
         senderid: data.uid,
-        sendername: data.displayName,
+        sendername: data.displayName || 'Unknown',
         reciverid: receiverid,
         recivername: receivername,
         message: message,
@@ -190,7 +219,7 @@ const blockHandler=()=>{
   if (!roomuser) {
     return (
       <div className="convo mt-10 xl:mt-0 shadow-shadow flex justify-center items-center rounded-[20px] xl:w-[62%] h-[93vh]">
-        <p>No Chat</p>
+        <p>No Chat Selected</p>
       </div>
     );
   }
@@ -227,15 +256,11 @@ const blockHandler=()=>{
 
                     <div className="flex items-center gap-3 mb-4">
                       <LetterAvatar>
-                        {roomuser.senderid == data.uid
-                          ? roomuser.recivername.charAt(0)
-                          : roomuser.sendername.charAt(0)}
+                        {getCurrentPartnerChar()}
                       </LetterAvatar>
                       <div>
                         <h4 className="font-semibold text-gray-800">
-                          {roomuser.senderid == data.uid
-                            ? roomuser.recivername
-                            : roomuser.sendername}
+                          {getCurrentPartnerName()}
                         </h4>
                         <p className="text-sm text-gray-500">Will be blocked</p>
                       </div>
@@ -308,7 +333,7 @@ const blockHandler=()=>{
                           <p className="text-gray-600 text-center mb-6 px-6">
                             Are you sure you want to remove{" "}
                             <span className="font-bold">
-                              {roomuser?.sendername==data.displayName ? roomuser.recivername : roomuser.sendername}
+                              {getCurrentPartnerName()}
                             </span>{" "}
                             from your friends list?
                           </p>
@@ -370,24 +395,20 @@ const blockHandler=()=>{
                 />
               ) : (
                 <LetterAvatar className="w-[75px] h-[75px] text-[35px]">
-                  {data.uid === roomuser.senderid
-                    ? roomuser.recivername.charAt(0).toUpperCase()
-                    : roomuser.sendername.charAt(0).toUpperCase()}
+                  {getCurrentPartnerChar()}
                 </LetterAvatar>
               )}
             </div>
 
             <div className="w-[60%]">
               <h3 className="text-[24px] font-semibold text-black truncate w-full">
-                {data.uid === roomuser.senderid
-                  ? roomuser.recivername
-                  : roomuser.sendername}
+                {getCurrentPartnerName()}
               </h3>
             </div>
           </Flex>
           <span onClick={()=>{
             setActiveDropdown(!activeDropdown)
-          }} className="text-3xl hover:bg-gray-100 p-1 rounded-full text-black text-right">
+          }} className="text-3xl hover:bg-gray-100 p-1 rounded-full text-black text-right cursor-pointer">
             <BsThreeDotsVertical />
           </span>
         </Flex>
