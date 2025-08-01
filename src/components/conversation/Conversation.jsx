@@ -42,6 +42,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
   const [unfriendConfirm, setUnfriendConfirm] = useState(false);
   const [blockPopup, setBlockPopup] = useState(false);
   const [replyMsg, setReplyMsg]= useState("")
+  const [msgLoading, setMsgLoading]= useState(true)
 
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -181,6 +182,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
         }
       });
       setMessageList(arr);
+      setMsgLoading(false)
     });
 
     return () => unsubscribe();
@@ -446,7 +448,7 @@ const msgRef = ref(db, "message/" + msg.id);
         className="h-[75%] overflow-y-auto relative py-10 px-10"
       >
         {
-          messageList && messageList.length==0 && (
+          !msgLoading && messageList.length==0 && (
             <div className="flex justify-center items-center h-full">
             <div className="text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -520,20 +522,21 @@ const msgRef = ref(db, "message/" + msg.id);
           )
         )}
         <div ref={messagesEndRef} />
-                {
-          replyMsg.length!=="" && replyMsg && (
-            <Flex className="px-3 py-1 bg-gray-200 rounded-lg">{replyMsg} <Flex className="gap-x-2"><FaReplyAll />< RxCross2 onClick={()=>setReplyMsg("")}  /></Flex> 
 
-
-</Flex>
-          )
-        }
       </div>
 
       <hr className="text-gray-300 w-[90%] mx-auto" />
 
 
-      <Flex className="messageBox gap-x-[20px] px-10 h-[10%] w-full">
+      <Flex className="messageBox relative gap-x-[20px] px-10 h-[10%] w-full">
+                        {
+          replyMsg.length!=="" && replyMsg && (
+            <Flex className="px-3 py-1 absolute -top-10 mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">{replyMsg} <Flex className="gap-x-2"><FaReplyAll />< RxCross2 onClick={()=>setReplyMsg("")}  /></Flex> 
+
+
+</Flex>
+          )
+        }
         <div className="messageInput relative w-[85%] xl:w-[90%]">
           <input
             type="text"

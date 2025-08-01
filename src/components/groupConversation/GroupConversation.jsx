@@ -198,7 +198,7 @@ const GroupConversation = () => {
                 <div
                   className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${"bg-black"}`}
                 >
-                  {selectedGroup.adminName.charAt(0).toUpperCase()}
+                  {selectedGroup.adminName.charAt(0).toUpperCase() || "U"}
                 </div>
 
                 <div className="flex-1">
@@ -228,7 +228,7 @@ const GroupConversation = () => {
                         isCreator ? "bg-black" : "bg-gray-600"
                       }`}
                     >
-                      {member.memberName.charAt(0).toUpperCase()}
+                      {member.memberName.charAt(0).toUpperCase() || "U"}
                     </div>
 
                     <div className="flex-1">

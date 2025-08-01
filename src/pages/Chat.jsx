@@ -128,7 +128,7 @@ const Chat = () => {
         <div className="xl:w-[447px] w-full shadow-shadow max-h-[85vh] overflow-y-auto rounded-[20px] px-[20px] font-poppins py-[20px]">
           <Flex className="justify-between items-center mb-2">
             <h3 className="text-[20px] font-semibold text-black">Friends</h3>
-            <BsThreeDotsVertical />
+            <Sbutton onClick={()=>navigate("/chat/groupchat")}>Group Chat</Sbutton>
           </Flex>
 
           <div className="overflow-y-auto ">
@@ -251,7 +251,6 @@ const Chat = () => {
             )}
           </div>
         </div>
-        <Sbutton onClick={()=>navigate("/chat/groupchat")}>Group Chat</Sbutton>
       </div>
       <Conversation isFriend={isFriend} msgNotification={msgNotification} />
     </Flex>
