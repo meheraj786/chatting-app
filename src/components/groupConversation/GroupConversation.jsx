@@ -18,8 +18,9 @@ import {
 import time from "../time/time";
 import EmojiPicker from "emoji-picker-react";
 import { AiFillLike } from "react-icons/ai";
-import { BiExit } from "react-icons/bi";
+import { BiExit, BiX } from "react-icons/bi";
 import toast, { Toaster } from "react-hot-toast";
+import { FaCrown, FaUsers } from "react-icons/fa6";
 
 const GroupConversation = () => {
   const db = getDatabase();
@@ -33,6 +34,8 @@ const GroupConversation = () => {
   const [leaveGroupConfirm, setLeaveGroupConfirm] = useState(false);
   const [msgListLoading, setMsgListLoading] = useState(true);
   const [groupMembers, setGroupMembers] = useState([]);
+  const [groupMemberPopup, setGroupMemberPopup] = useState(false);
+  const [memberId, setMemberId] = useState([]);
 
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -50,20 +53,21 @@ const GroupConversation = () => {
     const membersRef = ref(db, "groupmembers/");
     const unsubscribe = onValue(membersRef, (snapshot) => {
       let members = [];
+      let membersId = [];
       snapshot.forEach((item) => {
         const member = item.val();
         if (member.groupId === selectedGroup.groupId) {
           members.push({ ...member, id: item.key });
+          membersId.push(member.memberId);
         }
       });
       setGroupMembers(members);
+      setMemberId(membersId);
       setMsgListLoading(false);
     });
 
     return () => unsubscribe();
   }, [selectedGroup?.groupId, db, selectedGroup.id, selectedGroup]);
-  console.log("group members", groupMembers);
-  console.log("selectedgroup", selectedGroup);
 
   const leaveGroupHandler = () => {
     if (!selectedGroup) return;
@@ -133,19 +137,10 @@ const GroupConversation = () => {
       setMessage("");
     }
 
-    groupMembers.forEach((member) => {
-      if (member.memberId !== data.uid) {
-        set(push(ref(db, "groupmessagenotification/")), {
-          senderid: data.uid,
-          reciverid: member.memberId,
-          groupId,
-          groupName,
-        });
-      }
-    });
-
     setEmojiActive(false);
   };
+
+  console.log(memberId);
 
   if (!selectedGroup) {
     return (
@@ -172,6 +167,99 @@ const GroupConversation = () => {
       className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[62%] h-[93vh]"
     >
       <Toaster position="top-right" reverseOrder={false} />
+
+      {groupMemberPopup && (
+        <div className="fixed inset-0 flex justify-center items-center w-full z-[9999] h-full bg-black/50 backdrop-blur-sm">
+          <div className="w-full max-w-md mx-4 bg-white shadow-2xl rounded-2xl border border-gray-200 overflow-hidden">
+            <div className="bg-white text-black p-6 relative border-b border-gray-200">
+              <button
+                onClick={() => setGroupMemberPopup(false)}
+                className="absolute top-4 right-4 p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <BiX size={20} />
+              </button>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-black/10 rounded-full">
+                  <FaUsers size={24} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold">
+                    {selectedGroup.groupName}
+                  </h2>
+                  <p className="text-gray-600 text-sm">
+                    {groupMembers.length} members
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="max-h-96 overflow-y-auto">
+              <div className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
+                <div
+                  className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${"bg-black"}`}
+                >
+                  {selectedGroup.adminName.charAt(0).toUpperCase()}
+                </div>
+
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium text-gray-900">
+                      {selectedGroup.adminName}
+                    </h3>
+                    
+                    <div className="flex items-center gap-1 px-2 py-1 bg-black text-white rounded-full text-xs font-medium">
+                      <FaCrown size={12} />
+                      Creator
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+              {groupMembers.map((member, index) => {
+                const isCreator = member.creatorId === data.uid;
+
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                  >
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${
+                        isCreator ? "bg-black" : "bg-gray-600"
+                      }`}
+                    >
+                      {member.memberName.charAt(0).toUpperCase()}
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-medium text-gray-900">
+                          {member.memberName}
+                        </h3>
+                        {isCreator && (
+                          <div className="flex items-center gap-1 px-2 py-1 bg-black text-white rounded-full text-xs font-medium">
+                            <FaCrown size={12} />
+                            Creator
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="p-4 bg-white border-t border-gray-200">
+              <button
+                onClick={() => setGroupMemberPopup(false)}
+                className="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {leaveGroupConfirm && (
         <div className="fixed inset-0 flex justify-center items-center w-full z-[9999] h-full bg-black/20 backdrop-blur-sm">
@@ -249,23 +337,25 @@ const GroupConversation = () => {
               </LetterAvatar>
             </div>
 
-<div className="w-[60%]">
-  <h3 className="text-[24px] font-semibold text-black truncate w-full">
-    {selectedGroup.groupName}
-  </h3>
-  <p className="text-[14px] text-gray-500">
-    {selectedGroup.creatorId !== data.uid ? (
-      <>
-        {groupMembers.length + 1} members •{" "}
-      </>
-    ) : selectedGroup.creatorId === data.uid ? "You are admin" : "Member"} 
-    
-  </p>
-</div>
-
+            <div className="w-[60%]">
+              <h3 className="text-[24px] font-semibold text-black truncate w-full">
+                {selectedGroup.groupName}
+              </h3>
+              <p className="text-[14px] cursor-pointer text-gray-500">
+                {selectedGroup.creatorId !== data.uid ? (
+                  <p onClick={() => setGroupMemberPopup(true)}>
+                    {groupMembers.length + 1} members •{" "}
+                  </p>
+                ) : selectedGroup.creatorId === data.uid ? (
+                  "You are admin"
+                ) : (
+                  "Member"
+                )}
+              </p>
+            </div>
           </Flex>
 
-          {!selectedGroup.isCreator && (
+          {selectedGroup.creatorId!==data.uid && (
             <span
               onClick={() => {
                 setActiveDropdown(!activeDropdown);

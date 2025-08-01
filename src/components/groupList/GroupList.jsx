@@ -43,6 +43,7 @@ const GroupList = () => {
 
     set(push(ref(db, "grouplist/")), {
       groupName: groupName,
+      adminName: data.displayName,
       creatorId: data.uid,
     });
     setGroupName("");
@@ -85,6 +86,7 @@ const GroupList = () => {
       groupName: grp.groupName,
       creatorId: grp.creatorId,
       groupId: grp.id,
+      adminName: grp.adminName,
       wantedId: data.uid,
       wantedName: data.displayName,
     });
@@ -206,7 +208,7 @@ const GroupList = () => {
                       {group.groupName}
                     </h3>
                     <p className="font-medium text-[14px] text-[#4D4D4D]/75 truncate w-full">
-                      {group.lastMsg || "No messages yet"}
+                      by: {group.adminName || "Unknown"}
                     </p>
                   </div>
                 </Flex>

@@ -125,7 +125,6 @@ const MyGroups = () => {
       snapshot.forEach((item) => {
         const request = item.val();
         if (request.groupId == id) {
-          console.log(request);
           remove(ref(db, "groupmembers/" + item.key));
         }
       });
@@ -136,6 +135,7 @@ const MyGroups = () => {
     set(push(ref(db, "groupmembers/")), {
       groupId: request.groupId,
       groupName: request.groupName,
+      adminName: request.adminName,
       memberId: request.wantedId,
       memberName: request.wantedName,
       creatorId: request.creatorId,
@@ -225,6 +225,7 @@ const MyGroups = () => {
       groupId: group.id,
       groupName: group.groupName,
       memberId: friendId,
+      adminName: group.adminName,
       memberName: friendName,
       creatorId: data.uid,
     });
@@ -370,7 +371,7 @@ const MyGroups = () => {
               3"
               >
                 <div>
-                  <LetterAvatar>{req.groupName.charAt(0)}</LetterAvatar>
+                  <LetterAvatar>{req.groupName.charAt(0) || "A"}</LetterAvatar>
                 </div>
 
                 <div className="w-[60%]">
@@ -378,7 +379,7 @@ const MyGroups = () => {
                     {req.groupName}
                   </h3>
                   <p className="text-[10px] text-black/50 truncate w-full">
-                    Wants to join group
+                    Admin: {req.adminName || "Unknown"}
                   </p>
                 </div>
                 <div className="flex gap-2">

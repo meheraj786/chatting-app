@@ -78,6 +78,7 @@ const GroupChat = () => {
     });
   }, []);
 
+
   const leaveHandler = (item) => {
     remove(ref(db, "groupmembers/" + item.id));
     toast.success(`Leave from ${item.groupName} successful`);
@@ -92,6 +93,12 @@ const GroupChat = () => {
   const getMemberList = (groupId) => {
     return groupMemberList.filter((item) => item.groupId == groupId);
   };
+
+
+
+
+  
+
 
   return (
     <Flex className="mt-[32px] font-poppins items-start xl:w-[80%]">
@@ -129,6 +136,7 @@ const GroupChat = () => {
                   </Flex>
 
                   <div className="flex gap-2">
+
                     <Sbutton
                       className="relative"
                       onClick={() => {
@@ -137,6 +145,7 @@ const GroupChat = () => {
                     >
                       <IoChatbubbleEllipsesOutline className="mr-1" />
                       Chat
+                                         
                     </Sbutton>
                   </div>
                 </Flex>

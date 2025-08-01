@@ -4,6 +4,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import {
   MdClose,
   MdEmojiEmotions,
+  MdOutlineDeleteForever,
   MdPersonRemove,
   MdWarning,
 } from "react-icons/md";
@@ -12,6 +13,7 @@ import Button from "../../layouts/Button";
 import { FaLessThanEqual, FaPaperPlane } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import LetterAvatar from "../../layouts/LetterAvatar";
+import { RxCross2 } from "react-icons/rx";
 import {
   getDatabase,
   onValue,
@@ -26,6 +28,7 @@ import { AiFillLike } from "react-icons/ai";
 import { roomUser } from "../../features/chatRoom/chatRoom";
 import { BiBlock, BiChat } from "react-icons/bi";
 import toast, { Toaster } from "react-hot-toast";
+import { FaReplyAll, FaTrash } from "react-icons/fa6";
 
 const Conversation = ({ msgNotification, isFriend }) => {
   const db = getDatabase();
@@ -38,6 +41,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
   const [activeDropdown, setActiveDropdown] = useState(false);
   const [unfriendConfirm, setUnfriendConfirm] = useState(false);
   const [blockPopup, setBlockPopup] = useState(false);
+  const [replyMsg, setReplyMsg]= useState("")
 
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -199,6 +203,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
         reciverid: receiverid,
         recivername: receivername,
         message: "like",
+        replyMsg,
         time: time(),
       });
     } else {
@@ -210,6 +215,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
         reciverid: receiverid,
         recivername: receivername,
         message: message,
+        replyMsg,
         time: time(),
       });
       setMessage("");
@@ -221,7 +227,14 @@ const Conversation = ({ msgNotification, isFriend }) => {
     });
 
     setEmojiActive(false);
+    setReplyMsg("")
   };
+
+  const messageDeleteHandler=(msg)=>{
+const msgRef = ref(db, "message/" + msg.id);
+        remove(msgRef);
+        toast.success("Message Deleted")
+  }
 
   if (!roomuser) {
     return (
@@ -449,8 +462,13 @@ const Conversation = ({ msgNotification, isFriend }) => {
           msg.senderid !== data.uid ? (
             <Flex
               key={index}
-              className="flex-col gap-y-3 mb-5 max-w-full items-start"
+              className="flex-col mb-5 max-w-full items-start"
             >
+                {
+                  msg.replyMsg && (<span className="px-2 py-1 ml-[6px] bg-gray-200 text-[12px] rounded-t-lg">{msg.replyMsg}</span>)
+                }
+              <Flex className="gap-x-2">
+                <Flex className="flex-col justify-start items-start">
               <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
                 {msg.message === "like" ? (
                   <AiFillLike className="text-[34px] animate-floating" />
@@ -458,15 +476,32 @@ const Conversation = ({ msgNotification, isFriend }) => {
                   msg.message
                 )}
               </span>
-              <span className="text-[12px] text-black/25 font-medium">
+
+                </Flex>
+<button onClick={()=>setReplyMsg(msg.message)
+
+              }><FaReplyAll />
+</button>
+              </Flex>
+              <span className="text-[12px] mt-3 text-black/25 font-medium">
                 {msg.time}
               </span>
             </Flex>
           ) : (
             <Flex
               key={index}
-              className="flex-col mb-5 max-w-full items-end gap-y-3"
+              className="flex-col mb-5 max-w-full items-end"
             >
+              {
+                  msg.replyMsg && (<span className="px-2 py-1 mr-[6px] bg-gray-200 text-[12px] rounded-t-lg">{msg.replyMsg}</span>)
+                }
+              <Flex className="gap-x-2">
+                              <button onClick={()=>messageDeleteHandler(msg)
+              }><FaTrash />
+
+</button>
+<Flex className="flex-col items-end">
+
               <span className='text-white bg-primary px-[28px] py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
                 {msg.message === "like" ? (
                   <AiFillLike className="text-[34px] animate-floating" />
@@ -474,16 +509,29 @@ const Conversation = ({ msgNotification, isFriend }) => {
                   msg.message
                 )}
               </span>
-              <span className="text-[12px] text-black/25 font-medium">
+</Flex>
+
+              </Flex>
+
+              <span className="text-[12px] mt-3 text-black/25 font-medium">
                 {msg.time}
               </span>
             </Flex>
           )
         )}
         <div ref={messagesEndRef} />
+                {
+          replyMsg.length!=="" && replyMsg && (
+            <Flex className="px-3 py-1 bg-gray-200 rounded-lg">{replyMsg} <Flex className="gap-x-2"><FaReplyAll />< RxCross2 onClick={()=>setReplyMsg("")}  /></Flex> 
+
+
+</Flex>
+          )
+        }
       </div>
 
       <hr className="text-gray-300 w-[90%] mx-auto" />
+
 
       <Flex className="messageBox gap-x-[20px] px-10 h-[10%] w-full">
         <div className="messageInput relative w-[85%] xl:w-[90%]">

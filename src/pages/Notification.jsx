@@ -13,6 +13,7 @@ const Notification = () => {
   const [loading, setLoading] = useState(true);
   const db = getDatabase();
   const data = useSelector((state) => state.userInfo.value);
+  const [groupNotify, setGroupNotify]= useState([])
 
   useEffect(() => {
     const notificationRef = ref(db, "notification/");
@@ -32,6 +33,30 @@ const Notification = () => {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+  const notiRef = ref(db, "groupmessagenotification/");
+
+  onValue(notiRef, (snapshot) => {
+    let arr = [];
+    snapshot.forEach((item) => {
+      const notify = item.val();
+      if (notify.reciverid === data.uid) {
+        arr.unshift({
+          id: item.key,
+          ...notify,
+          content: `New message in group "${notify.groupName}"`,
+          type: "info",
+        });
+      }
+    });
+    setGroupNotify(arr);
+  });
+}, []);
+
+console.log("groupnoti",groupNotify);
+
+
 
   const deleteNotification = (notificationId) => {
     remove(ref(db, "notification/" + notificationId));
