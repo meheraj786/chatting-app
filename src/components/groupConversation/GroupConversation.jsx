@@ -48,29 +48,31 @@ const GroupConversation = () => {
   };
 
   useEffect(() => {
-    if (!selectedGroup?.id) return;
+    if (!selectedGroup?.groupId) return;
 
     const membersRef = ref(db, "groupmembers/");
     const unsubscribe = onValue(membersRef, (snapshot) => {
       let members = [];
       let membersId = [];
-      snapshot.forEach((item) => {
-        const member = item.val();
-        if (member.groupId === selectedGroup.groupId) {
-          members.push({ ...member, id: item.key });
-          membersId.push(member.memberId);
-        }
-      });
+      if (snapshot.exists()) {
+        snapshot.forEach((item) => {
+          const member = item.val();
+          if (member && member.groupId === selectedGroup.groupId) {
+            members.push({ ...member, id: item.key });
+            membersId.push(member.memberId);
+          }
+        });
+      }
       setGroupMembers(members);
       setMemberId(membersId);
       setMsgListLoading(false);
     });
 
     return () => unsubscribe();
-  }, [selectedGroup?.groupId, db, selectedGroup.id, selectedGroup]);
+  }, [selectedGroup?.groupId, db]); 
 
   const leaveGroupHandler = () => {
-    if (!selectedGroup) return;
+    if (!selectedGroup || !data?.uid) return;
 
     const userMembership = groupMembers.find(
       (member) => member.memberId === data.uid
@@ -95,21 +97,27 @@ const GroupConversation = () => {
   }, [messageList]);
 
   useEffect(() => {
+    if (!selectedGroup?.groupId) return;
+    
     const memberRef = ref(db, "groupmessage/");
-    onValue(memberRef, (snapshot) => {
+    const unsubscribe = onValue(memberRef, (snapshot) => {
       let arr = [];
-      snapshot.forEach((item) => {
-        const request = item.val();
-        if (request.groupId === selectedGroup.groupId) {
-          arr.push({ ...request, id: item.key });
-        }
-      });
+      if (snapshot.exists()) {
+        snapshot.forEach((item) => {
+          const request = item.val();
+          if (request && request.groupId === selectedGroup.groupId) {
+            arr.push({ ...request, id: item.key });
+          }
+        });
+      }
       setMessageList(arr);
     });
-  }, [db, selectedGroup]);
+
+    return () => unsubscribe();
+  }, [db, selectedGroup?.groupId]);
 
   const sentMessageHandler = (like) => {
-    if (!selectedGroup || !data?.uid) return;
+    if (!selectedGroup?.groupId || !data?.uid) return;
 
     const groupId = selectedGroup.groupId;
     const groupName = selectedGroup.groupName;
@@ -140,8 +148,6 @@ const GroupConversation = () => {
     setEmojiActive(false);
   };
 
-  console.log(memberId);
-
   if (!selectedGroup) {
     return (
       <div className="convo mt-10 xl:mt-0 shadow-shadow flex justify-center items-center rounded-[20px] xl:w-[62%] h-[93vh]">
@@ -152,6 +158,19 @@ const GroupConversation = () => {
           <p className="text-gray-500 text-lg font-medium">No Group Selected</p>
           <p className="text-gray-400 text-sm mt-2">
             Select a group to start chatting
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedGroup.groupName || !selectedGroup.groupId) {
+    return (
+      <div className="convo mt-10 xl:mt-0 shadow-shadow flex justify-center items-center rounded-[20px] xl:w-[62%] h-[93vh]">
+        <div className="text-center">
+          <p className="text-red-500 text-lg font-medium">Error loading group</p>
+          <p className="text-gray-400 text-sm mt-2">
+            Please try selecting the group again
           </p>
         </div>
       </div>
@@ -194,33 +213,33 @@ const GroupConversation = () => {
             </div>
 
             <div className="max-h-96 overflow-y-auto">
-              <div className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${"bg-black"}`}
-                >
-                  {selectedGroup.adminName.charAt(0).toUpperCase() || "U"}
-                </div>
+              {selectedGroup.adminName && (
+                <div className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold bg-black">
+                    {selectedGroup.adminName.charAt(0).toUpperCase() || "U"}
+                  </div>
 
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-medium text-gray-900">
-                      {selectedGroup.adminName}
-                    </h3>
-                    
-                    <div className="flex items-center gap-1 px-2 py-1 bg-black text-white rounded-full text-xs font-medium">
-                      <FaCrown size={12} />
-                      Creator
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-medium text-gray-900">
+                        {selectedGroup.adminName}
+                      </h3>
+                      
+                      <div className="flex items-center gap-1 px-2 py-1 bg-black text-white rounded-full text-xs font-medium">
+                        <FaCrown size={12} />
+                        Creator
+                      </div>
                     </div>
-                    
                   </div>
                 </div>
-              </div>
+              )}
+
               {groupMembers.map((member, index) => {
                 const isCreator = member.creatorId === data.uid;
 
                 return (
                   <div
-                    key={index}
+                    key={member.id || index}
                     className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
                   >
                     <div
@@ -228,13 +247,13 @@ const GroupConversation = () => {
                         isCreator ? "bg-black" : "bg-gray-600"
                       }`}
                     >
-                      {member.memberName.charAt(0).toUpperCase() || "U"}
+                      {(member.memberName || "U").charAt(0).toUpperCase()}
                     </div>
 
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <h3 className="font-medium text-gray-900">
-                          {member.memberName}
+                          {member.memberName || "Unknown"}
                         </h3>
                         {isCreator && (
                           <div className="flex items-center gap-1 px-2 py-1 bg-black text-white rounded-full text-xs font-medium">
@@ -316,7 +335,7 @@ const GroupConversation = () => {
         </div>
       )}
 
-      {activeDropdown && !selectedGroup.isCreator && (
+      {activeDropdown && selectedGroup.creatorId !== data.uid && (
         <div className="absolute right-15 top-18 mt-1 w-36 bg-white border border-gray-200 rounded-lg shadow-lg z-[9999]">
           <button
             onClick={() => setLeaveGroupConfirm(true)}
@@ -343,9 +362,9 @@ const GroupConversation = () => {
               </h3>
               <p className="text-[14px] cursor-pointer text-gray-500">
                 {selectedGroup.creatorId !== data.uid ? (
-                  <p onClick={() => setGroupMemberPopup(true)}>
+                  <span onClick={() => setGroupMemberPopup(true)}>
                     {groupMembers.length + 1} members •{" "}
-                  </p>
+                  </span>
                 ) : selectedGroup.creatorId === data.uid ? (
                   "You are admin"
                 ) : (
@@ -355,7 +374,7 @@ const GroupConversation = () => {
             </div>
           </Flex>
 
-          {selectedGroup.creatorId!==data.uid && (
+          {selectedGroup.creatorId !== data.uid && (
             <span
               onClick={() => {
                 setActiveDropdown(!activeDropdown);
@@ -372,7 +391,7 @@ const GroupConversation = () => {
         ref={scrollContainerRef}
         className="h-[75%] overflow-y-auto relative py-10 px-10"
       >
-        {!msgListLoading && messageList.length == 0 ? (
+        {!msgListLoading && messageList.length === 0 ? (
           <div className="flex justify-center items-center h-full">
             <div className="text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -388,12 +407,12 @@ const GroupConversation = () => {
           messageList.map((msg, index) =>
             msg.senderid !== data.uid ? (
               <Flex
-                key={index}
+                key={msg.id || index}
                 className="flex-col gap-y-2 mb-5 max-w-full items-start"
               >
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[12px] font-semibold text-gray-700">
-                    {msg.sendername}
+                    {msg.sendername || "Unknown"}
                   </span>
                   <span className="text-[10px] text-black/25 font-medium">
                     {msg.time}
@@ -409,7 +428,7 @@ const GroupConversation = () => {
               </Flex>
             ) : (
               <Flex
-                key={index}
+                key={msg.id || index}
                 className="flex-col mb-5 max-w-full items-end gap-y-2"
               >
                 <div className="flex items-center gap-2 mb-1">
