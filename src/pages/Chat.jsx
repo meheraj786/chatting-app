@@ -9,7 +9,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import SearchInput from "../layouts/SearchInput";
 import { FaPaperPlane } from "react-icons/fa";
 import { MdEmojiEmotions } from "react-icons/md";
-import { IoCameraOutline } from "react-icons/io5";
+import { IoCameraOutline, IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import Conversation from "../components/conversation/Conversation";
 import { getDatabase, onValue, ref, remove } from "firebase/database";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import LetterAvatar from "../layouts/LetterAvatar";
 import UserSkeleton from "../components/skeleton/UserSkeleton";
 import Sbutton from "../layouts/Sbutton";
 import { roomUser } from "../features/chatRoom/chatRoom";
+import { useNavigate } from "react-router";
 
 const Chat = () => {
   const dispatch = useDispatch();
@@ -24,26 +25,27 @@ const Chat = () => {
   const [friendListLoading, setFriendListLoading] = useState(true);
   const [isFriend, setIsFriend] = useState([]);
   const db = getDatabase();
+  const navigate=useNavigate()
   const data = useSelector((state) => state.userInfo.value);
   const roomuser = useSelector((state) => state.roomUser.value);
   const [filterFriends, setFilterFriends] = useState([]);
 
   const [msgNotification, setMsgNotification] = useState([]);
 
-    const handleSearch = (e) => {
+  const handleSearch = (e) => {
     let arr = [];
-    friendList.filter((item) => {
-      console.log(item);
-      let username= item.senderid==data.uid ? item.recivername : item.sendername
-      
-      if (username.toLowerCase().includes(e.target.value.toLowerCase())) {
+    friendList.forEach((item) => {
+      if (
+        item.sendername.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        item.recivername.toLowerCase().includes(e.target.value.toLowerCase())
+      ) {
         arr.push(item);
       }
-      setFilterFriends(arr);
     });
+    setFilterFriends(arr);
   };
 
-    const cleanupUnfriendNotifications = () => {
+  const cleanupUnfriendNotifications = () => {
     msgNotification.forEach((notification) => {
       const isFriendNotification = friendList.some((friend) => {
         return (
@@ -95,7 +97,7 @@ const Chat = () => {
     });
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     if (!friendListLoading && friendList.length >= 0 && msgNotification.length > 0) {
       cleanupUnfriendNotifications();
     }
@@ -172,6 +174,7 @@ const Chat = () => {
                       dispatch(roomUser(friend));
                     }}
                   >
+                    
                     {msgNotification.some(
                       (item) =>
                         (item.senderid === friend.senderid &&
@@ -226,6 +229,7 @@ const Chat = () => {
                       dispatch(roomUser(friend));
                     }}
                   >
+                    <IoChatbubbleEllipsesOutline className="mr-1" />
                     {msgNotification.some(
                       (item) =>
                         (item.senderid === friend.senderid &&
@@ -247,8 +251,8 @@ const Chat = () => {
             )}
           </div>
         </div>
+        <Sbutton onClick={()=>navigate("/chat/groupchat")}>Group Chat</Sbutton>
       </div>
-
       <Conversation isFriend={isFriend} msgNotification={msgNotification} />
     </Flex>
   );

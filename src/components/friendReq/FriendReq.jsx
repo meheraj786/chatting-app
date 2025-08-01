@@ -69,17 +69,10 @@ const cancelRequest = (friend, dontShow) => {
       sendername: user.sendername,
       reciverid: data.uid,
       recivername: data.displayName,
-    }).then(() => {
-      toast.success("Friend Request Accepted");
-      set(push(ref(db, "notification/")), {
-          notifyReciver: user.senderid,
-          type: "positive",
-          time: time(),
-          content: `${user.recivername} accept your friend request`,
-        });
-      const dontShow = true;
-      cancelRequest(user, dontShow);
     });
+    toast.success("Friend Request Accepted");
+    const dontShow = true;
+    cancelRequest(user, dontShow);
   };
 
   return (

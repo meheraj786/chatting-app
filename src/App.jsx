@@ -10,6 +10,8 @@ import Menubar from "./components/menubar/Menubar";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import Notification from "./pages/Notification";
+import GroupChat from "./pages/GroupChat";
+import ChatLayout from "./layouts/ChatLayout";
 
 function App() {
   const router = createBrowserRouter([
@@ -35,7 +37,15 @@ function App() {
         },
         {
           path: "chat",
+          element: <ChatLayout />,
+          children:[{
+            index: true,
           element: <Chat />,
+          },
+        {
+          path: "groupchat",
+          element: <GroupChat />,
+          }]
         },
         {
           path: "setting",
