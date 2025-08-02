@@ -124,14 +124,14 @@ const GroupChat = () => {
                       </LetterAvatar>
                     </div>
 
-                    <div className="w-[40%]">
+                    <div className="w-[50%]">
                       <h3 className="text-[14px]  font-semibold text-black truncate w-full">
                         {group.groupName || 'Unnamed Group'}
                       </h3>
                     </div>
                   </Flex>
 
-                  <div className="flex">
+                  <div className="flex justify-end flex-1">
                     <Sbutton
                       className="relative"
                       onClick={() => {
@@ -161,7 +161,7 @@ const GroupChat = () => {
                     </LetterAvatar>
                   </div>
 
-                  <div className="w-[40%]">
+                  <div className="w-[50%]">
                     <h3 className="text-[14px] font-semibold text-black truncate w-full">
                       {group.groupName || 'Unnamed Group'}
                     </h3>
