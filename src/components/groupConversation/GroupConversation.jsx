@@ -110,6 +110,16 @@ const GroupConversation = () => {
           }
         });
       }
+      
+      // Sort messages by timestamp to maintain chronological order
+      arr.sort((a, b) => {
+        // Convert time strings to comparable format
+        // Assuming time format is like "12:30 PM" or similar
+        const timeA = new Date(`1970/01/01 ${a.time}`).getTime();
+        const timeB = new Date(`1970/01/01 ${b.time}`).getTime();
+        return timeA - timeB;
+      });
+      
       setMessageList(arr);
     });
 
@@ -130,6 +140,7 @@ const GroupConversation = () => {
         groupName,
         message: "like",
         time: time(),
+        timestamp: Date.now(), // Add timestamp for better sorting
       });
     } else {
       if (message.trim().length === 0) return;
@@ -141,6 +152,7 @@ const GroupConversation = () => {
         groupName,
         message: message,
         time: time(),
+        timestamp: Date.now(), // Add timestamp for better sorting
       });
       setMessage("");
     }
