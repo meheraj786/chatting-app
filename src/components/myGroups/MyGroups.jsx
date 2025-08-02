@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Flex from "../../layouts/Flex";
 import SearchInput from "../../layouts/SearchInput";
@@ -19,7 +18,7 @@ import {
   push,
   get,
 } from "firebase/database";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import UserSkeleton from "../skeleton/UserSkeleton";
 import Button from "../../layouts/Button";
 import time from "../time/time";
@@ -27,6 +26,8 @@ import LetterAvatar from "../../layouts/LetterAvatar";
 import { IoClose, IoWarningOutline } from "react-icons/io5";
 import Sbutton from "../../layouts/Sbutton";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router";
+import { groupChat } from "../../features/groupChatSlice/groupChatSlice";
 
 const MyGroups = () => {
   const db = getDatabase();
@@ -43,6 +44,8 @@ const MyGroups = () => {
   const [friendList, setFriendList] = useState([]);
   const [friendListLoading, setFriendListLoading] = useState(true);
   const data = useSelector((state) => state.userInfo.value);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleRequests = (group) => {
     setSelectedGroup(group);
@@ -205,22 +208,29 @@ const MyGroups = () => {
   const getAvailableFriends = (groupId) => {
     const currentMembers = getMemberList(groupId);
     const pendingRequests = getRequestsForGroup(groupId);
-    
-    return friendList.filter(friend => {
-      const friendId = friend.senderid === data.uid ? friend.reciverid : friend.senderid;
-      
-      const isAlreadyMember = currentMembers.some(member => member.memberId === friendId);
-      
-      const hasPendingRequest = pendingRequests.some(req => req.wantedId === friendId);
-      
+
+    return friendList.filter((friend) => {
+      const friendId =
+        friend.senderid === data.uid ? friend.reciverid : friend.senderid;
+
+      const isAlreadyMember = currentMembers.some(
+        (member) => member.memberId === friendId
+      );
+
+      const hasPendingRequest = pendingRequests.some(
+        (req) => req.wantedId === friendId
+      );
+
       return !isAlreadyMember && !hasPendingRequest;
     });
   };
 
   const addFriendToGroup = (friend, group) => {
-    const friendId = friend.senderid === data.uid ? friend.reciverid : friend.senderid;
-    const friendName = friend.senderid === data.uid ? friend.recivername : friend.sendername;
-    
+    const friendId =
+      friend.senderid === data.uid ? friend.reciverid : friend.senderid;
+    const friendName =
+      friend.senderid === data.uid ? friend.recivername : friend.sendername;
+
     set(push(ref(db, "groupmembers/")), {
       groupId: group.id,
       groupName: group.groupName,
@@ -229,14 +239,14 @@ const MyGroups = () => {
       memberName: friendName,
       creatorId: data.uid,
     });
-    
+
     set(push(ref(db, "notification/")), {
       notifyReciver: friendId,
       type: "positive",
       time: time(),
       content: `You have been added to the group "${group.groupName}" by ${data.displayName}!`,
     });
-    
+
     toast.success(`${friendName} added to group successfully`);
   };
 
@@ -262,12 +272,12 @@ const MyGroups = () => {
               className="border-b-2 border-gray-300 pb-4 mb-4"
             >
               <Flex className="py-[10px] items-center justify-between">
-                <Flex className="gap-x-[14px] w-[65%] items-center justify-start">
+                <Flex className="gap-x-[14px] w-[60%]  items-center justify-start">
                   <div>
                     <LetterAvatar>{group.groupName.charAt(0)}</LetterAvatar>
                   </div>
 
-                  <div className="w-[40%]">
+                  <div className="w-[50%] ">
                     <h3 className="text-[14px] font-semibold text-black truncate w-full">
                       {group.groupName}
                     </h3>
@@ -277,10 +287,19 @@ const MyGroups = () => {
                   </div>
                 </Flex>
 
-                <div className="flex gap-2">
+                <div className="flex gap-1  justify-end">
+                  {/* <Sbutton
+                    onClick={() => {
+                      dispatch(groupChat(group));
+                      navigate("/chat/groupchat");
+                    }}
+                  >
+                    Chat
+                  </Sbutton> */}
+
                   <button
                     onClick={() => toggleRequests(group)}
-                    className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium  bg-black text-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none hover:text-black cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
+                    className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium mr-2 bg-black text-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 focus:outline-none hover:text-black cursor-pointer focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-all duration-200 shadow-sm hover:shadow-md"
                   >
                     <span className="">Info</span>
 
@@ -289,6 +308,12 @@ const MyGroups = () => {
                         {getRequestsForGroup(group.id).length}
                       </span>
                     )}
+                  </button>
+                  <button
+                    onClick={() => setGrpDeletePopup(true)}
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-md mx-auto flex items-center justify-center gap-2"
+                  >
+                    <FaTrashCan className="text-sm" />
                   </button>
                   {grpDeletePopup && (
                     <div className="fixed inset-0 z-[99999] w-full h-full flex justify-center items-center bg-black/50 backdrop-blur-sm">
@@ -347,12 +372,6 @@ const MyGroups = () => {
                       </div>
                     </div>
                   )}
-                  <button
-                    onClick={() => setGrpDeletePopup(true)}
-                    className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-md flex items-center justify-center gap-2"
-                  >
-                    <FaTrashCan className="text-sm" />
-                  </button>
                 </div>
               </Flex>
             </div>
@@ -373,8 +392,7 @@ const MyGroups = () => {
                 <div>
                   <LetterAvatar>{req.groupName.charAt(0) || "A"}</LetterAvatar>
                 </div>
-
-                <div className="w-[60%]">
+                <div className="w-[40%]">
                   <h3 className="text-[14px] font-semibold text-black truncate w-full">
                     {req.groupName}
                   </h3>
@@ -382,8 +400,18 @@ const MyGroups = () => {
                     Admin: {req.adminName || "Unknown"}
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  <Sbutton onClick={() => setGroupLeavePopup(true)}>Leave</Sbutton>
+                <div className="flex gap-1 justify-end flex-1">
+                  <Sbutton
+                    onClick={() => {
+                      dispatch(groupChat(req));
+                      navigate("/chat/groupchat");
+                    }}
+                  >
+                    Chat
+                  </Sbutton>
+                  <Sbutton onClick={() => setGroupLeavePopup(true)}>
+                    Leave
+                  </Sbutton>
                   {groupLeavePopup && (
                     <div className="fixed inset-0 z-[99999] flex justify-center items-center bg-black/40 backdrop-blur-sm">
                       <div className="w-full max-w-md mx-4 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
@@ -549,9 +577,7 @@ const MyGroups = () => {
                   <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                     <span className="text-white text-sm font-bold">👥</span>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800">
-                    Members
-                  </h3>
+                  <h3 className="text-lg font-bold text-gray-800">Members</h3>
                   <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
                     {getMemberList(selectedGroup.id).length}
                   </span>
@@ -618,13 +644,21 @@ const MyGroups = () => {
                 <div className="overflow-y-auto max-h-[300px] space-y-3">
                   {friendListLoading ? (
                     <div className="text-center py-8">
-                      <p className="text-gray-500 text-sm">Loading friends...</p>
+                      <p className="text-gray-500 text-sm">
+                        Loading friends...
+                      </p>
                     </div>
                   ) : getAvailableFriends(selectedGroup.id).length > 0 ? (
                     getAvailableFriends(selectedGroup.id).map((friend) => {
-                      const friendId = friend.senderid === data.uid ? friend.reciverid : friend.senderid;
-                      const friendName = friend.senderid === data.uid ? friend.recivername : friend.sendername;
-                      
+                      const friendId =
+                        friend.senderid === data.uid
+                          ? friend.reciverid
+                          : friend.senderid;
+                      const friendName =
+                        friend.senderid === data.uid
+                          ? friend.recivername
+                          : friend.sendername;
+
                       return (
                         <div
                           key={friend.id}
@@ -641,13 +675,13 @@ const MyGroups = () => {
                                 <h4 className="font-semibold text-gray-800 text-sm">
                                   {friendName}
                                 </h4>
-                                <p className="text-xs text-gray-500">
-                                  Friend
-                                </p>
+                                <p className="text-xs text-gray-500">Friend</p>
                               </div>
                             </div>
                             <button
-                              onClick={() => addFriendToGroup(friend, selectedGroup)}
+                              onClick={() =>
+                                addFriendToGroup(friend, selectedGroup)
+                              }
                               className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
                             >
                               Add

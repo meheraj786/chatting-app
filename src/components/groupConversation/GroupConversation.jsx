@@ -37,6 +37,7 @@ const GroupConversation = () => {
   const [groupMembers, setGroupMembers] = useState([]);
   const [groupMemberPopup, setGroupMemberPopup] = useState(false);
   const [memberId, setMemberId] = useState([]);
+  const [replySender, setReplySender]=useState("")
 
   const [replyMsg, setReplyMsg] = useState("");
 
@@ -146,6 +147,7 @@ const GroupConversation = () => {
         groupId,
         groupName,
         replyMsg,
+        replySender,
         message: "like",
         time: time(),
         timestamp: Date.now(),
@@ -159,6 +161,7 @@ const GroupConversation = () => {
         groupId,
         groupName,
         replyMsg,
+        replySender,
         message: message,
         time: time(),
         timestamp: Date.now(),
@@ -166,6 +169,7 @@ const GroupConversation = () => {
       setMessage("");
     }
     setReplyMsg("")
+    setReplySender("")
     setEmojiActive(false);
   };
 
@@ -202,9 +206,9 @@ const GroupConversation = () => {
 
   return (
     <div
-      onClick={(e) => {
-        e.stopPropagation();
-        setEmojiActive(false);
+      onClick={() => {
+        // e.stopPropagation();
+        // setEmojiActive(false);
       }}
       className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[62%] h-[93vh]"
     >
@@ -433,8 +437,12 @@ const GroupConversation = () => {
                 key={msg.id || index}
                 className="flex-col gap-y-2 mb-5 max-w-full items-start"
               >
-                                {msg.replyMsg && (
+                                {msg.replyMsg &&  (
                                   <span className="px-2 py-1 ml-[6px] bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
+                                    {
+                                      msg.replySender && <span className="text-black">{msg.replySender}</span>
+                                    }
+                                    
                                     {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) :(msg.replyMsg)}
                                   </span>
                                 )}
@@ -454,7 +462,9 @@ const GroupConversation = () => {
                     msg.message
                   )}
                 </span>
-<button onClick={() => setReplyMsg(msg.message)}>
+<button onClick={() => {setReplyMsg(msg.message)
+  setReplySender(msg.sendername)}
+}>
                   <FaReplyAll />
                 </button>
                 </Flex>
@@ -466,6 +476,9 @@ const GroupConversation = () => {
               >
                   {msg.replyMsg && (
                                   <span className="px-2 py-1 ml-[6px] bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
+                                    {
+                                      msg.replySender && <span className="text-black font-medium mr-3">{msg.replySender}:</span>
+                                    }
                                     {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) :(msg.replyMsg)}
                                   </span>
                                 )}
@@ -527,10 +540,8 @@ const GroupConversation = () => {
             className="bg-[#F1F1F1] p-[15px] rounded-[10px] w-full"
           />
           {emojiActive && (
-            <div className="absolute -top-[100%] right-0 z-50">
+            <div className="absolute bottom-10 right-0 z-50">
               <EmojiPicker
-                reactionsDefaultOpen={true}
-                allowExpandReactions={false}
                 theme="dark"
                 onEmojiClick={(emojiData) => {
                   setMessage((prev) => prev + emojiData.emoji);
@@ -539,8 +550,8 @@ const GroupConversation = () => {
             </div>
           )}
           <MdEmojiEmotions
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={() => {
+              // e.stopPropagation();
               setEmojiActive(!emojiActive);
             }}
             className="absolute cursor-pointer hover:text-black top-1/2 text-black/50 right-[48px] text-[20px] -translate-y-1/2"
