@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import Flex from "../../layouts/Flex";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { BsFillBalloonHeartFill, BsThreeDotsVertical } from "react-icons/bs";
 import { MdClose, MdEmojiEmotions, MdWarning } from "react-icons/md";
 import { IoCameraOutline } from "react-icons/io5";
 import Button from "../../layouts/Button";
-import { FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane, FaReplyAll, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import LetterAvatar from "../../layouts/LetterAvatar";
 import {
@@ -21,6 +21,7 @@ import { AiFillLike } from "react-icons/ai";
 import { BiExit, BiX } from "react-icons/bi";
 import toast, { Toaster } from "react-hot-toast";
 import { FaCrown, FaUsers } from "react-icons/fa6";
+import { RxCross2 } from "react-icons/rx";
 
 const GroupConversation = () => {
   const db = getDatabase();
@@ -36,6 +37,8 @@ const GroupConversation = () => {
   const [groupMembers, setGroupMembers] = useState([]);
   const [groupMemberPopup, setGroupMemberPopup] = useState(false);
   const [memberId, setMemberId] = useState([]);
+
+  const [replyMsg, setReplyMsg] = useState("");
 
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -69,7 +72,7 @@ const GroupConversation = () => {
     });
 
     return () => unsubscribe();
-  }, [selectedGroup?.groupId, db]); 
+  }, [selectedGroup?.groupId, db]);
 
   const leaveGroupHandler = () => {
     if (!selectedGroup || !data?.uid) return;
@@ -92,13 +95,20 @@ const GroupConversation = () => {
     }
   };
 
+  
+    const messageDeleteHandler = (msg) => {
+      const msgRef = ref(db, "groupmessage/" + msg.id);
+      remove(msgRef);
+      toast.success("Message Deleted");
+    };
+
   useEffect(() => {
     scrollToBottom();
   }, [messageList]);
 
   useEffect(() => {
     if (!selectedGroup?.groupId) return;
-    
+
     const memberRef = ref(db, "groupmessage/");
     const unsubscribe = onValue(memberRef, (snapshot) => {
       let arr = [];
@@ -110,16 +120,13 @@ const GroupConversation = () => {
           }
         });
       }
-      
-      // Sort messages by timestamp to maintain chronological order
+
       arr.sort((a, b) => {
-        // Convert time strings to comparable format
-        // Assuming time format is like "12:30 PM" or similar
         const timeA = new Date(`1970/01/01 ${a.time}`).getTime();
         const timeB = new Date(`1970/01/01 ${b.time}`).getTime();
         return timeA - timeB;
       });
-      
+
       setMessageList(arr);
     });
 
@@ -138,9 +145,10 @@ const GroupConversation = () => {
         sendername: data.displayName || "Unknown",
         groupId,
         groupName,
+        replyMsg,
         message: "like",
         time: time(),
-        timestamp: Date.now(), // Add timestamp for better sorting
+        timestamp: Date.now(),
       });
     } else {
       if (message.trim().length === 0) return;
@@ -150,13 +158,14 @@ const GroupConversation = () => {
         sendername: data.displayName || "Unknown",
         groupId,
         groupName,
+        replyMsg,
         message: message,
         time: time(),
-        timestamp: Date.now(), // Add timestamp for better sorting
+        timestamp: Date.now(),
       });
       setMessage("");
     }
-
+    setReplyMsg("")
     setEmojiActive(false);
   };
 
@@ -180,7 +189,9 @@ const GroupConversation = () => {
     return (
       <div className="convo mt-10 xl:mt-0 shadow-shadow flex justify-center items-center rounded-[20px] xl:w-[62%] h-[93vh]">
         <div className="text-center">
-          <p className="text-red-500 text-lg font-medium">Error loading group</p>
+          <p className="text-red-500 text-lg font-medium">
+            Error loading group
+          </p>
           <p className="text-gray-400 text-sm mt-2">
             Please try selecting the group again
           </p>
@@ -218,7 +229,7 @@ const GroupConversation = () => {
                     {selectedGroup.groupName}
                   </h2>
                   <p className="text-gray-600 text-sm">
-                    {groupMembers.length} members
+                    {groupMembers.length + 1} members
                   </p>
                 </div>
               </div>
@@ -236,7 +247,7 @@ const GroupConversation = () => {
                       <h3 className="font-medium text-gray-900">
                         {selectedGroup.adminName}
                       </h3>
-                      
+
                       <div className="flex items-center gap-1 px-2 py-1 bg-black text-white rounded-full text-xs font-medium">
                         <FaCrown size={12} />
                         Creator
@@ -422,6 +433,11 @@ const GroupConversation = () => {
                 key={msg.id || index}
                 className="flex-col gap-y-2 mb-5 max-w-full items-start"
               >
+                                {msg.replyMsg && (
+                                  <span className="px-2 py-1 ml-[6px] bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
+                                    {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) :(msg.replyMsg)}
+                                  </span>
+                                )}
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[12px] font-semibold text-gray-700">
                     {msg.sendername || "Unknown"}
@@ -430,6 +446,7 @@ const GroupConversation = () => {
                     {msg.time}
                   </span>
                 </div>
+                <Flex className="gap-x-3">
                 <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
                   {msg.message === "like" ? (
                     <AiFillLike className="text-[34px] animate-floating" />
@@ -437,12 +454,21 @@ const GroupConversation = () => {
                     msg.message
                   )}
                 </span>
+<button onClick={() => setReplyMsg(msg.message)}>
+                  <FaReplyAll />
+                </button>
+                </Flex>
               </Flex>
             ) : (
               <Flex
                 key={msg.id || index}
                 className="flex-col mb-5 max-w-full items-end gap-y-2"
               >
+                  {msg.replyMsg && (
+                                  <span className="px-2 py-1 ml-[6px] bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
+                                    {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) :(msg.replyMsg)}
+                                  </span>
+                                )}
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] text-black/25 font-medium">
                     {msg.time}
@@ -451,13 +477,21 @@ const GroupConversation = () => {
                     You
                   </span>
                 </div>
+                <Flex className="gap-x-3">
+                  <button onClick={() => messageDeleteHandler(msg)}>
+                                    <FaTrash />
+                                  </button>
                 <span className='text-white bg-primary px-[28px] py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
+                  
                   {msg.message === "like" ? (
                     <AiFillLike className="text-[34px] animate-floating" />
                   ) : (
                     msg.message
                   )}
                 </span>
+
+                </Flex>
+                
               </Flex>
             )
           )
@@ -467,7 +501,18 @@ const GroupConversation = () => {
 
       <hr className="text-gray-300 w-[90%] mx-auto" />
 
-      <Flex className="messageBox gap-x-[20px] px-10 h-[10%] w-full">
+      <Flex className="messageBox relative gap-x-[20px] px-10 h-[10%] w-full">
+                {replyMsg.length !== "" && replyMsg && (
+          <Flex className="px-3 py-1 absolute -top-10 mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">
+            {
+              replyMsg=="like" ? <AiFillLike className="text-[34px] animate-floating" /> : replyMsg
+            }
+            <Flex className="gap-x-2">
+              <FaReplyAll />
+              <RxCross2 onClick={() => setReplyMsg("")} />
+            </Flex>
+          </Flex>
+        )}
         <div className="messageInput relative w-[85%] xl:w-[90%]">
           <input
             type="text"

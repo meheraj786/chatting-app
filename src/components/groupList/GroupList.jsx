@@ -40,7 +40,6 @@ const GroupList = () => {
       toast.error("Please enter a group name");
       return;
     }
-
     set(push(ref(db, "grouplist/")), {
       groupName: groupName,
       adminName: data.displayName,

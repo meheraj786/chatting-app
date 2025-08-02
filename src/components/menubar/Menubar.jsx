@@ -7,7 +7,7 @@ import { MdOutlineNotifications, MdOutlineSettings } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { GrLogout } from "react-icons/gr";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { IoArrowBack, IoMenu } from "react-icons/io5";
+import { IoArrowBack, IoMenu, IoReload } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import welcomeImg from "../../assets/welcomeImg.png";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -267,7 +267,7 @@ const Menubar = () => {
             Please Verify Your Email at this email{" "}
             <span className="font-bold">{data.email}</span>{" "}
           </p>
-          <Flex>
+          <Flex className="gap-x-3">
           <button
             onClick={signoutHandler}
             className="flex items-center mt-10 gap-x-2  cursor-pointer py-5 bg-primary text-white font-semibold rounded-[9px] text-sm px-4"
@@ -279,8 +279,9 @@ const Menubar = () => {
             onClick={handleReload}
             className="flex items-center mt-10 gap-x-2  cursor-pointer py-5 bg-primary text-white font-semibold rounded-[9px] text-sm px-4"
           >
-            <IoArrowBack className="text-[20px]" />
-            Back To Login
+            <IoReload className="text-[20px]" />
+
+            Reload
           </button>
           </Flex>
         </Flex>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Flex from "../../layouts/Flex";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { BsFillBalloonHeartFill, BsThreeDotsVertical } from "react-icons/bs";
 import {
   MdClose,
   MdEmojiEmotions,
@@ -41,8 +41,8 @@ const Conversation = ({ msgNotification, isFriend }) => {
   const [activeDropdown, setActiveDropdown] = useState(false);
   const [unfriendConfirm, setUnfriendConfirm] = useState(false);
   const [blockPopup, setBlockPopup] = useState(false);
-  const [replyMsg, setReplyMsg]= useState("")
-  const [msgLoading, setMsgLoading]= useState(true)
+  const [replyMsg, setReplyMsg] = useState("");
+  const [msgLoading, setMsgLoading] = useState(true);
 
   const messagesEndRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -182,7 +182,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
         }
       });
       setMessageList(arr);
-      setMsgLoading(false)
+      setMsgLoading(false);
     });
 
     return () => unsubscribe();
@@ -229,14 +229,14 @@ const Conversation = ({ msgNotification, isFriend }) => {
     });
 
     setEmojiActive(false);
-    setReplyMsg("")
+    setReplyMsg("");
   };
 
-  const messageDeleteHandler=(msg)=>{
-const msgRef = ref(db, "message/" + msg.id);
-        remove(msgRef);
-        toast.success("Message Deleted")
-  }
+  const messageDeleteHandler = (msg) => {
+    const msgRef = ref(db, "message/" + msg.id);
+    remove(msgRef);
+    toast.success("Message Deleted");
+  };
 
   if (!roomuser) {
     return (
@@ -447,96 +447,96 @@ const msgRef = ref(db, "message/" + msg.id);
         ref={scrollContainerRef}
         className="h-[75%] overflow-y-auto relative py-10 px-10"
       >
-        {
-          !msgLoading && messageList.length==0 && (
-            <div className="flex justify-center items-center h-full">
+        {!msgLoading && messageList.length == 0 && (
+          <div className="flex justify-center items-center h-full">
             <div className="text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-gray-400 text-2xl">👋</span>
               </div>
               <p className="text-gray-500 font-medium">No messages yet</p>
-              <p className="text-gray-400 text-sm mt-1">Start the conversation!</p>
+              <p className="text-gray-400 text-sm mt-1">
+                Start the conversation!
+              </p>
             </div>
           </div>
-          )
-        }
+        )}
         {messageList.map((msg, index) =>
           msg.senderid !== data.uid ? (
-            <Flex
-              key={index}
-              className="flex-col mb-5 max-w-full items-start"
-            >
-                {
-                  msg.replyMsg && (<span className="px-2 py-1 ml-[6px] bg-gray-200 text-[12px] rounded-t-lg">{msg.replyMsg}</span>)
-                }
+            <Flex key={index} className="flex-col mb-5 max-w-full items-start">
+              {msg.replyMsg && (
+                <span className="px-2 py-1 ml-[6px] bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
+                  {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) : msg.replyMsg === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />) : msg.replyMsg === "<3" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />):(msg.replyMsg)}
+                </span>
+              )}
               <Flex className="gap-x-2">
                 <Flex className="flex-col justify-start items-start">
-              <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
-                {msg.message === "like" ? (
-                  <AiFillLike className="text-[34px] animate-floating" />
-                ) : (
-                  msg.message
-                )}
-              </span>
-
+                  <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
+                    {msg.message === "like" ? (
+                      <AiFillLike className="text-[34px] animate-floating" />
+                    ) : msg.message === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
+): msg.message === "<3" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
+): (
+                      msg.message
+                    )}
+                  </span>
                 </Flex>
-<button onClick={()=>setReplyMsg(msg.message)
-
-              }><FaReplyAll />
-</button>
+                <button onClick={() => setReplyMsg(msg.message)}>
+                  <FaReplyAll />
+                </button>
               </Flex>
               <span className="text-[12px] mt-3 text-black/25 font-medium">
                 {msg.time}
               </span>
             </Flex>
           ) : (
-            <Flex
-              key={index}
-              className="flex-col mb-5 max-w-full items-end"
-            >
-              {
-                  msg.replyMsg && (<span className="px-2 py-1 mr-[6px] bg-gray-200 text-[12px] rounded-t-lg">{msg.replyMsg}</span>)
-                }
+            <Flex key={index} className="flex-col mb-5 max-w-full items-end">
+              {msg.replyMsg && (
+                <span className="px-2 py-1 mr-[6px] text-gray-600 bg-gray-200 text-[12px] rounded-t-lg">
+                  {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) : msg.replyMsg === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
+) : msg.replyMsg === "<3" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
+):(msg.replyMsg)}
+                </span>
+              )}
               <Flex className="gap-x-2">
-                              <button onClick={()=>messageDeleteHandler(msg)
-              }><FaTrash />
-
-</button>
-<Flex className="flex-col items-end">
-
-              <span className='text-white bg-primary px-[28px] py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
-                {msg.message === "like" ? (
-                  <AiFillLike className="text-[34px] animate-floating" />
-                ) : (
-                  msg.message
-                )}
-              </span>
-</Flex>
-
+                <button onClick={() => messageDeleteHandler(msg)}>
+                  <FaTrash />
+                </button>
+                <Flex className="flex-col items-end">
+                  <span className='text-white bg-primary px-[28px] py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
+                    {msg.message === "like" ? (
+                      <AiFillLike className="text-[34px] animate-floating" />
+                    ): msg.message === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
+): msg.message === "<3" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
+) :  (
+                      msg.message
+                    )}
+                  </span>
+                </Flex>
               </Flex>
 
-              <span className="text-[12px] mt-3 text-black/25 font-medium">
+              <span className="text-[12px] mt-3  text-black/25 font-medium">
                 {msg.time}
               </span>
             </Flex>
           )
         )}
         <div ref={messagesEndRef} />
-
       </div>
 
       <hr className="text-gray-300 w-[90%] mx-auto" />
 
-
       <Flex className="messageBox relative gap-x-[20px] px-10 h-[10%] w-full">
-                        {
-          replyMsg.length!=="" && replyMsg && (
-            <Flex className="px-3 py-1 absolute -top-10 mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">{replyMsg} <Flex className="gap-x-2"><FaReplyAll />< RxCross2 onClick={()=>setReplyMsg("")}  /></Flex> 
-
-
-</Flex>
-          )
-        }
+        {replyMsg.length !== "" && replyMsg && (
+          <Flex className="px-3 py-1 absolute -top-10 mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">
+            {
+              replyMsg=="like" ? <AiFillLike className="text-[34px] animate-floating" /> : replyMsg=="love" ? <BsFillBalloonHeartFill/> : replyMsg=="<3" ? <BsFillBalloonHeartFill/> : replyMsg
+            }
+            <Flex className="gap-x-2">
+              <FaReplyAll />
+              <RxCross2 onClick={() => setReplyMsg("")} />
+            </Flex>
+          </Flex>
+        )}
         <div className="messageInput relative w-[85%] xl:w-[90%]">
           <input
             type="text"
