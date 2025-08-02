@@ -191,7 +191,7 @@ const GroupConversation = () => {
 
   if (!selectedGroup.groupName || !selectedGroup.groupId) {
     return (
-      <div className="convo mt-10 xl:mt-0 shadow-shadow flex justify-center items-center rounded-[20px] xl:w-[62%] h-[93vh]">
+      <div className="convo mt-10 xl:mt-0 shadow-shadow flex justify-center items-center rounded-[20px] xl:w-[100%] h-[93vh]">
         <div className="text-center">
           <p className="text-red-500 text-lg font-medium">
             Error loading group
@@ -210,7 +210,7 @@ const GroupConversation = () => {
         // e.stopPropagation();
         // setEmojiActive(false);
       }}
-      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[62%] h-[93vh]"
+      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[100%] h-[93vh]"
     >
       <Toaster position="top-right" reverseOrder={false} />
 

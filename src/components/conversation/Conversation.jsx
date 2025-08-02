@@ -240,7 +240,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
 
   if (!roomuser) {
     return (
-      <div className="convo mt-10 xl:mt-0 shadow-shadow flex justify-center items-center rounded-[20px] xl:w-[62%] h-[93vh]">
+      <div className="convo mt-10 xl:mt-0 shadow-shadow flex justify-center items-center rounded-[20px] xl:w-[100%] h-[93vh]">
         <div className="text-center">
           <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-gray-400 text-3xl">💬</span>
@@ -263,7 +263,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
         handleMsgNotificationDelete();
         // setEmojiActive(false);
       }}
-      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[62%] h-[93vh]"
+      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[100%] h-[93vh]"
     >
       <Toaster position="top-right" reverseOrder={false} />
       {blockPopup && (

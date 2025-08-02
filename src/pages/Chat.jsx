@@ -18,6 +18,7 @@ import UserSkeleton from "../components/skeleton/UserSkeleton";
 import Sbutton from "../layouts/Sbutton";
 import { roomUser } from "../features/chatRoom/chatRoom";
 import { useNavigate } from "react-router";
+import { IoArrowBack } from "react-icons/io5";
 
 const Chat = () => {
   const dispatch = useDispatch();
@@ -25,10 +26,11 @@ const Chat = () => {
   const [friendListLoading, setFriendListLoading] = useState(true);
   const [isFriend, setIsFriend] = useState([]);
   const db = getDatabase();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const data = useSelector((state) => state.userInfo.value);
   const roomuser = useSelector((state) => state.roomUser.value);
   const [filterFriends, setFilterFriends] = useState([]);
+  const [showChatList, setShowChatList] = useState(true);
 
   const [msgNotification, setMsgNotification] = useState([]);
 
@@ -103,10 +105,6 @@ const Chat = () => {
     }
   }, [friendList, msgNotification, friendListLoading]);
 
-  console.log(msgNotification);
-
-  
-
   const handleMsgNotificationDelete = (friend) => {
     msgNotification.forEach((item) => {
       if (
@@ -121,138 +119,174 @@ const Chat = () => {
     });
   };
 
+  const handleChatSelect = (friend) => {
+    handleMsgNotificationDelete(friend);
+    dispatch(roomUser(friend));
+    // On mobile, hide chat list when conversation is selected
+    if (window.innerWidth < 1280) {
+      setShowChatList(false);
+    }
+  };
+
+  const handleBackToList = () => {
+    setShowChatList(true);
+    dispatch(roomUser(null));
+  };
+
+  // Listen for window resize to handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1280) {
+        setShowChatList(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <Flex className="mt-[32px] font-poppins items-start xl:w-[80%]">
-      <div className="mx-auto xl:mx-0">
-        <SearchInput onChange={handleSearch} className="xl:w-[447px]" />
-        <div className="xl:w-[447px] w-full shadow-shadow max-h-[85vh] overflow-y-auto rounded-[20px] px-[20px] font-poppins py-[20px]">
-          <Flex className="justify-between items-center mb-2">
-            <h3 className="text-[20px] font-semibold text-black">Friends</h3>
-            <Sbutton onClick={()=>navigate("/chat/groupchat")}>Group Chat</Sbutton>
-          </Flex>
-
-          <div className="overflow-y-auto ">
-            {friendListLoading && <UserSkeleton />}
-            {filterFriends.length > 0 ? filterFriends.map((friend, i) => (
-              <Flex
-                key={i}
-                className={`py-[10px] border-b-2 border-gray-300 items-center justify-between ${friend.id==roomuser?.id ? "border-2 bg-blue-100 rounded-2xl" : "bg-none"}`}
+    <Flex className="mt-[32px] font-poppins gap-x-20 justify-start items-start xl:w-[95%] w-full px-4 xl:px-0">
+      {/* Chat List */}
+      <div className={`w-full xl:w-auto xl:block ${showChatList ? 'block' : 'hidden xl:block'}`}>
+        <div className="mx-auto xl:mx-0">
+          <SearchInput onChange={handleSearch} className="xl:w-[447px] w-full" />
+          <div className="xl:w-[447px] w-full shadow-shadow max-h-[85vh] overflow-y-auto rounded-[20px] px-[20px] font-poppins py-[20px]">
+            <Flex className="justify-between items-center mb-2 flex-wrap gap-2">
+              <h3 className="text-[20px] font-semibold text-black">Friends</h3>
+              <Sbutton 
+                onClick={() => navigate("/chat/groupchat")}
+                className="text-sm px-3 py-1.5"
               >
-                <Flex className="gap-x-[14px] w-[65%] justify-start items-center ">
-                  <div className=" relative ">
-                    {/* <img
-                      src={friend.img}
-                      className="avatar w-[52px] relative z-0 h-[52px] rounded-full"
-                      alt=""
-                    /> */}
-                    <LetterAvatar>
-                      {friend.senderid == data.uid
-                        ? friend.recivername.charAt(0)
-                        : friend.sendername.charAt(0)}
-                    </LetterAvatar>
-                    {friend.active && (
-                      <span className="w-4 h-4 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]"></span>
-                    )}
-                  </div>
+                Group Chat
+              </Sbutton>
+            </Flex>
 
-                  <div className="w-[60%]">
-                    <h3 className="text-[14px] font-semibold text-black truncate w-full">
-                      {friend.senderid == data.uid
-                        ? friend.recivername
-                        : friend.sendername}
-                    </h3>
-                    <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
-                      Recently
-                    </p>
+            <div className="overflow-y-auto">
+              {friendListLoading && <UserSkeleton />}
+              {filterFriends.length > 0 ? filterFriends.map((friend, i) => (
+                <Flex
+                  key={i}
+                  className={`py-[10px] border-b-2 border-gray-300 items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors ${friend.id == roomuser?.id ? "border-2 bg-blue-100 rounded-2xl" : "bg-none"}`}
+                >
+                  <Flex className="gap-x-[14px] w-[65%] sm:w-[70%] justify-start items-center">
+                    <div className="relative">
+                      <LetterAvatar className="w-[52px] h-[52px] text-lg">
+                        {friend.senderid == data.uid
+                          ? friend.recivername.charAt(0)
+                          : friend.sendername.charAt(0)}
+                      </LetterAvatar>
+                      {friend.active && (
+                        <span className="w-4 h-4 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]"></span>
+                      )}
+                    </div>
+
+                    <div className="w-[60%] min-w-0">
+                      <h3 className="text-[14px] font-semibold text-black truncate w-full">
+                        {friend.senderid == data.uid
+                          ? friend.recivername
+                          : friend.sendername}
+                      </h3>
+                      <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
+                        Recently
+                      </p>
+                    </div>
+                  </Flex>
+                  <div className="text-xl text-black text-right">
+                    <Sbutton
+                      className="relative text-sm px-3 py-1.5 flex items-center gap-1"
+                      onClick={() => handleChatSelect(friend)}
+                    >
+                      <IoChatbubbleEllipsesOutline className="xl:mr-1" />
+                      <span className="hidden sm:inline">chat</span>
+                      {msgNotification.some(
+                        (item) =>
+                          (item.senderid === friend.senderid &&
+                            item.reciverid === friend.reciverid) ||
+                          (item.senderid === friend.reciverid &&
+                            item.reciverid === friend.senderid)
+                      ) && (
+                        <span className="w-[12px] h-[12px] absolute -top-1 -left-1 rounded-full animate-pulse bg-red-500"></span>
+                      )}
+                    </Sbutton>
                   </div>
                 </Flex>
-                <span className="text-xl text-black  text-right">
-                  <Sbutton
-                    className="relative"
-                    onClick={() => {
-                      handleMsgNotificationDelete(friend);
-                      dispatch(roomUser(friend));
-                    }}
-                  >
-                    
-                    {msgNotification.some(
-                      (item) =>
-                        (item.senderid === friend.senderid &&
-                          item.reciverid === friend.reciverid) ||
-                        (item.senderid === friend.reciverid &&
-                          item.reciverid === friend.senderid)
-                    ) && (
-                      <span className="w-[12px] h-[12px] absolute top-0 left-0 rounded-full animate-pulse bg-red-500"></span>
-                    )}
-                    chat
-                  </Sbutton>
-                </span>
-              </Flex>
-            )) : friendList.map((friend, i) => (
-              <Flex
-                key={i}
-                className={`py-[10px] border-b-2 border-gray-300 items-center transition-all justify-between ${friend.id==roomuser?.id ? "border-2 bg-blue-100 rounded-2xl" : "bg-none"}`}
-              >
-                <Flex className="gap-x-[14px] w-[65%] justify-start items-center">
-                  <div className=" relative ">
-                    {/* <img
-                      src={friend.img}
-                      className="avatar w-[52px] relative z-0 h-[52px] rounded-full"
-                      alt=""
-                    /> */}
-                    <LetterAvatar>
-                      {friend.senderid == data.uid
-                        ? friend.recivername.charAt(0)
-                        : friend.sendername.charAt(0)}
-                    </LetterAvatar>
-                    {friend.active && (
-                      <span className="w-4 h-4 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]"></span>
-                    )}
-                  </div>
+              )) : friendList.map((friend, i) => (
+                <Flex
+                  key={i}
+                  className={`py-[10px] border-b-2 border-gray-300 items-center transition-all justify-between cursor-pointer hover:bg-gray-50 ${friend.id == roomuser?.id ? "border-2 bg-blue-100 rounded-2xl" : "bg-none"}`}
+                >
+                  <Flex className="gap-x-[14px] w-[65%] sm:w-[70%] justify-start items-center">
+                    <div className="relative">
+                      <LetterAvatar className="w-[52px] h-[52px] text-lg">
+                        {friend.senderid == data.uid
+                          ? friend.recivername.charAt(0)
+                          : friend.sendername.charAt(0)}
+                      </LetterAvatar>
+                      {friend.active && (
+                        <span className="w-4 h-4 border-2 border-white rounded-full bg-green-400 absolute bottom-0 right-0 z-[555]"></span>
+                      )}
+                    </div>
 
-                  <div className="w-[60%]">
-                    <h3 className="text-[14px] font-semibold text-black truncate w-full">
-                      {friend.senderid == data.uid
-                        ? friend.recivername
-                        : friend.sendername}
-                    </h3>
-                    <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
-                      Recently
-                    </p>
+                    <div className="w-[60%] min-w-0">
+                      <h3 className="text-[14px] font-semibold text-black truncate w-full">
+                        {friend.senderid == data.uid
+                          ? friend.recivername
+                          : friend.sendername}
+                      </h3>
+                      <p className="font-medium text-[12px] text-[#4D4D4D]/75 truncate w-full">
+                        Recently
+                      </p>
+                    </div>
+                  </Flex>
+                  <div className="text-xl text-black text-right">
+                    <Sbutton
+                      className="relative text-sm px-3 py-1.5 flex items-center gap-1"
+                      onClick={() => handleChatSelect(friend)}
+                    >
+                      <IoChatbubbleEllipsesOutline className="xl:mr-1" />
+                      <span className="hidden sm:inline">chat</span>
+                      {msgNotification.some(
+                        (item) =>
+                          (item.senderid === friend.senderid &&
+                            item.reciverid === friend.reciverid) ||
+                          (item.senderid === friend.reciverid &&
+                            item.reciverid === friend.senderid)
+                      ) && (
+                        <span className="w-[12px] h-[12px] absolute -top-1 -left-1 rounded-full animate-pulse bg-red-500"></span>
+                      )}
+                    </Sbutton>
                   </div>
                 </Flex>
-                <span className="text-xl text-black  text-right">
-                  <Sbutton
-                    className="relative"
-                    onClick={() => {
-                      handleMsgNotificationDelete(friend);
-                      dispatch(roomUser(friend));
-                    }}
-                  >
-                    <IoChatbubbleEllipsesOutline className="mr-1" />
-                    {msgNotification.some(
-                      (item) =>
-                        (item.senderid === friend.senderid &&
-                          item.reciverid === friend.reciverid) ||
-                        (item.senderid === friend.reciverid &&
-                          item.reciverid === friend.senderid)
-                    ) && (
-                      <span className="w-[12px] h-[12px] absolute top-0 left-0 rounded-full animate-pulse bg-red-500"></span>
-                    )}
-                    chat
-                  </Sbutton>
-                </span>
-              </Flex>
-            ))}
-            {!friendListLoading && friendList.length == 0 && (
-              <p className="text-[12px] text-gray-400 text-center italic">
-                You've No Friends
-              </p>
-            )}
+              ))}
+              {!friendListLoading && friendList.length == 0 && (
+                <p className="text-[12px] text-gray-400 text-center italic py-8">
+                  You've No Friends
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
-      <Conversation isFriend={isFriend} msgNotification={msgNotification} />
+
+      {/* Conversation */}
+      <div className={`w-full  flex-1  xl:w-auto xl:block ${!showChatList ? 'block' : 'hidden xl:block'}`}>
+        {/* Mobile Back Button */}
+        {roomuser && (
+          <button
+            onClick={handleBackToList}
+            className="xl:hidden flex items-center gap-2 text-primary font-medium mb-4 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <IoArrowBack className="text-lg" />
+            <span>Back to Chats</span>
+          </button>
+        )}
+        <Conversation 
+          isFriend={isFriend} 
+          msgNotification={msgNotification} 
+          onBackToList={handleBackToList}
+        />
+      </div>
     </Flex>
   );
 };

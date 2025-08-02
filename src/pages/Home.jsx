@@ -15,7 +15,7 @@ const Home = () => {
 
   return (
     <>
-      <Flex className=" xl:w-[82%] pt-[30px] flex-col xl:flex-row px-3 xl:px-0 items-start  xl:h-[95vh] gap-y-8 xl:mr-[15px]">
+      <Flex className=" xl:w-[95%] pt-[30px] flex-col xl:flex-row px-3 xl:px-0 items-start  xl:h-[95vh] gap-y-8 xl:mr-[15px]">
         <GroupList />
         <FriendsList />
         <UserList  />

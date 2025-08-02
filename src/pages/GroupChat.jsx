@@ -35,17 +35,8 @@ import { useNavigate } from "react-router";
 const GroupChat = () => {
   const db = getDatabase();
   const [groups, setGroups] = useState([]);
-  const [joinReq, setJoinReq] = useState([]);
-  const [showRequests, setShowRequests] = useState({});
   const [groupListLoading, setGroupListLoading] = useState(true);
-  const [showGroupInfo, setShowGroupInfo] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [groupMemberList, setGroupMemberList] = useState([]);
   const [memberGroup, setMemberGroup] = useState([]);
-  const [grpDeletePopup, setGrpDeletePopup] = useState(false);
-  const [groupLeavePopup, setGroupLeavePopup] = useState(false);
-  const [friendList, setFriendList] = useState([]);
-  const [friendListLoading, setFriendListLoading] = useState(true);
   const data = useSelector((state) => state.userInfo.value);
   const navigate= useNavigate()
   const dispatch = useDispatch();
@@ -126,7 +117,7 @@ const GroupChat = () => {
                 className="border-b-2 border-gray-300 pb-4 mb-4"
               >
                 <Flex className="py-[10px] items-center justify-between">
-                  <Flex className="gap-x-[14px] w-[65%] items-center justify-start">
+                  <Flex className="gap-x-[14px] w-[50%]  items-center justify-start">
                     <div>
                       <LetterAvatar>
                         {group.groupName ? group.groupName.charAt(0) : 'G'}
@@ -134,13 +125,13 @@ const GroupChat = () => {
                     </div>
 
                     <div className="w-[40%]">
-                      <h3 className="text-[14px] font-semibold text-black truncate w-full">
+                      <h3 className="text-[14px]  font-semibold text-black truncate w-full">
                         {group.groupName || 'Unnamed Group'}
                       </h3>
                     </div>
                   </Flex>
 
-                  <div className="flex gap-2">
+                  <div className="flex">
                     <Sbutton
                       className="relative"
                       onClick={() => {
@@ -170,7 +161,7 @@ const GroupChat = () => {
                     </LetterAvatar>
                   </div>
 
-                  <div className="w-[60%]">
+                  <div className="w-[40%]">
                     <h3 className="text-[14px] font-semibold text-black truncate w-full">
                       {group.groupName || 'Unnamed Group'}
                     </h3>
@@ -178,7 +169,7 @@ const GroupChat = () => {
                       Member
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex justify-end flex-1">
                     <Sbutton
                       className="relative"
                       onClick={() => {
@@ -203,7 +194,10 @@ const GroupChat = () => {
             )}
         </div>
       </div>
+      <div className="w-auto xl:ml-20 flex-1">
       <GroupConversation />
+
+      </div>
     </Flex>
   );
 };
