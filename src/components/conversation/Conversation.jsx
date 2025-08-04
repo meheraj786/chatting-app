@@ -464,7 +464,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
           msg.senderid !== data.uid ? (
             <Flex key={index} className="flex-col mb-5 w-full items-start">
               {msg.replyMsg && (
-                <span className="px-2 py-1 ml-[6px] bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
+                <span className="px-2 py-1 ml-[6px] max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl overflow-wrap-anywhere whitespace-pre-wrap break-words bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
                   {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) : msg.replyMsg === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />) : msg.replyMsg === "<3" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />):(msg.replyMsg)}
                 </span>
               )}
@@ -491,7 +491,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
           ) : (
             <Flex key={index} className="flex-col mb-5 max-w-full items-end">
               {msg.replyMsg && (
-                <span className="px-2 py-1 mr-[6px] text-gray-600 bg-gray-200 text-[12px] rounded-t-lg">
+                <span className="px-2 py-1 mr-[6px] text-gray-600 max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl overflow-wrap-anywhere whitespace-pre-wrap break-words bg-gray-200 text-[12px] rounded-t-lg">
                   {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) : msg.replyMsg === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
 ) : msg.replyMsg === "<3" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
 ):(msg.replyMsg)}
@@ -527,7 +527,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
 
       <Flex className="messageBox relative gap-x-[20px] px-10 h-[10%] w-full">
         {replyMsg.length !== "" && replyMsg && (
-          <Flex className="px-3 py-1 absolute -top-10 mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">
+          <Flex className="px-3 py-1 absolute max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl overflow-wrap-anywhere whitespace-pre-wrap break-words -top-10 mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">
             {
               replyMsg=="like" ? <AiFillLike className="text-[34px] animate-floating" /> : replyMsg=="love" ? <BsFillBalloonHeartFill/> : replyMsg=="<3" ? <BsFillBalloonHeartFill/> : replyMsg
             }
