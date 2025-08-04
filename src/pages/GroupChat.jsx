@@ -86,8 +86,8 @@ const GroupChat = () => {
 
   if (!data) {
     return (
-      <Flex className="mt-[32px] font-poppins items-start xl:w-[80%]">
-        <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
+      <Flex className="mt-[32px] font-poppins items-start xl:w-full">
+        <div className="xl:w-auto w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
           <p className="text-center text-gray-500">Loading...</p>
         </div>
       </Flex>
@@ -95,7 +95,7 @@ const GroupChat = () => {
   }
 
   return (
-    <Flex className="mt-[32px] font-poppins items-start xl:w-[80%]">
+    <Flex className="mt-[32px] font-poppins items-start xl:w-[90%]">
       <div className="xl:w-[30%] w-full shadow-shadow h-[50%] rounded-[20px] px-[20px] font-poppins py-[20px]">
         <Toaster position="top-right" reverseOrder={false} />
 
@@ -194,7 +194,7 @@ const GroupChat = () => {
             )}
         </div>
       </div>
-      <div className="w-auto xl:ml-20 flex-1">
+      <div className="w-1/2 xl:ml-10 flex-1">
       <GroupConversation />
 
       </div>

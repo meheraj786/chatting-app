@@ -210,7 +210,7 @@ const GroupConversation = () => {
         // e.stopPropagation();
         // setEmojiActive(false);
       }}
-      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[100%] h-[93vh]"
+      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-full h-[93vh]"
     >
       <Toaster position="top-right" reverseOrder={false} />
 
@@ -516,7 +516,7 @@ const GroupConversation = () => {
 
       <Flex className="messageBox relative gap-x-[20px] px-10 h-[10%] w-full">
                 {replyMsg.length !== "" && replyMsg && (
-          <Flex className="px-3 py-1 absolute -top-10 mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">
+          <Flex className="px-3 py-1 absolute bottom-full mx-10 max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl break-all overflow-wrap-anywhere whitespace-pre-wrap break-words left-0 w-[90%] bg-gray-200 rounded-lg">
             {
               replyMsg=="like" ? <AiFillLike className="text-[34px] animate-floating" /> : replyMsg
             }

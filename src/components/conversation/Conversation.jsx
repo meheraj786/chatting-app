@@ -527,7 +527,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
 
       <Flex className="messageBox relative gap-x-[20px] px-10 h-[10%] w-full">
         {replyMsg.length !== "" && replyMsg && (
-          <Flex className="px-3 py-1 absolute max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl overflow-wrap-anywhere whitespace-pre-wrap break-words -top-10 mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">
+          <Flex className="px-3 py-1 absolute max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl break-all overflow-wrap-anywhere whitespace-pre-wrap break-words bottom-full mx-10  left-0 w-[90%] bg-gray-200 rounded-lg">
             {
               replyMsg=="like" ? <AiFillLike className="text-[34px] animate-floating" /> : replyMsg=="love" ? <BsFillBalloonHeartFill/> : replyMsg=="<3" ? <BsFillBalloonHeartFill/> : replyMsg
             }
