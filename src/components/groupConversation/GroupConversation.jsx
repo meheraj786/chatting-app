@@ -440,7 +440,7 @@ const GroupConversation = () => {
                                 {msg.replyMsg &&  (
                                   <span className="px-2 py-1 ml-[6px] bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
                                     {
-                                      msg.replySender && <span className="text-black">{msg.replySender}</span>
+                                      msg.replySender && <span className="text-black font-medium mr-3">{msg.replySender} :</span>
                                     }
                                     
                                     {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) :(msg.replyMsg)}
@@ -455,7 +455,7 @@ const GroupConversation = () => {
                   </span>
                 </div>
                 <Flex className="gap-x-3">
-                <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
+                <span className='relative  max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl overflow-wrap-anywhere whitespace-pre-wrap break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
                   {msg.message === "like" ? (
                     <AiFillLike className="text-[34px] animate-floating" />
                   ) : (
@@ -494,7 +494,7 @@ const GroupConversation = () => {
                   <button onClick={() => messageDeleteHandler(msg)}>
                                     <FaTrash />
                                   </button>
-                <span className='text-white bg-primary px-[28px] py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
+                <span className='text-white bg-primary px-[28px] max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl overflow-wrap-anywhere whitespace-pre-wrap py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
                   
                   {msg.message === "like" ? (
                     <AiFillLike className="text-[34px] animate-floating" />
@@ -537,7 +537,7 @@ const GroupConversation = () => {
                 sentMessageHandler();
               }
             }}
-            className="bg-[#F1F1F1] p-[15px] rounded-[10px] w-full"
+            className="bg-[#F1F1F1] pr-20 p-[15px] rounded-[10px] w-full"
           />
           {emojiActive && (
             <div className="absolute bottom-10 right-0 z-50">

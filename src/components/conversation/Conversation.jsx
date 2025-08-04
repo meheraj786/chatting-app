@@ -263,7 +263,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
         handleMsgNotificationDelete();
         // setEmojiActive(false);
       }}
-      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-[100%] h-[93vh]"
+      className="convo mt-10 relative xl:mt-0 shadow-shadow rounded-[20px] xl:w-full h-[93vh]"
     >
       <Toaster position="top-right" reverseOrder={false} />
       {blockPopup && (
@@ -462,7 +462,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
         )}
         {messageList.map((msg, index) =>
           msg.senderid !== data.uid ? (
-            <Flex key={index} className="flex-col mb-5 max-w-full items-start">
+            <Flex key={index} className="flex-col mb-5 w-full items-start">
               {msg.replyMsg && (
                 <span className="px-2 py-1 ml-[6px] bg-gray-200 text-gray-600 text-[12px] rounded-t-lg">
                   {msg.replyMsg=="like" ? (<AiFillLike className="text-[34px] text-gray-600 animate-floating" />) : msg.replyMsg === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />) : msg.replyMsg === "<3" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />):(msg.replyMsg)}
@@ -470,7 +470,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
               )}
               <Flex className="gap-x-2">
                 <Flex className="flex-col justify-start items-start">
-                  <span className='relative max-w-full break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
+                  <span className='relative max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl overflow-wrap-anywhere whitespace-pre-wrap break-words bg-gray-300 text-primary px-[28px] py-[17px] rounded-xl after:content-[""] after:absolute after:bottom-0 after:-left-2 after:w-5 after:h-13 after:bg-gray-300 after:[clip-path:polygon(100%_48%,0%_100%,100%_100%)]'>
                     {msg.message === "like" ? (
                       <AiFillLike className="text-[34px] animate-floating" />
                     ) : msg.message === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
@@ -502,7 +502,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
                   <FaTrash />
                 </button>
                 <Flex className="flex-col items-end">
-                  <span className='text-white bg-primary px-[28px] py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
+                  <span className='text-white max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl overflow-wrap-anywhere whitespace-pre-wrap bg-primary px-[28px] py-[17px] break-words rounded-xl relative after:content-[""] after:absolute after:bottom-0 after:-right-2 after:w-5 after:h-13 after:bg-primary after:[clip-path:polygon(0%_48%,0%_100%,100%_100%)]'>
                     {msg.message === "like" ? (
                       <AiFillLike className="text-[34px] animate-floating" />
                     ): msg.message === "love" ? (<BsFillBalloonHeartFill className="text-[34px] text-red-600 animate-floating" />
@@ -537,7 +537,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
             </Flex>
           </Flex>
         )}
-        <div className="messageInput relative w-[85%] xl:w-[90%]">
+        <div className="messageInput relative  w-[85%] xl:w-[90%]">
           <input
             type="text"
             placeholder="Write Message Here"
@@ -548,7 +548,7 @@ const Conversation = ({ msgNotification, isFriend }) => {
                 sentMessageHandler();
               }
             }}
-            className="bg-[#F1F1F1] p-[15px] rounded-[10px] w-full"
+            className="bg-[#F1F1F1] p-[15px] pr-20 rounded-[10px] w-full"
           />
           {emojiActive && (
             <div className="absolute bottom-20 right-0 z-50">

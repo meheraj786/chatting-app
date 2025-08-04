@@ -146,9 +146,9 @@ const Chat = () => {
   }, []);
 
   return (
-    <Flex className="mt-[32px] font-poppins gap-x-20 justify-start items-start xl:w-[95%] w-full px-4 xl:px-0">
+    <Flex className="mt-[32px] font-poppins  gap-x-20 justify-start items-start  w-full px-4 xl:px-0">
       {/* Chat List */}
-      <div className={`w-full xl:w-auto xl:block ${showChatList ? 'block' : 'hidden xl:block'}`}>
+      <div className={`w-full xl:w-auto  xl:block ${showChatList ? 'block' : 'hidden xl:block'}`}>
         <div className="mx-auto xl:mx-0">
           <SearchInput onChange={handleSearch} className="xl:w-[447px] w-full" />
           <div className="xl:w-[447px] w-full shadow-shadow max-h-[85vh] overflow-y-auto rounded-[20px] px-[20px] font-poppins py-[20px]">
@@ -270,7 +270,7 @@ const Chat = () => {
       </div>
 
       {/* Conversation */}
-      <div className={`w-full  flex-1  xl:w-auto xl:block ${!showChatList ? 'block' : 'hidden xl:block'}`}>
+      <div className={`w-1/2  xl:block ${!showChatList ? 'block' : 'hidden xl:block'}`}>
         {/* Mobile Back Button */}
         {roomuser && (
           <button
