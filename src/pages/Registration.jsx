@@ -98,6 +98,7 @@ const Registration = () => {
       set(ref(db, 'users/' + user.user.uid), {
   username: user.user.displayName,
   email: user.user.email,
+  status:""
   });
 })
 

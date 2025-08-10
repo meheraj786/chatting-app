@@ -59,7 +59,7 @@ const UserList = () => {
       setUserList(arr);
       setUserLoading(false);
     });
-  }, []);
+  }, [db]);
   useEffect(() => {
     const blockRef = ref(db, "blocklist/");
     onValue(blockRef, (snapshot) => {
