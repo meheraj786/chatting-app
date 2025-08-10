@@ -11,23 +11,33 @@ import dp from "../assets/dp.png";
 import { useDispatch, useSelector } from "react-redux";
 import LetterAvatar from "../layouts/LetterAvatar";
 import Sbutton from "../layouts/Sbutton";
-import { getAuth, updateProfile } from "firebase/auth";
+import {
+  deleteUser,
+  getAuth,
+  sendPasswordResetEmail,
+  updateProfile,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from "firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { updateUserName, updateUserStatus } from "../features/user/userSlice";
-import { getDatabase, onValue, ref, update } from "firebase/database";
+import { getDatabase, onValue, ref, remove, update } from "firebase/database";
+import { useNavigate } from "react-router";
 
 const Setting = () => {
   const data = useSelector((state) => state.userInfo.value);
+  const navigate=useNavigate()
   const [nameEditMode, setNameEditMode] = useState(false);
-  const [statusEditMode, setStatusEditMode]= useState(false)
+  const [statusEditMode, setStatusEditMode] = useState(false);
   const [editedName, setEditedName] = useState(data?.displayName || "");
-  const [status, setStatus]= useState(data?.status || "No bio")
+  const [status, setStatus] = useState(data?.status || "No bio");
+  const [joinReq, setJoinReq]= useState([])
   const [friendList, setFriendList] = useState([]);
   const [requestList, setRequestList] = useState([]);
   const [memberGroup, setMemberGroup] = useState([]);
-  const [groups, setGroups]= useState([])
-  const [groupMessageList, setGroupMessageList]= useState([])
-  const [blockList, setBlockList]= useState([])
+  const [groups, setGroups] = useState([]);
+  const [groupMessageList, setGroupMessageList] = useState([]);
+  const [blockList, setBlockList] = useState([]);
   const auth = getAuth();
   const db = getDatabase();
   const dispatch = useDispatch();
@@ -66,27 +76,25 @@ const Setting = () => {
     });
   }, []);
   useEffect(() => {
-      const groupList = ref(db, "grouplist/");
-      onValue(groupList, (snapshot) => {
-        let arr = [];
-        snapshot.forEach((group) => {
-          const groupItem = group.val();
-          const groupId = group.key;
-            arr.push({ ...groupItem, id: groupId });
-        });
-        setGroups(arr);
+    const groupList = ref(db, "grouplist/");
+    onValue(groupList, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((group) => {
+        const groupItem = group.val();
+        const groupId = group.key;
+        arr.push({ ...groupItem, id: groupId });
       });
-    }, []);
-    useEffect(() => {
-
+      setGroups(arr);
+    });
+  }, []);
+  useEffect(() => {
     const memberRef = ref(db, "groupmessage/");
     onValue(memberRef, (snapshot) => {
       let arr = [];
       if (snapshot.exists()) {
         snapshot.forEach((item) => {
           const request = item.val();
-            arr.push({ ...request, id: item.key });
-          
+          arr.push({ ...request, id: item.key });
         });
       }
 
@@ -94,16 +102,26 @@ const Setting = () => {
     });
   }, []);
   useEffect(() => {
-      const requestRef = ref(db, "blocklist/");
+    const requestRef = ref(db, "blocklist/");
+    onValue(requestRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        const blockItem = item.val();
+        const blockId = item.key;
+        arr.push({ ...blockItem, id: blockId });
+      });
+      setBlockList(arr);
+    });
+  }, []);
+  useEffect(() => {
+      const requestRef = ref(db, "joingroupreq/");
       onValue(requestRef, (snapshot) => {
         let arr = [];
         snapshot.forEach((item) => {
-          const blockItem = item.val();
-          const blockId = item.key;
-            arr.push({ ...blockItem, id: blockId });
-          
+          const request = item.val();
+            arr.push({ ...request, id: item.key });
         });
-        setBlockList(arr);
+        setJoinReq(arr);
       });
     }, []);
 
@@ -117,6 +135,7 @@ const Setting = () => {
         update(ref(db, "users/" + data?.uid), {
           username: editedName,
         });
+        
         toast.success("Name updated successfully!");
         setNameEditMode(false);
 
@@ -181,20 +200,115 @@ const Setting = () => {
             });
           }
         });
+        joinReq.forEach((group) => {
+          if (group.wantedId == data?.uid) {
+            update(ref(db, "joingroupreq/" + group.id), {
+              wantedName: editedName,
+            });
+          }
+        });
       })
       .catch((error) => {
         toast.error("Error updating auth profile: " + error.message);
       });
   };
-  const changeStatus=()=>{
+  const changeStatus = () => {
     updateProfile(auth.currentUser, {
       status: status,
-    }).then(()=>{
-      toast.success("Status Successfully Updated")
-      setStatusEditMode(false)
-      dispatch(updateUserStatus(status))
-    })
-  }
+    }).then(() => {
+      toast.success("Status Successfully Updated");
+      setStatusEditMode(false);
+      dispatch(updateUserStatus(status));
+    });
+  };
+  const passwordChangeHandler = () => {
+    sendPasswordResetEmail(auth, data?.email)
+      .then(() => {
+        toast.success("Password Reset Mail Has Been Send");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        toast.error("Something Went Wrong");
+      });
+  };
+
+  const deleteUserHandler = () => {
+    const user = auth.currentUser;
+    if (!user) {
+      toast.error("No user is currently logged in.");
+      return;
+    }
+
+    const password = prompt("Please enter your password to confirm account deletion:");
+    if (!password) {
+      toast.error("Password is required to delete your account.");
+      return;
+    }
+
+    const credential = EmailAuthProvider.credential(user.email, password);
+
+    // Re-authenticate the user first
+    reauthenticateWithCredential(user, credential)
+      .then(() => {
+        deleteUser(user)
+          .then(() => {
+            remove(ref(db, "users/" + data?.uid));
+            navigate("/login")
+            friendList.forEach((friend) => {
+              if (friend.senderid == data?.uid || friend.reciverid == data?.uid) {
+                remove(ref(db, "friendlist/" + friend.id));
+              }
+            });
+            
+            blockList.forEach((friend) => {
+              if (friend.blockerId == data?.uid || friend.blockedId == data?.uid) {
+                remove(ref(db, "blocklist/" + friend.id));
+              }
+            });
+            
+            requestList.forEach((friend) => {
+              if (friend.senderid == data?.uid || friend.reciverid == data?.uid) {
+                remove(ref(db, "friendRequest/" + friend.id));
+              }
+            });
+            
+            memberGroup.forEach((group) => {
+              if (group.memberId == data?.uid) {
+                remove(ref(db, "groupmembers/" + group.id));
+              }
+            });
+            
+            groups.forEach((group) => {
+              if (group.creatorId == data?.uid) {
+                remove(ref(db, "grouplist/" + group.id));
+              }
+            });
+            
+            groupMessageList.forEach((group) => {
+              if (group.senderid == data?.uid) {
+                remove(ref(db, "groupmessage/" + group.id));
+              }
+            });
+            
+            joinReq.forEach((group) => {
+              if (group.wantedId == data?.uid) {
+                remove(ref(db, "joingroupreq/" + group.id));
+              }
+            });
+            
+            toast.success("Account and all related data deleted successfully!");
+          })
+          .catch((error) => {
+            console.error("Error deleting user:", error);
+            toast.error("Something went wrong with account deletion. Please try again.");
+          });
+      })
+      .catch((error) => {
+        console.error("Re-authentication failed:", error);
+        toast.error("Incorrect password. Please try again.");
+      });
+  };
 
   return (
     <div className="xl:w-[82%] w-full font-poppins h-screen rounded-[20px] pt-[30px]">
@@ -220,15 +334,19 @@ const Setting = () => {
                     <h3 className="text-[25px] font-semibold text-black truncate w-full">
                       {data.displayName}
                     </h3>
-{
-  statusEditMode ? (<>
-    <input type="text" value={status} onChange={(e)=>setStatus(e.target.value)} className="text-[20px] border rounded-lg p-2" /> 
-    <Sbutton onClick={changeStatus}>Save</Sbutton>
-    </>
-
-  ): <p className="text-[20px]">{status}</p>
-}
-                    
+                    {statusEditMode ? (
+                      <>
+                        <input
+                          type="text"
+                          value={status}
+                          onChange={(e) => setStatus(e.target.value)}
+                          className="text-[20px] border rounded-lg p-2"
+                        />
+                        <Sbutton onClick={changeStatus}>Save</Sbutton>
+                      </>
+                    ) : (
+                      <p className="text-[20px]">{status}</p>
+                    )}
                   </div>
                 </Flex>
               </Flex>
@@ -261,7 +379,10 @@ const Setting = () => {
                 </Flex>
                 <Flex className="justify-start text-[20px] my-[37px] gap-x-[37px]">
                   {" "}
-                  <span onClick={()=>setStatusEditMode(!statusEditMode)} className="text-[25px]">
+                  <span
+                    onClick={() => setStatusEditMode(!statusEditMode)}
+                    className="text-[25px]"
+                  >
                     <TbMessageCircleFilled />
                   </span>{" "}
                   Edit Status Info
@@ -291,14 +412,14 @@ const Setting = () => {
           <div className="options xl:px-[84px] px-10 mt-[43px]">
             <Flex className="justify-start text-[20px] gap-x-[37px]">
               {" "}
-              <span className="text-[25px]">
+              <span onClick={passwordChangeHandler} className="text-[25px]">
                 <FaKey />
               </span>{" "}
-              Change Password
+              <span onClick={passwordChangeHandler}>Change Password</span>
             </Flex>
             <Flex className="justify-start text-[20px] my-[37px] gap-x-[37px]">
               {" "}
-              <span className="text-[25px]">
+              <span onClick={deleteUserHandler} className="text-[25px]">
                 <HiTrash />
               </span>{" "}
               Delete Account
