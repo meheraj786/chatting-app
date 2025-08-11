@@ -122,7 +122,6 @@ const Chat = () => {
   const handleChatSelect = (friend) => {
     handleMsgNotificationDelete(friend);
     dispatch(roomUser(friend));
-    // On mobile, hide chat list when conversation is selected
     if (window.innerWidth < 1280) {
       setShowChatList(false);
     }
@@ -133,7 +132,6 @@ const Chat = () => {
     dispatch(roomUser(null));
   };
 
-  // Listen for window resize to handle responsive behavior
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1280) {
@@ -147,7 +145,6 @@ const Chat = () => {
 
   return (
     <Flex className="mt-[32px] font-poppins  gap-x-20 justify-start items-start  w-full px-4 xl:px-0">
-      {/* Chat List */}
       <div className={`w-full xl:w-auto  xl:block ${showChatList ? 'block' : 'hidden xl:block'}`}>
         <div className="mx-auto xl:mx-0">
           <SearchInput onChange={handleSearch} className="xl:w-[447px] w-full" />
@@ -269,9 +266,7 @@ const Chat = () => {
         </div>
       </div>
 
-      {/* Conversation */}
       <div className={`w-1/2  xl:block ${!showChatList ? 'block' : 'hidden xl:block'}`}>
-        {/* Mobile Back Button */}
         {roomuser && (
           <button
             onClick={handleBackToList}

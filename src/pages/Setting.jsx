@@ -20,7 +20,7 @@ import {
   EmailAuthProvider,
 } from "firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
-import { updateUserName, updateUserStatus } from "../features/user/userSlice";
+import { updateUserName, updateUserStatus, userInfo } from "../features/user/userSlice";
 import { getDatabase, onValue, ref, remove, update } from "firebase/database";
 import { useNavigate } from "react-router";
 
@@ -248,7 +248,6 @@ const Setting = () => {
 
     const credential = EmailAuthProvider.credential(user.email, password);
 
-    // Re-authenticate the user first
     reauthenticateWithCredential(user, credential)
       .then(() => {
         deleteUser(user)
@@ -373,7 +372,8 @@ const Setting = () => {
                       >
                         <RiEdit2Fill />
                       </span>
-                      Edit Profile Name
+                      <span onClick={() => setNameEditMode(true)} className="cursor-pointer">Edit Profile Name</span>
+                      
                     </>
                   )}
                 </Flex>
